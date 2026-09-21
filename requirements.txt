@@ -1,0 +1,8 @@
+# Runtime dependencies matching the locally verified environment.
+fastapi==0.136.3
+pydantic==2.13.4
+uvicorn==0.48.0
+python-multipart==0.0.29
+pandas==3.0.3
+numpy==2.3.0
+matplotlib==3.10.3
