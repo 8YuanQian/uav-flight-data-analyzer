@@ -1,0 +1,1802 @@
+[
+  {
+    "content": "问题：\n什么是无人机，无人机系统包含哪些部分？\n\n答案：\n无人机是机上没有驾驶员、通过遥控或机载程序执行飞行的航空器。完整系统通常还包括遥控设备、通信链路、地面软件及任务载荷。无人机可以辅助完成航拍、巡检或测绘，但自动执行任务不代表无人负责。使用者仍须确认设备状态、环境条件与合法飞行范围。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "无人机定义",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼无人机如何产生升力并控制飞行？\n\n答案：\n多旋翼依靠多个旋翼推动空气形成推力，通过改变各电机输出控制姿态及运动。悬停时总推力与重力大致平衡，倾斜机身后推力产生水平分量。不同旋翼布局和控制方式有差异，不能把某台四旋翼的电机编号、转向或操纵设置直接套用到其他机架。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "多旋翼原理",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n固定翼无人机与多旋翼有什么区别？\n\n答案：\n固定翼主要依靠机翼在相对气流中产生升力，通常需要持续保持合适空速，普通固定翼不能像多旋翼一样定点悬停。多旋翼适合垂直起降及近距离观察，固定翼常用于较大区域巡航。具体任务适用性还取决于载荷、场地、天气及回收方式，不能仅凭外形判断。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "固定翼特点",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n什么是垂直起降固定翼无人机？\n\n答案：\n垂直起降固定翼结合垂直起降能力与固定翼巡航特点，可能采用独立升力旋翼、倾转结构或其他布局。起降与巡航之间的转换需要满足设备规定的速度、姿态和高度条件。转换阶段不能按普通多旋翼操作习惯理解，应接受对应机型训练并遵守专用操作流程。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "复合翼特点",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行控制器主要负责什么？\n\n答案：\n飞控读取传感器数据，估计飞机姿态与运动状态，并根据操纵指令调节电机或舵面。部分飞控还执行导航、任务航线和失效保护。飞控能够辅助稳定飞行，但其能力受到传感器、供电、软件及机械状态限制。发生告警时应确认原因，不能把飞控稳定功能当成故障兜底。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "飞控功能",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机中的IMU是什么？\n\n答案：\n惯性测量单元通常包含陀螺仪和加速度计，用于测量角速度及比力，为姿态和运动状态估计提供信息。它不能单独长期给出无误差的绝对位置，通常需要与其他传感器融合。振动、温度变化或安装问题可能影响读数，是否校准应依据设备提示和厂商规定判断。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "惯性测量",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机指南针有什么作用？\n\n答案：\n指南针通常指磁力计，测量周围磁场，为航向估计提供参考。金属结构、电流和磁性物品都可能造成干扰，因此地图上的机头方向异常时，应先检查环境及设备状态。部分系统使用其他航向来源，不能认定所有无人机都依赖同一种指南针，也不能靠反复校准消除外部干扰。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "航向传感",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\nGNSS与GPS有什么关系？\n\n答案：\nGNSS是全球卫星导航系统的统称，GPS是其中一种，北斗等也属于卫星导航系统。无人机接收卫星信号估计位置、速度及时间，具体支持范围取决于接收设备。建筑遮挡、信号反射和无线电干扰会影响解算质量，看到卫星数量较多也不等于位置一定可信。",
+    "source": "工程整理（导航原理）；参考：https://ardupilot.org/copter/docs/common-gps-how-it-works.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "卫星导航",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机气压计如何辅助测量高度？\n\n答案：\n气压计通过测量空气压力变化辅助估计高度，飞控常以起飞时的参考值计算相对高度。天气变化、气流扰动或传感器温度漂移可能带来误差，因此读数不等同于绝对海拔或离地距离。山区及楼顶飞行尤其需要区分参考高度，必要时结合测距设备和现场地形判断。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "气压测高",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机视觉定位在什么条件下有效？\n\n答案：\n视觉定位利用相机观察环境特征或地面图案，辅助估计相对运动。通常需要足够光照、可辨认纹理以及满足设备要求的距离。水面、强反光、纯色地面、暗处和重复图案可能使效果下降。视觉定位不等于避障，也不能保证在所有室内环境中保持稳定悬停。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "视觉定位",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n什么是无人机光流定位？\n\n答案：\n光流利用连续图像中特征的移动估计相对运动，常与测距和惯性数据结合用于近地速度控制。有效范围取决于相机、光照、地面纹理及测距质量。光流通常不直接提供全球坐标，地面在移动或图像模糊时也可能产生错误估计，不能替代所有卫星导航功能。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "光流原理",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机有避障功能就不会碰撞吗？\n\n答案：\n避障只能在传感器覆盖范围和算法适用条件内辅助识别障碍。细电线、透明玻璃、树枝、逆光及高速运动目标可能难以可靠探测，部分飞行模式还会限制或关闭避障。操作者应持续观察路径并保留停止距离，不能为了测试功能主动接近障碍或人员。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "避障能力",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机云台与飞控有什么区别？\n\n答案：\n云台主要稳定相机或调整拍摄方向，飞控主要控制航空器运动。画面看起来水平，并不意味着机身没有倾斜；相反，机身稳定时云台也可能因校准或机械问题造成画面歪斜。判断故障应分别查看飞行姿态、云台状态和视频结果，避免把画面异常直接当成飞控故障。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "云台作用",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电调的作用是什么？\n\n答案：\n电子调速器通常接收飞控指令并控制无刷电机运行，涉及功率转换和电机驱动。电调与电机、电池及控制协议必须兼容，持续负载和散热也会影响可靠性。出现电调告警、异常发热或电机失步时应停止任务并排查，不能单纯增加油门或修改参数掩盖问题。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "电子调速",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机为什么常使用无刷电机？\n\n答案：\n无刷电机通过电子驱动完成换相，没有传统电刷接触结构，适合需要频繁调节转速的动力系统。电机可靠工作仍依赖轴承、磁钢、绕组、安装与电调匹配。出现卡滞、异响、松动或异常温升需要检查，不能因为采用无刷结构就认为电机无需保养或不会失效。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "无刷电机",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机螺旋桨为什么有不同旋转方向？\n\n答案：\n许多多旋翼使用成组的不同转向旋翼平衡反扭矩，并通过推力分配控制航向。相应桨叶的翼型及安装方向与电机转向匹配，装错可能导致推力异常甚至起飞翻覆。应按照机身标记和该设备手册安装，不能仅按颜色、外观相似度或另一架飞机的布局判断。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "桨叶方向",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机的俯仰、横滚和偏航分别是什么？\n\n答案：\n俯仰是机头上仰或下俯，横滚是机身左右倾斜，偏航是机头绕竖直方向转动。它们描述旋转状态，不直接等同于向前、侧移或升降距离。遥控杆如何对应这些动作取决于控制模式和设置，学习时应先确认映射，再在合法开阔场地进行缓慢、可控的练习。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "姿态轴",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n机体系和地理坐标系有什么区别？\n\n答案：\n机体系随航空器姿态转动，前后左右以机头方向为参考；地理坐标系通常以地球或当地水平面为参考。同样的向前操纵在机头转向后，会对应不同地面运动方向。任务软件及飞控还可能使用不同轴向约定，涉及数据接口时必须查明坐标定义，不能混用位置与姿态数据。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "坐标参考",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n相对高度、离地高度和海拔有什么区别？\n\n答案：\n相对高度是相对某个参考点的高度差，离地高度是飞机与下方地面之间的距离，海拔则与规定的高程基准有关。从山坡或楼顶起飞后，屏幕相对高度未必反映实际离地距离。规划航线和安全高度时应识别显示值的基准，结合地形及设备说明，避免只看一个数字。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "高度概念",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机地速与空速为什么可能不同？\n\n答案：\n地速描述飞机相对地面的运动速度，空速描述飞机相对周围空气的速度，风会使两者不同。顺风地速可能增大，逆风地速可能减小。固定翼升力及失速风险与空速密切相关，多旋翼也会受风影响返航效率，因此不能只看地速判断气动状态或剩余返航能力。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "空速地速",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机为什么会在悬停时轻微移动？\n\n答案：\n悬停并非绝对静止，风、传感器噪声和控制修正都会产生小幅运动。明显持续漂移则可能与定位退化、环境不适合视觉定位或设备异常有关。应结合当前模式、状态提示和现场情况判断，不能只凭一次位置变化下结论；接近障碍时要扩大安全空间并及时结束任务。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "悬停能力",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n姿态模式与定位模式有哪些区别？\n\n答案：\n姿态控制主要帮助维持或调整机身姿态，部分模式同时保持高度，但不一定保持水平位置。定位模式在有效位置估计支持下可辅助悬停和导航。不同飞控的模式名称和油门逻辑并不一致，切换后松杆行为可能改变，因此应先阅读手册并接受训练，不能把所有姿态模式视为相同。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "姿态模式",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n自动返航功能的基本条件是什么？\n\n答案：\n自动返航通常依赖有效返航点、可信导航信息和足够电量，具体过程由设备及设置决定。返航可能涉及爬升、巡航与降落，未必沿原路线返回。起飞前应核对返航点、路径和高度，飞行中持续监督；定位异常或路径有障碍时不能默认返航一定比人工控制安全。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "自动返航",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机失联保护一定会自动返航吗？\n\n答案：\n失联后的动作可能是返航、悬停、继续任务或降落，取决于机型、模式、配置及可用导航信息。不同链路中断也可能触发不同逻辑。起飞前应确认实际设置及限制，而不是根据按钮名称推测。无法确定失联行为时，应先查手册并完成安全验证，再开展需要相应能力的任务。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "失联保护",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机返航点是否总是当前遥控器位置？\n\n答案：\n返航点常在起飞前或定位满足条件时记录，也可能由操作者按设备功能更新。它不一定随着遥控器移动，更不等于手机地图中心。起飞后应确认地图中的返航点位置和状态提示，移动作业时按手册核对更新方式，并确保新位置具有可降落空间和合法使用条件。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "返航点",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n遥控链路、图传链路和遥测有什么区别？\n\n答案：\n遥控链路主要传递操纵指令，图传主要传送相机画面，遥测主要报告飞机状态。部分设备将多种数据合并传输，另一些则使用不同链路。画面冻结不必然意味着无法操控，画面正常也不保证所有状态可靠。排查时应分别核对控制反馈、遥测刷新和图像更新时间。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "控制与图传",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机目视飞行为什么不能只看视频画面？\n\n答案：\n相机画面通常只覆盖一个方向，可能存在延迟，难以完整显示飞机附近的其他航空器、人员和障碍。直接目视有助于判断机体位置、朝向及周围变化。目视要求和观察员安排需遵守当地规则，不能把图传距离或地图定位能力当作允许超出目视范围飞行的依据。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "视距概念",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n电池容量大是否一定能让无人机飞得更久？\n\n答案：\n容量增加可能提供更多能量，但也可能增加重量、改变重心或超出动力与结构允许范围。实际续航受电池健康、气温、风、载荷和飞行方式影响。更换电池必须满足电压、接口、尺寸及厂商兼容要求，不能只比较容量数字，更不能将非适配电池直接用于飞行。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "电池容量",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n电池剩余百分比能准确代表剩余飞行时间吗？\n\n答案：\n电量百分比是估计结果，不是固定的剩余时间承诺。逆风、低温、老化、高负载和电池状态异常都可能使耗电加快或电压下降。应同时观察告警、返航距离和环境变化，提前保留降落余量。不能用上一次飞行的时间比例简单推算这次还可以飞多久。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "电量估计",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池的串数和放电倍率代表什么？\n\n答案：\n串数与电池组工作电压有关，放电倍率用于描述相对容量的放电能力，两者都必须结合具体电池规格理解。电压不匹配可能损坏电调或其他电子设备，标注倍率也不能代替实际兼容性验证。选型时应依据厂家认可的电池范围，不把某一类电池参数当成所有机型的通用值。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "电池串数",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机任务载荷包括哪些设备？\n\n答案：\n任务载荷是为作业目的搭载的设备，例如相机、热成像仪、测绘传感器或合规作业附件。它们可能增加重量、耗电及空气阻力，也可能影响传感器视野和通信。是否允许安装、安装位置和最大载荷必须以机型说明为准，挂载成功不意味着飞机仍具备原来的性能和安全裕度。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "任务载荷",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n载荷安装位置为什么会影响无人机飞行？\n\n答案：\n载荷位置会改变整机重心和转动惯量，飞控可能需要不同的动力分配来保持姿态。偏置载荷会减少部分电机的控制余量，松动载荷还可能在飞行中移动。应使用获认可的安装方式，检查固定及重心范围；不能仅靠飞机能够起飞判断挂载方案是否安全。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "重心影响",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n标称飞行时间为什么与实际任务时间不同？\n\n答案：\n标称时间通常对应特定测试条件，实际任务还包含起降、姿态变化、载荷、风和安全电量余量。不同测试条件之间的结果不能直接比较，也不能将标称时间全部用于航线规划。任务应结合设备状态和实测记录制定保守预算，并为返航、备降及环境变化留出余量。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "飞行时间",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\nRTK定位是否意味着无人机永远不会漂移？\n\n答案：\nRTK通过基准站或网络提供的差分信息改善卫星定位精度，但效果依赖信号、通信及解算状态。遮挡、多路径、基准坐标错误或差分中断仍会降低质量。固定解不代表航向、避障和飞行控制均无误差，任务应同时检查定位状态、坐标基准与设备整体健康。",
+    "source": "工程整理（导航原理）；参考：https://ardupilot.org/copter/docs/common-gps-how-it-works.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "RTK概念",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机航点飞行是完全自主决策吗？\n\n答案：\n航点任务通常是按事先设定的位置、高度、速度和动作执行，属于有条件的自动控制。系统未必能够判断所有新出现的障碍或空域变化。操作者应检查航线基准、地形、载荷和退出方式，并在执行时监督；程序已经上传并不能证明任务适合当前环境。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "航点任务",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机航测为什么需要照片重叠？\n\n答案：\n相邻照片的共同特征帮助软件匹配图像、估计相机位置并重建场景。所需重叠程度与地形、纹理、镜头、飞行高度及处理方法有关，没有适用于所有任务的统一比例。重叠不足、画面模糊或光照剧烈变化会降低结果质量，因此航线设计还应结合项目精度和现场条件。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "航测重叠",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机固件与手机飞行应用有什么区别？\n\n答案：\n固件运行在飞控、电池或遥控器等设备中，负责底层控制与设备功能；飞行应用主要提供设置、显示和任务交互。应用更新不等于所有设备固件已更新，版本组合也可能有兼容限制。维护时应查看官方发布说明并核对各组件版本，更新后重新确认关键设置。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "固件软件",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n电子围栏或厂商地图是否能代替空域审批？\n\n答案：\n电子围栏是设备或软件提供的飞行限制功能，覆盖范围与数据更新状态可能不同于当地管理要求。设备允许起飞不表示飞行已经获得许可，厂商解锁也不自动满足行政审批。实际作业应查阅所在地的官方空域及临时限制信息，并按任务性质履行相应手续。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "basic",
+      "topic": "地理围栏",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行日志能帮助解决哪些问题？\n\n答案：\n日志可记录姿态、定位、电源、操纵和告警等信息，适合重建异常发生顺序和比较相关信号。可用字段及采样频率取决于系统，缺失数据或时间不同步会影响判断。日志能提供证据，但单一曲线通常不足以确认原因，应结合现场记录、设备检查和官方诊断。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "basic",
+      "topic": "日志价值",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机抗风能力是不是保证任何风中都能返航？\n\n答案：\n抗风指标对应特定条件，不能保证在阵风、建筑乱流或高空风变化中顺利返航。飞机可能维持姿态却无法获得足够迎风地速，电量还会加速消耗。任务规划应结合当地天气与机型限制，持续观察返航方向的实际能力，遇到不利变化及时结束任务或使用安全备降点。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "basic",
+      "topic": "抗风概念",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机任务开始前应先明确哪些信息？\n\n答案：\n先明确作业目的、飞行区域、载荷需求、预计航线与可接受的天气条件，再确认设备及人员具备相应能力。检查所在地空域规则和任务所需手续，确定正常降落与备降区域。任务范围发生变化时要重新评估，不应到达现场后仅凭设备能开机就直接起飞。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "任务准备",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n如何选择适合无人机起降的场地？\n\n答案：\n选择合法、平整、稳固且周围有足够净空的区域，避开人群、道路、树枝、松散砂石及明显磁干扰源。检查上方是否存在细线或突出物，并预留异常降落空间。起降场地不仅要容纳机身，还应允许安全进离场和人员隔离，无法满足条件时应更换位置。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "场地勘察",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机起飞前如何检查天气？\n\n答案：\n结合官方天气信息与现场观察，检查风、阵风、降水、能见度、温度及雷暴风险，并对照机型操作限制。地面风小不代表飞行高度的风也小，建筑周围还可能产生乱流。预计天气在任务期间恶化或无法可靠评估时应推迟任务，不把防护等级视为全天候飞行许可。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "天气确认",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多人执行无人机任务时怎样安排职责？\n\n答案：\n明确谁负责操纵、谁负责观察环境、谁负责载荷与任务记录，并建立简短清晰的呼叫和暂停口令。观察员应及时报告人员进入、其他航空器及障碍变化，操作者应保持控制责任清楚。人员交接前确认当前模式、位置、电量与任务状态，避免多人同时给出冲突指令。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "任务分工",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机从运输箱取出后应检查什么？\n\n答案：\n先查看机身、机臂、起落架、云台和外露接口是否有裂纹、变形或松动，确认运输保护件已按手册移除。检查是否出现受潮、碰撞或异物进入迹象，再展开需要展开的结构。发现损伤应停止准备并记录，运输箱完好或上次飞行正常都不能代替本次检查。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "开箱检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n起飞前如何确认无人机螺旋桨安装正确？\n\n答案：\n核对桨叶与电机位置标记、旋转方向及适配型号，按手册完成锁定或紧固。断电状态下检查叶片裂纹、缺口、变形及安装松动，折叠桨还要检查转动是否顺畅。不要使用胶带修复受损桨叶，也不要凭手感随意增加紧固力；任何疑问都应在起飞前解决。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "桨叶安装",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n飞行电池安装后需要确认哪些事项？\n\n答案：\n确认电池无鼓包、破损、漏液或异常温度，接口清洁且没有变形，再按规定装入并核实锁扣到位。查看设备能否正确读取电池状态和告警，确认电量适合本次任务及返航。不能靠机身指示灯亮起就认定电池固定可靠，也不要带电反复晃动或插拔连接。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "电池安装",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n起飞前怎样检查无人机载荷？\n\n答案：\n确认载荷属于设备允许的配置，安装件固定可靠，线缆不会碰到旋翼或活动机构，并且没有遮挡定位和避障传感器。检查载荷自检、记录和供电状态，评估重量及重心影响。更换载荷后应重新确认任务性能与航线余量，不能直接沿用另一种配置的飞行预算。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "载荷检查",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机和遥控器应该按什么顺序开机？\n\n答案：\n按照机型手册规定执行上电，许多消费级系统要求先准备遥控器和应用，再给飞机上电，但不能将此顺序视为所有设备通用规则。上电前确认桨叶区域无人且不受阻挡，飞机静置等待自检。自检期间不要移动机身或尝试起飞，出现告警时先读取完整信息。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "上电顺序",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n怎样确认无人机与遥控器连接正常？\n\n答案：\n检查应用或地面站的连接状态、飞行遥测刷新以及对应设备标识，确认连接的是本次使用的飞机。核对控制权限、模式开关和天线布置，按手册在安全状态完成必要检查。不能仅因画面显示相机视频就认定控制链路可靠，连接反复中断时应停止起飞准备。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "连接确认",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机传感器自检完成后还要看什么？\n\n答案：\n查看惯性传感器、指南针、定位和视觉系统的状态提示，核对地图机头方向与实际方向是否合理。确认飞机处于稳固平面且周围环境适合相关传感器。告警解除后仍应确认原因已处理，不能通过重复重启碰运气消除提示，也不能关闭检查绕过未解决的问题。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "传感器自检",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n起飞前等待卫星定位时如何判断是否可以飞？\n\n答案：\n在开阔且合法的场地等待设备给出满足当前模式的定位状态，检查位置、精度提示和返航点是否合理。是否具备条件应依据机型标准，而非统一卫星数量门槛。若定位持续不可靠，应检查遮挡与干扰并更换位置；新手不应为了赶时间强行使用不熟悉的非定位模式。",
+    "source": "工程整理（导航原理）；参考：https://ardupilot.org/copter/docs/common-gps-how-it-works.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "定位等待",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机起飞前怎样核实返航点？\n\n答案：\n查看应用中的返航点标记与系统提示，确认其对应实际准备使用的安全降落区域，而不是旧记录或错误位置。检查该区域在任务期间是否可持续使用，并理解返航点是否会自动更新。没有确认有效返航点时，不应依赖自动返航执行远离起飞点的任务。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "返航点确认",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机返航高度应如何设置？\n\n答案：\n先识别返航路径上的树木、建筑及地形变化，再按机型返航逻辑设置具有合理余量且满足当地限制的高度。必须确认显示高度采用什么参考基准，以及系统是否沿直线或规划路径返回。没有适用所有场景的固定数值，遇到高度限制与障碍冲突时应调整任务区域或路径。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "返航高度设置",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n飞行前怎样选择失联后的动作？\n\n答案：\n根据机型支持的选项、导航条件、周围障碍及任务环境确定失联动作，并查明不同模式是否覆盖该设置。开阔户外与室内、桥下或船上作业的风险不同，不能统一认为返航最佳。无法确保失联动作适合现场时，应调整场地或任务，并在受控条件下完成必要验证。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "失联动作设置",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机起飞前为什么要核对飞行模式？\n\n答案：\n不同模式可能改变定位保持、速度、制动距离和避障能力，遥控器开关位置也可能与上次使用不同。应通过状态显示确认实际模式，并了解切换后的操纵反应。初学者宜使用设备认可的训练或稳定模式，在安全场地熟悉操作；不要在临近障碍时首次尝试陌生模式。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "飞行模式核对",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n航拍起飞前应怎样检查相机和存储？\n\n答案：\n在地面确认相机画面、拍摄设置、存储介质识别和可用空间，按任务需要试拍并查看结果。检查云台保护件已移除且运动范围无阻挡，存储卡符合设备要求。格式化前备份需要保留的资料；相机准备完成后仍须独立完成飞行安全检查，不能因画面正常就省略自检。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "录制准备",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n启动无人机电机前应如何清理周围环境？\n\n答案：\n确认人员和动物离开旋翼及起飞路径，移走会被气流卷起的松散物品，检查上方和侧向净空。操作者站在能直接观察飞机且方便控制的位置，按手册保持安全间隔。清场后如有人进入或飞机出现异常应暂停启动，不要靠大声提醒代替对起飞区域的持续管理。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "起飞清场",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼无人机正常起飞时应注意什么？\n\n答案：\n在完成检查和清场后，使用设备规定的自动或手动起飞方法，平稳离地并避免立即大幅倾斜。起飞阶段观察机身姿态、响应和周围情况，确认没有异常振动或持续偏移。若离地过程明显异常，应在保持可控的情况下及时降落检查，不应急于拉高以为高度能解决故障。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "起飞动作",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼起飞后为什么要先做短时悬停检查？\n\n答案：\n在机型和场地允许时，先在安全位置进行短时悬停，观察姿态、定位、操纵响应和电源状态。该步骤有助于发现地面自检未暴露的问题，但不能取代起飞前检查。悬停高度及距离应满足设备要求和环境安全，出现明显漂移、振动或告警时应终止任务并降落。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "短时悬停检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n新手如何练习无人机朝向变化后的操作？\n\n答案：\n先在合法开阔场地、合适的稳定模式下熟悉机尾朝向自己的基本运动，再逐步练习侧向和机头朝向自己。每次只增加一个难度，保持低速和足够空间。操纵方向应以当前控制模式为准，方向判断混乱时先减小输入并恢复安全姿态，不要盲目连续打杆追赶画面。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "朝向练习",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机转弯时如何保持动作平稳？\n\n答案：\n确认周围净空后逐步调整航向和移动指令，避免同时施加多个突然的大幅输入。多旋翼与固定翼的转弯方式、速度约束和所需空间不同，应按机型训练。靠近障碍前提前减速，不能假定松杆会立即停止；若模式不提供位置保持，还需要主动修正运动。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "平稳转弯",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机升降高度时需要观察什么？\n\n答案：\n先确认上方或下方路径没有电线、树枝、人员及其他航空器，再平稳改变高度并持续核对实际运动。下降时注意地面变化和设备对下降速度的要求，不能只看屏幕上的高度数字。山坡、屋顶及水面附近尤其要识别参考基准，并留出停止或改变路径所需的空间。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "高度调整",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n飞行中怎样监控电量并决定返航？\n\n答案：\n持续查看电量、相关告警、距安全降落点的距离及返航方向的风况，结合负载与电池健康判断。应提前设置任务结束条件并保留机动和备降余量，不能只等自动低电保护触发。耗电速度突然变化时先缩短任务并准备降落，落地后再分析电池或环境原因。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "电量监控",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n飞行中怎样降低通信中断风险？\n\n答案：\n保持符合要求的目视观察和天线布置，避免让建筑、地形或机体遮挡主要通信方向，并持续关注链路状态。信号下降时应停止继续远离，在安全路径上调整位置或返航。不要仅为恢复信号盲目升高，也不能把厂商标称通信距离当成现场可用距离或合法飞行范围。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "链路监控",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n自动航线执行前应检查哪些内容？\n\n答案：\n逐点核对坐标、参考高度、速度、转弯方式、载荷动作和任务结束行为，结合现场地形与障碍检查整条路径。确认导航与电量条件、通信覆盖和人工退出方式。软件预览通常不能反映所有细线、临时人员及新建结构，上传成功也不等于航线通过安全审查。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "航线预览",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机执行自动任务时操作者还需要做什么？\n\n答案：\n持续观察飞机、环境、定位、链路和电量状态，确认任务按预期执行并随时准备暂停或接管。出现人员进入、其他航空器接近或天气变化，应优先处理安全风险。自动化减少重复操纵，但不能替代现场判断，操作者不能因为任务按程序运行就离开岗位。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "自动任务监督",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n自动航线遇到风险时怎样暂停或接管？\n\n答案：\n使用该机型明确支持的暂停、模式切换或接管方式，并确认飞机实际进入预期状态。不同系统暂停后可能悬停、盘旋或执行其他动作，固定翼尤其需要保持安全空速。应在任务开始前熟悉退出逻辑，不要临时乱按按钮；接管后先稳定飞机，再决定返航或备降。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "任务暂停",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n航拍时怎样兼顾构图与飞行安全？\n\n答案：\n先确定安全飞行路径和可用空间，再调整相机与云台构图；不要为了画面效果忽视机体位置、侧后方障碍或人员变化。多人作业时可明确载荷操作与环境观察分工。画面被遮挡或需要重新构图时应先减速并稳定飞机，而不是边盯屏幕边快速接近目标。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "拍摄观察分工",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n手动启动自动返航前需要确认什么？\n\n答案：\n确认当前定位可信、返航点正确、返航路线可行且剩余电量适合执行，再按手册启动并观察实际动作。若飞机处于桥下、树冠下或室内，返航爬升可能造成碰撞。自动返航不是任何异常下的默认答案，路径不适合时应在能力范围内选择安全控制或备降。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "返航启动",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n自动返航途中应该监控哪些事项？\n\n答案：\n持续观察返航方向、爬升或下降动作、障碍、其他航空器与电量变化，确认飞机朝预期安全区域移动。地图路径和避障功能都可能受数据与传感器限制。发现返航点或轨迹明显错误时，应按手册在可控条件下接管；不要等飞机接近障碍才判断是否需要干预。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "返航监督",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n人工控制无人机返回时怎样降低风险？\n\n答案：\n先确认飞机朝向、实际位置及当前位置到降落区的安全路径，再用熟悉的模式平稳返回。持续监控电量与链路，避免绕行造成余量不足。方向不确定时不要仅凭视频中的目标推断机头朝向，可结合直接目视与可信状态信息；无法安全返回时应考虑已规划的备降区域。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "人工返回",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n什么时候应该考虑无人机备降？\n\n答案：\n当返航路径受阻、电量余量不足、天气恶化或设备异常使继续飞往原降落点风险增大时，应评估就近备降。选择避开人员、交通和危险设施的可用区域，保持飞机在可控范围内。备降选择需要兼顾地面风险及机型能力，不能为保住设备而把飞机引向人群。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "备降决策",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机开始降落前应完成哪些检查？\n\n答案：\n再次确认降落区没有人员、动物、车辆或新出现的障碍，检查地面稳固性与风向，并规划合适的进场路径。载荷、起落架和地面间隙应满足要求。若起飞点已被占用，不应强行降落；及时使用安全备用位置，并持续关注电量，避免反复等待耗尽余量。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "降落准备",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼无人机正常降落有哪些要点？\n\n答案：\n按机型流程平稳下降，保持足够净空并观察实际接地情况，避免横向高速触地或落在松软、不平的表面。接地后确认飞机稳定，再按规定停转电机。不要在桨叶仍旋转时靠近或搬动飞机，也不要用未经训练和厂商认可的手接方式替代正常降落。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "多旋翼降落",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机落地后如何确认可以靠近？\n\n答案：\n确认机体已稳定接地，所有电机和桨叶完全停止，并且不会因自动流程或误操作再次启动。根据机型规定完成解除动力与关机步骤，再进行搬运和检查。遥控器仍连接或画面仍显示不代表旋翼安全，任何人员接近前都应明确告知飞机的动力状态。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "停转确认",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行结束后应怎样关机和拆电池？\n\n答案：\n按照设备手册完成停止记录、飞机与遥控器关机及电池拆卸，避免存储写入或设备工作期间突然断电。确认接口和电池没有异常温度或损伤，再进入冷却与保管流程。不同设备顺序可能不同，不能把某一款机型的按键操作直接作为所有无人机的通用步骤。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "关机拆电",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机每次飞行后需要检查哪些部位？\n\n答案：\n查看桨叶、电机、机臂、起落架及载荷固定处是否有损伤、松动或异物，检查电池和接口是否异常。将本次告警、碰撞、天气和其他异常写入记录，必要时保留日志。发现问题应标记停用并排查，不能因为飞机已成功落地就认为本次设备状态没有变化。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "operation",
+      "topic": "飞后检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n换一块电池后能省略起飞前检查吗？\n\n答案：\n每次更换电池后都应重新核对电池固定、接口、状态提示及返航点，并检查周围环境是否变化。必要时检查桨叶和电机温度，以及新电池与设备版本是否兼容。上一架次检查通过不能代替本次准备，尤其在连续作业中应防止疲劳、匆忙或人员变化导致遗漏。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "operation",
+      "topic": "换电复飞",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机任务结束后应该保存哪些记录？\n\n答案：\n保存日期、作业区域、设备与电池标识、任务类型、实际飞行情况、告警和维护事项，按需要备份影像及飞行日志。记录应区分客观数据与操作者推测，并保护含有位置或个人信息的资料。持续记录有助于追踪设备状态和复盘问题，不能用口头印象代替异常证据。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "operation",
+      "topic": "任务归档",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机无法开机时应该怎样排查？\n\n答案：\n保持电机停转，先按手册确认开机操作、电池电量、锁扣和接口状态，检查是否有进水、破损或异常温度。仅在安全条件下使用确认兼容且正常的电池交叉检查。不要短接端子、拆开电池或反复强行上电；仍无法启动时记录现象与设备信息，交由官方支持或合格维修人员处理。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "无法开机",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机无法解锁电机是否可以关闭检查？\n\n答案：\n应先读取完整告警，区分定位、传感器、供电、模式、配置或区域限制等原因，逐项按手册处理。检查项阻止解锁通常是在提示飞行条件不足，不应通过关闭安全检查强行起飞。原因无法确认时保留截图和日志并停飞，向官方支持说明现场条件及最近的设备变更。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "无法解锁",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示电池无法识别应该怎么办？\n\n答案：\n先关闭飞机并按手册拆下电池，检查兼容性、接口清洁度、插针状态及锁扣，不使用金属工具带电探查。若外观正常，可在安全条件下重新正确安装，核对版本要求。识别错误持续或伴随异常发热时停止使用，不能绕过电池通信保护，也不要靠反复插拔继续飞行。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "电池未识别",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示卫星信号弱时如何处理？\n\n答案：\n起飞前应检查建筑、树木和设备遮挡，移到开阔且合法的位置重新等待定位，并查看精度与状态提示。飞行中则停止继续扩大任务范围，保持目视并按熟悉的控制方式返回或降落。没有可靠定位时自动返航可能受限，不应盲目升高或切入依赖定位的自动任务。",
+    "source": "工程整理（导航原理）；参考：https://ardupilot.org/copter/docs/common-gps-how-it-works.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "卫星信号不足",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机出现指南针干扰告警时怎么办？\n\n答案：\n未起飞时先远离车辆、钢筋结构、磁性物品及大电流设备，检查航向显示和告警是否恢复合理。不要在干扰位置反复校准，以免把异常环境写入校准结果。飞行中发现航向异常应终止任务并优先安全降落，是否使用返航取决于导航可信度，落地后再按手册排查。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "指南针干扰",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示IMU异常时应如何处理？\n\n答案：\n起飞前保持机体静止，核对安装面、温度条件和设备提示，只有手册要求时才执行校准。校准需按规定姿态与步骤进行，不能边移动边等待告警消失。异常持续、碰撞后出现或多个传感器数据不一致时应停飞并检修；飞行中出现相关告警应缩短暴露时间并安全降落。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "IMU异常",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机视觉定位或避障异常时应该怎么办？\n\n答案：\n先识别异常影响的是定位、测距还是障碍探测，并检查传感器是否被污物、保护膜或载荷遮挡。光照不足、反光地面和纹理缺失也可能降低功能。飞行中应扩大与障碍的距离、减速并准备降落，不能假定卫星定位会恢复所有视觉功能；落地后再清洁或按手册校准。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "视觉系统异常",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼悬停时明显漂移怎样排查？\n\n答案：\n先判断当前模式是否提供位置保持，再检查定位状态、风况、视觉环境和相关告警。飞行中优先保持安全空间，使用熟悉的控制方式降落，不在空中尝试校准。落地后核对桨叶、结构与传感器状态，并结合日志分析；持续漂移不能只用调整摇杆微调来掩盖。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "悬停漂移",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机定位悬停时持续绕圈可能是什么原因？\n\n答案：\n持续绕圈可能与航向估计错误、磁干扰、定位异常或配置问题有关，单靠轨迹不能确定原因。应终止任务并在可控条件下安全降落，避免依赖可能同样受影响的自动返航。落地后检查环境、航向显示、传感器安装和日志，不通过盲目调参或重复试飞验证猜测。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "异常绕圈",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n多旋翼刚起飞就翻覆应如何处理？\n\n答案：\n在保证人员安全的前提下按设备流程停止电机，确认完全停转后关闭供电并检查。可能原因包括桨叶位置或转向错误、电机映射错误、姿态配置问题及机械损伤。不得直接重试起飞；应记录现象，逐项核对适配与安装，修复后按受控测试流程确认设备状态。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "起飞翻覆",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行中明显振动应该怎样处置？\n\n答案：\n优先结束任务并在可控条件下选择安全位置降落，避免继续高速飞行或靠近人员。振动可能来自桨叶损伤、失衡、电机轴承、松动结构或减振件异常，也可能影响惯性测量。落地断电后进行机械检查并保留日志，不能先调高滤波强度或控制增益来掩盖机械故障。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "异常振动",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n启动时有一个无人机电机不转怎么办？\n\n答案：\n停止启动并按手册关闭供电，确认旋翼完全停止后检查是否存在异物、安装干涉和可见损伤。电机、电调、线缆或控制配置都可能造成不转，不能仅凭现象确定需要换哪个部件。不要强推油门或带桨进行随意测试，必要诊断应由具备能力的人员按规定拆桨和隔离流程执行。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "电机不转",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电机出现异响还能继续飞吗？\n\n答案：\n新出现的磨擦声、敲击声或明显异常噪声应视为需要检查的信号，先停止飞行任务。断电后检查桨叶、异物、轴承和固定件，注意不要把无刷电机正常磁阻感误判为卡滞。无法确认噪声来源或同时出现发热、间隙时应停用，不用继续试飞判断问题是否会自行消失。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "电机异响",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机出现电调或动力系统告警怎么处理？\n\n答案：\n地面出现告警应停止起飞，检查设备提示、版本兼容及可见机械和接口状态；飞行中则尽快结束任务并安全降落。电调告警可能涉及供电、驱动、温度或通信，不能用重启后的暂时正常作为修复证明。保存完整告警和日志，按官方流程排查，避免自行增加动力输出试探。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "电调告警",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示动力不足或爬升乏力怎么办？\n\n答案：\n先停止增加任务负荷，在可控条件下选择安全降落区域，持续关注电量和姿态。可能原因包括高负载、低温电池、老化、密度高度变化或动力部件异常。落地后检查载荷配置、电源和推进系统，不能通过取消保护限制或连续满油门补偿；原因未明确前应停飞。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "动力不足",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机画面突然冻结时应该怎么办？\n\n答案：\n先确认是视频停止刷新还是控制和遥测同时中断，保持直接目视，不再继续远离或靠近障碍。若控制仍正常，按安全路径返回或降落；若失联，则关注预先设置的保护行为。不要将冻结画面当作实时位置，也不要在仍需控制飞机时贸然关闭遥控器或切断整套设备。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "图传冻结",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示遥控信号弱时怎么处理？\n\n答案：\n立即停止继续扩大距离，检查天线朝向、遮挡和现场干扰，并在安全条件下调整站位或飞机位置。移动操作者时要保持对飞机与地面环境的观察，避免只盯屏幕。不能为了追求信号强度进入危险区域或盲目升高；链路持续恶化时应按预案返回、备降或等待保护动作。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "遥控信号弱",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机与遥控器完全失联后怎样处置？\n\n答案：\n保持观察并按已确认的失联预案行动，注意飞机可能返航、悬停、降落或继续任务。可在安全范围内优化天线与站位，避免同时重启所有设备造成恢复机会减少。记录最后可信位置、时间、电量和方向；恢复连接后先确认实际状态，不能将最后显示的图像视为当前位置。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "完全失联",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n飞行应用崩溃时是否意味着无人机失控？\n\n答案：\n应用故障与遥控链路中断并不等同，部分系统仍可通过遥控器保持操纵，但应以实际控制反馈为准。保持目视并减少任务动作，按已熟悉的实体控制方式安全返回或降落。仅在不影响控制的条件下恢复应用，不要在空中首次猜测按键功能或贸然关闭遥控器。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "应用崩溃",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n地图上的无人机位置突然跳变怎么办？\n\n答案：\n位置跳变可能来自卫星解算、多路径、数据延迟或软件显示异常，应结合直接目视、状态告警和其他可信信息判断。停止继续执行依赖定位的复杂任务，在可控条件下安全降落。若导航数据不可信，不应盲目使用自动返航；保存时间点和日志，落地后再分析数据变化。",
+    "source": "工程整理（导航原理）；参考：https://ardupilot.org/copter/docs/common-gps-how-it-works.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "位置跳变",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机高度读数突然异常变化怎么办？\n\n答案：\n先比较实际运动与显示变化，确认是否仅为参考基准、数据延迟或测量异常。气压、测距和融合估计问题都可能影响读数，不能仅凭数字判断飞机在爬升或下降。保持安全净空并终止任务，按可控方式降落；不要为了追上异常显示值连续大幅改变高度。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "高度跳变",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行模式突然改变应如何应对？\n\n答案：\n读取实际模式和告警，判断是否因操纵开关、定位退化或保护逻辑触发。切换后位置保持、油门及避障行为可能不同，应使用熟悉的操作稳定飞机并结束任务。不要反复切换模式期待恢复；落地后查明触发原因与日志，未经确认不应继续依赖原来的自动功能。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "模式突然变化",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机出现低电量告警后还能继续拍摄吗？\n\n答案：\n应立即结束非必要任务，根据返航距离、风况和实际余量选择返回或就近安全降落。电量告警可能对应不同等级，严重不足时继续远飞或反复取消保护会增加失去动力的风险。不能用统一百分比判断所有设备的安全边界，具体动作和阈值需依据机型说明及当前状态。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "低电量告警",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电量突然快速下降应怎样处置？\n\n答案：\n停止任务并优先在可控条件下安全降落，关注电池告警、温度和剩余返航能力。低温、老化、电芯异常、高负载或估计误差都可能造成骤降，不能只解释为显示问题。落地后隔离可疑电池并保存记录，不通过反复深度放电或再次飞行检验电量是否恢复正常。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "电量骤降",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示电池电芯异常时怎么办？\n\n答案：\n地面出现电芯异常应停止起飞，核对完整提示、电池历史和外观，按厂家检测标准处理。飞行中出现相关告警应终止任务并安全降落，落地后将该电池标记停用。允许差异范围因电池而异，不能套用统一电压差，也不要拆包、短接或用非认可方式强行均衡电芯。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "电芯异常",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池过热或温度告警时怎么办？\n\n答案：\n飞行中应结束任务并选择安全降落点，落地后关闭设备，避免立即充电或继续换架使用该电池。将电池置于符合厂家要求的安全环境自然冷却，留意鼓包、异味等异常。不要用冷水浸泡、冰箱或强行加热处理温度问题；异常持续或外壳损伤时停止使用并联系支持。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "电池高温",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池无法充电应该怎样排查？\n\n答案：\n确认电池及充电器兼容，电源连接正确且环境温度满足规定，查看指示灯和错误信息。飞行刚结束的电池可能需要先自然冷却；接口损伤、受潮、鼓包或异常发热时不要充电。排查后仍失败应停止尝试，不能绕过保护板、使用非认可电压或拆开电池强制恢复。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "充电失败",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机云台抖动或发出异常声音怎么办？\n\n答案：\n先在地面安全停机，检查运输保护件是否移除、运动范围有无线缆或异物阻挡，以及减振件是否损坏。云台异常也可能来自机体振动，需分别观察。不要强行掰动云台或长时间让电机顶住障碍，问题持续时按官方流程检修，避免把机械问题简单归为校准误差。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "云台抖动",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机拍摄画面持续歪斜如何处理？\n\n答案：\n先区分是否由云台角度设置、水平校准、镜头视角或机体姿态造成，再检查云台安装与减振结构。应在落地并满足手册条件后进行允许的校准，不能边飞边强行扭动相机。若伴随抖动、卡滞或碰撞历史，应停用并检修；画面水平变化本身不足以确定飞控异常。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "画面歪斜",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机提示存储卡错误时应如何处理？\n\n答案：\n若飞机仍可正常控制，应优先安全完成飞行，不在空中插拔或格式化存储介质。落地后停止记录并按规定关机，备份可读取的资料，再核对卡片规格、文件系统及接口状态。格式化会清除数据，重要文件应先保存；反复报错的卡不应继续用于需要可靠记录的任务。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "存储异常",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n发现无人机返航点位置错误时怎么办？\n\n答案：\n未起飞时停止准备，检查定位和地图信息并按手册重新确认返航点。飞行中不要继续执行以错误位置为目标的返航，在控制和导航可信时按支持方式修正或人工安全降落。若位置本身不可信，更新返航点也可能无效；应优先降低风险，落地后查明原因。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "返航点错误",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机自动返航路径上出现障碍怎么办？\n\n答案：\n持续观察飞机与障碍的相对位置，不要假定系统一定能探测树枝、电线或透明物体。仍有可靠控制时按手册暂停或接管，选择具有净空的路径或安全降落区。调整高度必须满足环境和当地限制，不能一律向上爬升；落地后重新评估返航路径和相关设置。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "返航遇障",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机逆风返航很慢时应该怎么办？\n\n答案：\n立即停止额外作业，结合地速、电量和到安全降落点的距离判断是否仍能返回。必要时选择合法且远离人员的就近备降区，避免为了原起飞点耗尽余量。高空风可能不同，但改变高度需有足够净空并符合规则；不能靠持续满速保证返航，落地后复盘任务规划。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "failure",
+      "topic": "返航速度不足",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机在非预期位置自动下降怎么办？\n\n答案：\n先读取保护提示并判断是否由低电量、失联设置、导航异常或任务动作触发，观察下方人员及障碍。在控制权限和设备逻辑允许时，引导飞机到安全接地区域。不要反复取消保护拖延落地，也不要认定所有自动下降都能中断；事后保存日志并核对触发条件。",
+    "source": "工程整理（通用原理）；参考：https://ardupilot.org/copter/docs/flight-modes.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "异常自动降落",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机轻微碰撞后还能马上再飞吗？\n\n答案：\n应先停转、关机并检查桨叶、机臂、电机、载荷与电池，保留碰撞经过和相关日志。外观完好不能排除结构裂纹、轴承或传感器问题，跌落后尤其要核对固定及自检状态。只要存在疑问就应停用并进行合格检查，不能用再次起飞来证明飞机没有受损。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "碰撞后检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机进水或明显受潮后应该怎么办？\n\n答案：\n停止使用，并在人员安全且手册允许的条件下关闭供电、隔离电池，避免再次启动或尝试充电。进水可能造成短路、腐蚀及电池风险，表面干燥也不代表内部安全。不要用高温烘烤或未经认可的干燥方法后直接试飞，应记录情况并交由合格维修人员检查。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "无人机进水",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机进入沙尘环境后出现异常怎么办？\n\n答案：\n尽快结束任务并安全落地，断电后检查电机、接口、传感器和散热位置是否有积尘或颗粒。沙粒可能造成轴承磨损、卡滞和视觉误判，不能仅把表面擦干净就继续飞。清洁应遵循厂家方法，避免高压气流把颗粒吹进内部；有异响或结构损伤时应停用检修。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "沙尘进入",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机固件更新失败后该怎样处理？\n\n答案：\n保持设备处于规定的地面安全状态，记录失败提示、版本和更新步骤，按官方恢复流程检查供电、连接与存储条件。更新过程中不要随意断电，失败后也不要在版本一致性未确认时起飞。若重复失败应联系官方支持，避免安装来源不明的固件或盲目回滚。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "固件更新失败",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机失联且无法看到时如何组织寻找？\n\n答案：\n保留最后可信的位置、时间、电量、方向和日志，结合已配置的失联行为推测搜索区域，但要区分推测与确认位置。仅在安全和合法范围内寻找，避免进入道路、屋顶、水域或危险设施。若可能影响公众或其他航空器，应按当地要求及时报告，不为取回设备冒险。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "failure",
+      "topic": "失踪定位",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机故障后如何避免未经验证就下结论？\n\n答案：\n先保存原始日志、告警截图和现场事实，列出异常前后的操纵、配置、天气及设备变更。区分供电、导航、机械与通信等可能原因，通过与风险相适应的地面检查缩小范围。不要把同时出现的现象直接当成因果关系，修复后按认可流程验证并记录，未确认前保持停飞。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "failure",
+      "topic": "异常复盘",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n中国大陆飞行前应怎样确认空域是否允许？\n\n答案：\n应查询当地官方公布的管制空域、适飞范围及临时限制，并按航空器类别、任务性质和运行条件确认所需手续。仅看厂商地图或他人飞行视频不足以判断是否合法。空域信息可能变化，起飞前应再次核实；无法确认时先暂停任务，不能凭设备能够起飞推定允许飞行。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "空域查询",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机是否需要实名登记和相关标识？\n\n答案：\n在中国大陆应按现行规定确认实名登记、识别信息及相关标识要求，具体适用条件与航空器类别和使用方式有关。登记、人员资格与飞行活动审批属于不同事项，完成其中一项不代表其他义务已满足。操作前查询官方规则并核对设备信息，不能使用不真实或借用的登记资料。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "实名登记",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n哪些无人机飞行需要操控员资格？\n\n答案：\n人员资格要求应根据所在地法规、航空器类别及运行性质判断，不能认定所有无人机都需要同一种证照，也不能认为小型设备在任何场景下都无需资格。证照之外还应具备相应机型和任务能力。开展作业前核实最新官方要求，并确认训练、授权和实际操纵范围一致。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "操控资格",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机登记完成后是否可以在任何地方飞行？\n\n答案：\n登记只是合规要求的一部分，不自动授予所有区域或任务的飞行权限。中国大陆作业还需根据空域、航空器类别和运行条件确认是否需要申请及其他手续，并留意临时限制。人员、设备和任务要求应分别核实；在手续不清楚或条件变化时，应暂停飞行并向主管部门确认。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "审批边界",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n已经熟悉的无人机飞行场地还要查询限制吗？\n\n答案：\n同一地点可能因活动、应急处置、空域调整或其他安排出现临时限制，过去可飞不代表当天仍可飞。起飞前应核对官方最新通告及场地管理要求，并确认任务时间覆盖范围。民间经验、缓存地图和以前的批准不能替代当次查询，信息冲突时先停飞再核实。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "临时限制",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机在机场附近飞行需要注意什么？\n\n答案：\n机场及其周边可能涉及特定空域、净空保护和运行安全要求，应依据所在地官方信息确认限制与审批条件。不能套用统一距离判断所有机场，也不能因机场看起来没有航班就自行飞行。发现飞机、直升机或其他空中交通时应优先避让，计划无法确保安全与合规时应取消。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "机场周边",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机发现有人航空器接近时应该怎么办？\n\n答案：\n立即终止可能造成冲突的任务，按当地规则和现场条件让出空间，必要时在安全区域降落。不要接近、追踪或为拍摄而改变到对方路径，也不要假定对方能够看见小型无人机。观察员应及时报告方向与变化，操作者持续掌握地面风险，避免避让动作把危险转移给人员。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "有人航空器避让",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n能否为了拍摄让无人机飞过聚集的人群？\n\n答案：\n人员聚集区域会放大坠落、失控和旋翼伤害风险，是否允许还受当地法规及特定运行条件约束。普通航拍不能凭设备可靠或短暂停留就认定可飞，应规划避开人员的路径并保持隔离。任务无法满足法规和安全要求时应调整拍摄方案，不能靠口头提醒观众承担风险。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "人群上空",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n在道路或行驶车辆附近使用无人机有哪些风险？\n\n答案：\n无人机可能分散驾驶员注意力，失控或坠落也可能影响交通。应避开车流及道路上空的非必要飞行，起降与备降点不能设置在正在使用的道路上。即使只计划短距离穿越，也应确认当地规则及运行条件；不能为了寻找、拍摄或捡回飞机进入危险交通环境。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "道路车辆",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机航拍如何注意隐私和影像使用？\n\n答案：\n规划拍摄时应考虑住宅、私人活动和可识别个人信息，遵守所在地隐私、数据和拍摄规定，按需要取得许可。避免把安全飞行许可理解为可以任意拍摄或公开传播资料。保存及分享影像时限制不必要的个人信息和位置暴露，任务结束后按实际用途管理访问及保留期限。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "隐私保护",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机能否在重要设施附近自由拍摄？\n\n答案：\n重要设施、军事区域及其他受保护场所可能同时存在飞行、拍摄和数据方面的限制，具体范围应以官方规定及场所要求为准。公开可见不代表允许近距离飞行或记录，设备没有围栏提示也不是许可。任务前应核实条件，无法取得必要确认时更换地点或停止作业。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "敏感场所",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n如何避免无人机旋翼伤人？\n\n答案：\n启动前清场并确认安全间隔，保持人员、动物和松散衣物远离旋翼及可能的飞行路径。落地后只有确认全部电机停转且不会意外启动，才可接近机体。护桨只能减轻部分接触风险，不能作为靠近旋翼的许可；维护时按规定断电，需要上电测试时先完成安全隔离。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "旋翼伤害",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机附近有儿童或宠物时如何安排飞行？\n\n答案：\n儿童和动物可能突然接近起降区域、追逐飞机或被噪声惊扰，应选择能有效隔离且有人管理的区域。不能只依靠一次提醒或护桨保证安全，也不应低空逗弄动物。无法持续保持安全空间时暂停任务，清场后仍要关注环境变化，降落阶段尤其需要避免人员突然进入。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "儿童动物",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n在高楼和建筑边缘飞行有什么特殊风险？\n\n答案：\n建筑会遮挡卫星和通信信号，还可能形成阵风与乱流；玻璃幕墙、细线和外挑结构也可能难以被避障系统识别。应扩大净空、避免贴近墙面和盲区，并预留安全撤离路径。不能因为街面风小就判断楼顶安全，导航或风况无法可靠评估时应更换场地。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "建筑乱流",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机靠近电线和输电设施时有什么风险？\n\n答案：\n细线可能不易目视或被避障探测，电力设施周边还可能存在磁干扰、复杂结构及专项管理要求。普通飞行应保持充分距离，不主动测试避障是否能识别电线。确需专业巡检时，应采用经过批准的流程、合适设备和人员安排，不能将普通航拍经验直接用于带电设施近距离作业。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "电线环境",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机在水面附近飞行应注意什么？\n\n答案：\n水面反光、纹理不足和波浪可能影响视觉定位及测距，坠落后还会增加设备回收与电池风险。应确认定位条件、返航点和附近可用降落区，避免贴水飞行或依赖未经验证的视觉保持。船只移动会改变作业关系，普通地面起降流程不能直接套用到移动船舶。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "水面飞行",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机在山地飞行时如何避免高度误判？\n\n答案：\n山地地形起伏会改变实际离地距离，起飞点相对高度不能直接表示全航线净空。应核对地形、障碍和高度基准，考虑山体遮挡通信与局部风变化，并明确安全返回及备降路径。地图地形数据可能不够精细，不能仅凭软件预览就靠近坡面或越过无法观察的山脊。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "山地飞行",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n普通无人机是否可以直接在室内飞行？\n\n答案：\n室内通常缺少可靠卫星定位，还可能存在纹理不足、玻璃、狭窄空间和人员接近等风险。必须确认设备支持该环境，采用合适保护与隔离，并由具备经验的人员操作。返航和失联动作应与现场匹配，不能假定户外设置适用；条件不满足时不应为了演示强行起飞。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "室内飞行",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机夜间飞行有哪些额外要求和风险？\n\n答案：\n夜间更难判断距离、障碍与机头方向，部分视觉定位或避障能力也会下降。应确认当地法规、机型能力、灯光及人员训练要求，规划可识别的起降和备降区域。仅安装灯具不等于具备合规夜航条件，无法保持所需观察和风险控制时，应将任务安排在条件更合适的时间。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "夜间飞行",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n遇到明显阵风或风势增强时应如何决策？\n\n答案：\n结合机型限制、实际操控、电量及返回方向判断，尽早终止任务，避免继续远离安全降落点。阵风和乱流可能突然改变姿态与耗电，设备能悬停并不代表能够顺利逆风返航。必要时选择已评估的备降区，不能把标称抗风能力当成必须完成任务的保证。",
+    "source": "工程整理（飞行检查）；参考：https://repair.dji.com/help/content?customId=en-us03400006768&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "强风天气",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机有防护等级就可以在雨中飞吗？\n\n答案：\n防护等级描述特定测试条件下的防护能力，不能自动涵盖所有雨量、风、老化状态和载荷配置。是否允许雨中运行应依据整机及附件手册，并评估能见度、传感器和电池风险。普通不具备对应防护能力的设备遇雨应结束任务，受潮后不能仅擦干外壳就继续上电。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "降雨防护",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n低温对无人机安全有哪些影响？\n\n答案：\n低温可能降低电池可用能力和输出能力，也可能影响传感器、机械部件及操作者灵活性。应按厂商规定准备电池和设备，缩短任务并预留更保守的返航余量。不能使用明火或未经认可的方式预热，设备温度不满足要求或出现异常告警时应暂停任务。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "低温环境",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n高温天气使用无人机需要注意什么？\n\n答案：\n高温及日晒可能使电池、电子设备和遥控终端温度升高，影响性能或触发保护。应确认设备工作条件、散热通道及停机安排，避免长时间暴晒和连续高负载作业。屏幕或设备过热告警时应尽快结束任务，不能通过遮住散热口、强制解除保护或水冷方式继续运行。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "高温环境",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n雷暴或雷电天气能使用无人机吗？\n\n答案：\n雷暴常伴随突变风、降雨、低能见度和雷击风险，应避免在此类条件下安排普通无人机任务。发现雷暴接近时应尽早安全降落并按现场防护安排撤离，不能等待设备告警才行动。保护人员优先于回收设备，也不要把无人机体积小或飞得低当成不受雷暴影响的依据。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "雷暴风险",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n大雾、烟尘或能见度差时应如何处理飞行计划？\n\n答案：\n能见度下降会削弱目视观察，烟尘、水汽和颗粒还可能影响相机、避障及动力部件。应结合机型限制和所在地规则评估，无法满足观察与安全运行要求时取消或推迟任务。图传和地图不能补足全部环境感知，专业特殊环境作业也需要专门能力与经批准的流程。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "雾尘能见度",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机遇到结冰风险时为什么应停止普通任务？\n\n答案：\n低温与水分共同存在时，桨叶或其他表面可能结冰，改变气动性能、增加不平衡并影响传感器。没有明确认可的防冰能力和作业流程时，不应进入预期结冰条件。出现异常振动、附着冰霜或动力变化要尽快安全结束任务，落地后检查设备，不能仅清掉可见冰块就立即复飞。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "结冰风险",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n怎样降低无人机受电磁或磁场干扰的风险？\n\n答案：\n远离明显大电流设备、磁性物品和强干扰环境，按设备说明布置天线及载荷线缆，起飞前核对航向与链路状态。导航、磁力计和无线通信受到的影响并不相同，不能用单一信号指标代表全部可靠性。出现异常应换场或停飞排查，不通过关闭传感器检查继续任务。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "safety",
+      "topic": "电磁干扰",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n为什么不能随意增加无人机挂载重量？\n\n答案：\n超出允许载荷或改变重心可能降低姿态控制和动力余量，缩短续航并增加结构负担。即使能起飞，也不代表能安全制动、爬升或应对阵风。应使用厂家允许的附件和配置，核对安装位置及任务性能；不能靠短时悬停测试为未经认可的超载方案证明安全。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "超载风险",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机可以随意挂绳或吊运物品吗？\n\n答案：\n悬挂物会摆动、改变负载和重心，还可能缠绕桨叶、撞击人员或造成挂阻，风险不同于固定载荷。吊运需要适用设备、合规条件和专门作业流程，普通无人机不能凭承重感觉随意尝试。不得以人群、道路或重要设施作为实验环境，未经认可的改装应停止使用。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "外挂物品",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n用手接住无人机降落是否适合新手？\n\n答案：\n旋转桨叶和姿态修正可能造成割伤、抓握失败或二次失控，新手应优先使用合适的正常降落区域。只有在机型明确支持、人员接受训练且现场条件受控时，才按认可流程执行特殊回收。不能因为视频中有人成功手接就照做，也不要靠抓住机臂强行结束电机运转。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "手接风险",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n飞行中是否可以随意执行电机紧急停止？\n\n答案：\n空中停机可能使航空器失去升力并坠落，具体触发逻辑与用途因机型而异。起飞前应学习该设备的应急程序，避免误触相关组合操作。正常异常处置应尽量稳定控制并安全降落；确需采取紧急动作时按既定流程保护人员，不能把空中停机作为普通返航或失联处理方法。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "空中停机",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机飞行前应准备哪些应急方案？\n\n答案：\n针对失联、低电量、导航异常、人员进入和天气变化明确停止任务的条件、接管方法及安全备降位置。预案要与实际机型功能和现场条件一致，并让参与人员理解呼叫和分工。不能只写统一的自动返航指令；任务环境改变时，应重新评估预案是否仍然可执行。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "应急预案",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机事故发生后应先做什么？\n\n答案：\n优先保护人员和现场安全，必要时联系当地应急部门，并按所在地要求报告相关事件。仅在安全条件下停止设备运行和隔离受损电池，保留日志、影像及现场事实。不要为了抢回飞机进入交通、火场或其他危险区域，也不要先修改配置或删除资料再判断事故原因。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "事故处置",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池冒烟、漏液或起火时怎么办？\n\n答案：\n立即远离并提醒周围人员撤离，避免吸入烟气和触碰电池，在安全位置联系当地应急部门。不要徒手搬运、拆解或继续充电，也不要为了保护设备靠近异常电池。现场处置应依据专业指导和既定消防预案，火势停止后仍可能复燃，未获确认前不要重新使用或随意丢弃。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "电池冒烟",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池充电时有哪些基本安全要求？\n\n答案：\n使用厂家认可且匹配的充电设备，在满足温度要求、通风且远离可燃物的环境充电，并检查电池与接口状态。避免覆盖设备或在无人关注时长时间充电，异常发热、气味或告警应按说明停止并隔离。损伤、鼓包或受潮电池不要尝试充电，不能通过绕过保护恢复使用。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "充电安全",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n携带无人机电池出行时应注意哪些规则？\n\n答案：\n按电池说明保护端子、防止短路与挤压，并遵守所用运输方式和承运人的最新要求。航空运输可能对携带位置、数量、能量及损伤电池另有限制，应提前向航空公司核实。不要套用网上统一数量或容量结论，也不要把备用电池混入可能造成端子接触的散装金属物品中。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "safety",
+      "topic": "电池运输",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n操作者疲劳或受酒精药物影响时能飞无人机吗？\n\n答案：\n疲劳、酒精及影响注意力或反应能力的药物会降低判断和操纵能力，应避免在这种状态下执行飞行。具体禁限要求以所在地规则为准，不能凭自我感觉良好判断具备能力。连续作业应安排休息与明确交接，状态不佳时暂停任务或更换具备能力且符合要求的操作者。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "疲劳酒精",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多架无人机在同一区域作业时如何避免冲突？\n\n答案：\n明确各飞机的区域、航线、起降时段和人员职责，考虑通信干扰、返航路径及失联动作可能发生的交叉。保持协调和持续观察，发现间隔不足时及时暂停任务。仅设置不同高度不能解决所有风险，不能临时组织未经验证的近距离编队，复杂协同需符合当地规定及专项流程。",
+    "source": "工程整理（运行安全原则）；参考：https://www.faa.gov/documentLibrary/media/Advisory_Circular/AC_107-2A.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "多机协同",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机账号和任务数据如何进行安全管理？\n\n答案：\n使用官方渠道获取软件，保护账户凭据并按实际职责分配访问权限，不在公开日志或分享文件中暴露密码与敏感位置。连接陌生设备或安装未知插件可能影响系统和数据。维修与团队交接时记录授权范围，备份必要资料；数据保护应配合运行安全，不能在飞行中临时修改关键账户设置。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "设备账号安全",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n能否自行用无人机靠近救援或火灾现场拍摄？\n\n答案：\n应急现场可能有救援直升机、临时管制和危险环境，未经授权的无人机可能干扰救援。普通用户应远离作业空域并遵守现场管理，不能因希望帮助或拍摄新闻就自行进入。确需参与时，应由主管部门统一协调，确认任务权限、人员资质和操作流程后再开展飞行。",
+    "source": "工程整理（中国大陆法规原则，核对日期2026-09-30）；参考：https://xzfg.moj.gov.cn/law/download?LawID=1663&t=1699723085238&type=pdf",
+    "metadata": {
+      "type": "safety",
+      "topic": "应急现场禁飞",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n怎样制定无人机维护保养计划？\n\n答案：\n结合机型手册、使用频率、作业环境、运行记录和碰撞历史安排检查与维护。日常检查、定期维护和异常后的专项检查应分别执行，不能用统一飞行小时数替代厂家要求。高粉尘、潮湿或高负载作业可能需要更频繁检查，发现问题要记录停用条件并在完成验证后恢复运行。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "维护计划",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机维护记录应该包含什么？\n\n答案：\n记录设备标识、日期、累计使用情况、检查结果、异常、处理措施和更换部件信息，并标明执行人员及复检结果。区分已发现的问题和推测原因，保留相关日志或照片。记录有助于追踪部件寿命和重复故障，不能只写保养完成；涉及安全的未解决事项应明确标记停用。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "维护记录",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n如何安全清洁无人机机身外壳？\n\n答案：\n先按手册关机并拆下可拆电池，确认电机停转，使用厂家允许的柔软清洁工具去除表面污物。避免水、溶剂或颗粒进入接口、散热口和传感器，不用高压水冲洗普通设备。清洁后检查外壳和固定处是否有裂纹或松动，只有确认完全符合使用条件才重新装电。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "外壳清洁",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机螺旋桨日常保养应检查什么？\n\n答案：\n断电后检查叶片是否有裂纹、缺口、变形、老化和不正常松动，同时核对安装座与锁定机构状态。轻微损伤也可能在高速旋转时扩大，不应磨削、粘补或凭外观相似换用非适配桨叶。更换方式、成组要求及周期按手册执行，保存更换记录并在复飞前重新检查。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "桨叶检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机折叠桨转轴和桨毂怎样保养？\n\n答案：\n在断电状态下检查桨叶转动是否符合手册要求，有无卡滞、异常间隙和固定件损伤。折叠结构需要允许正常展开，过紧或过松都可能影响工作。不要自行添加不明润滑剂或随意改变紧固方式，转轴、垫片及螺钉应使用适配部件，存在疑问时交由合格人员处理。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "折叠桨维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电机日常检查有哪些重点？\n\n答案：\n断电并确认安全后，查看电机固定、外观、线缆和可见异物，按手册检查转动是否顺畅及有无异常间隙。无刷电机的磁阻感可能属于正常现象，但新的磨擦、卡滞或异响应进一步检查。不要随意给密封轴承加油，也不要带桨长时间空转以验证电机是否可靠。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电机检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电机轴承磨损应如何处理？\n\n答案：\n轴承磨损可能表现为新出现的噪声、转动不顺、间隙或异常温升，但需结合检查确认。应停止使用相关动力部件，按厂家维修范围选择更换电机或由合格人员维修。不能单靠滴油消除声音就认为已恢复安全，更换后还应核对安装、桨叶和必要的受控验证。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "轴承异常",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机机臂和连接部位需要怎样检查？\n\n答案：\n查看机臂、连接座与受力位置是否有裂纹、变形、松动或碰撞痕迹，检查线缆是否受挤压。复合材料损伤有时不易从表面确认，跌落后不能仅凭看起来完整继续飞。涉及结构承载的问题应停用并由合格人员评估，不用胶水、胶带或自行钻孔代替认可的修复。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "机臂检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n折叠无人机的机臂锁扣如何检查？\n\n答案：\n在断电状态下按手册展开机臂，确认锁定动作和到位标识正确，检查铰链、锁扣及周围结构有无磨损或异物。运输后和频繁折叠后都应核对可靠性，不能只看机臂已展开。发现锁定不清晰或异常间隙时停止飞行，不使用临时绑扎替代正常锁定机构。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "折叠锁扣",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机螺钉松动时可以直接大力拧紧吗？\n\n答案：\n应确认螺钉位置、规格、允许紧固方法和是否需要更换，按机型规定使用适当工具及扭矩要求。过度紧固可能损坏螺纹、塑料或复合材料，随意使用螺纹胶也可能造成不兼容。涉及电机、机臂和载荷受力部位时，应由具备能力的人员处理，并记录复检结果。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "螺钉紧固",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机起落架怎样进行维护检查？\n\n答案：\n检查起落架是否弯曲、开裂、松动，确认连接件和着地部位完好。带收放机构的设备还需按手册检查动作、锁定及告警，不能用普通固定架流程替代。起落架异常可能影响稳定接地和传感器视野，应及时处理，不用临时增高物或不认可附件改变结构。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "起落架维护",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机散热口和风扇如何保养？\n\n答案：\n断电后按厂家允许的方法清理可接触的积尘，避免污物进入机体内部或损伤风扇。确认散热通道未被贴纸、载荷或保护套遮挡，工作时有异常噪声或温度告警应停用检查。不能拆掉过滤或防护结构改善散热，也不要用高压气流强推风扇达到不受控的转速。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "散热清洁",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机视觉传感器窗口该怎样清洁？\n\n答案：\n先关机，检查窗口是否有指纹、灰尘、水迹、贴膜或划伤，再使用厂家认可的镜头清洁工具轻柔处理。不要把普通强力清洁剂直接喷向设备，也不要擦磨受损表面。清洁不能修复破裂、错位或内部故障，问题持续时应检修；复飞前确认窗口无遮挡且自检正常。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "传感器窗口",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机相机镜头和滤镜如何维护？\n\n答案：\n按照镜头及滤镜说明清理灰尘和指纹，避免硬物擦拭或不适合的溶剂损伤镀膜。安装滤镜时确认适配、固定和重量要求，检查是否影响云台运动与自检。更换后应在地面查看画面和云台状态，不能为了改善曝光使用会松脱或超出允许负载的附件。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "相机镜头",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机云台减振球和连接件怎样检查？\n\n答案：\n断电后检查减振件有无裂纹、老化、脱落或异常变形，并确认防脱结构与连接件安装符合手册。减振不足可能造成画面抖动，但过度柔软或自行改装也可能影响运动稳定。应使用适配部件，避免随意更换硬度或增加固定带；更换后检查云台范围及自检结果。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "云台减振件",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n运输无人机时怎样保护云台和相机？\n\n答案：\n先按手册停机，将云台置于规定位置后安装适配运输保护件，避免线缆或滤镜造成挤压。保护件用于运输固定，起飞前需按要求移除；不能让云台电机长时间对抗锁定结构。装箱时检查周围物品不会压住镜头和运动机构，发生碰撞后重新核对减振及安装状态。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "云台保管",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n维护无人机电池时首先应检查什么？\n\n答案：\n检查外壳、锁扣、接口和端子有无鼓包、裂纹、漏液、腐蚀或烧蚀，查看状态提示及最近异常记录。电池内部问题不一定能从外观发现，外壳完好仍需结合使用数据。发现异常应标记停用并按官方流程处置，不能挤压鼓包、拆开电池或继续充电尝试恢复。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池外观",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n如何判断无人机电池健康状态是否下降？\n\n答案：\n结合厂家提供的健康信息、容量变化、温度、告警及相似条件下的运行记录判断，单独的循环次数不能代表全部状态。明显电量骤降、异常压差或发热都应进一步检查。不要以仍能充满作为健康证明，也不要用深度放电测试安全性；达停用标准时及时退出飞行使用。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池健康",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池长期存放应保持多少电量？\n\n答案：\n储存电量应遵循该电池厂家规定，不同智能电池、非智能电池及化学体系的要求可能不同。长期满电或过低电量都可能影响寿命或可用性，因此不能给所有电池统一百分比。存放前检查状态，选择合适环境并设置定期检查计划，自动放电功能也不能替代保管责任。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池储存电量",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池适合存放在什么环境？\n\n答案：\n按厂家规定选择干燥、通风且温度适宜的位置，远离热源、直射阳光、可燃物及容易造成端子短路的金属物品。避免在车辆内长期暴晒或受到挤压、跌落。储存容器应符合相应使用要求，不能假定普通密封盒能够控制所有风险；异常电池应按规定单独管理。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "储存环境",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机长期不使用时电池需要定期检查吗？\n\n答案：\n需要按厂家规定检查电量、外观和状态，必要时执行认可的维护充电流程，避免长期过低电量导致不可恢复损伤。不同电池检查周期及操作要求不同，不应套用统一月份。重新投入使用前核对健康、兼容性和告警，不能因为存放期间未使用就认为电池性能未变化。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "长期停用",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n智能无人机电池存放后电量下降正常吗？\n\n答案：\n部分智能电池具有储存自动放电功能，会在满足条件后降低电量，正常自放电也会造成缓慢变化。是否属于正常范围应核对厂家说明、时间和状态，不能把所有快速下降都视为自动放电。电量异常、发热或无法充电时应停用检查，自动功能不能避免所有过放和老化问题。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "自动放电",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池需要经常完全放空再充满吗？\n\n答案：\n多数锂电池不需要为了消除记忆效应而经常完全放空，深度过放还可能损害电池。个别设备的电量校准或维护流程应严格按厂家要求执行，不能当成通用保养方法。日常任务应保留安全余量，异常电池也不能通过反复充放电修复；不确定时先查对应电池说明。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "避免深度放电",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池接口和端子怎样维护？\n\n答案：\n关闭设备并拆下电池后检查端子是否清洁、干燥、变形或烧蚀，按厂家认可的方法去除可清理的污物。避免使用金属工具短接端子，不随意喷入润滑剂或导电液体。端子损伤和接触不可靠可能导致断电，应停用并检修；不能靠用力插入或临时垫片恢复连接。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池端子",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机充电器和充电线需要保养吗？\n\n答案：\n应定期检查外壳、电源线、接口及散热位置，确认无破损、松动、焦痕或异常气味，使用适配的电源和厂家认可配件。充电器损坏可能影响电池和用电安全，不能用胶带简单修补受损电源线后继续使用。出现异常应停止通电并检修，保存设备标识及错误信息。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "充电器检查",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n多块无人机电池怎样轮换和记录？\n\n答案：\n给每块电池设置清晰标识，分别记录使用、充电、异常与健康状态，按实际任务安排轮换。轮换可以帮助追踪磨损，但不能让有问题的电池继续平均分担任务。多电池协同供电的设备还需遵守厂商配对要求，不能把状态差异较大的电池随意组合使用。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池轮换",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机电池什么时候应该退役？\n\n答案：\n达到厂家停用标准，或出现鼓包、损伤、持续告警、异常发热和明显性能问题时，应退出飞行使用并按规定处理。是否退役应综合状态与记录，不能只看外壳或循环次数。退役电池不要拆解、刺穿或丢入普通垃圾，应咨询厂家或当地合格回收渠道，损伤电池运输需另行确认。",
+    "source": "工程整理（电池保养）；参考：https://repair.dji.com/help/content?customId=en-us03400006549&lang=en&spaceId=34",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "电池退役",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机遥控器摇杆怎样检查和保养？\n\n答案：\n在安全地面状态检查摇杆是否顺畅、回中正常，有无松动或异物，核对输入显示与实际操作是否一致。清洁时防止液体和颗粒进入机构，校准只按手册流程进行。回中异常或漂移未解决时应停止飞行，不用修改灵敏度或扩大死区来掩盖可能的机械故障。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "遥控器摇杆",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机及遥控器天线如何维护？\n\n答案：\n检查天线、连接位置和活动关节是否破裂、松动或受挤压，使用时按说明布置，收纳时避免弯折和硬物压迫。天线损伤可能影响链路，即使近距离连接正常也不能证明远处可靠。不要自行剪改、延长或换用不适配天线，发现异常应停用并由合格人员处理。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "天线维护",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机遥控屏幕或移动终端需要怎样维护？\n\n答案：\n保持屏幕和接口清洁干燥，检查电量、线缆、应用兼容性及可用存储，避免高温暴晒或遮挡散热。飞行前确认画面与状态刷新正常，并准备不依赖临时查找的关键操作方式。终端卡顿应在地面排查，不能在执行任务时随意安装未知软件或更改影响连接的设置。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "终端保养",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机固件更新应该怎样安排？\n\n答案：\n通过官方渠道查看发布说明、兼容要求和已知限制，在地面安全环境、供电与连接可靠时执行更新。更新后核对飞机、遥控器、电池与载荷版本，重新确认返航、模式和其他关键设置。不要临起飞仓促更新后直接执行重要任务，也不要将更新成功提示视为全部功能已验证。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "固件维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机IMU是否应该每次飞行前校准？\n\n答案：\n不应把每次校准作为通用要求，通常按厂商手册、设备提示和特定维护条件判断。校准要满足规定的平面、姿态和温度条件，过程中保持设备稳定。碰撞后或异常持续时应先检查损伤与数据，不能认为校准能修复硬件问题；完成后仍要确认自检及地面状态。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "IMU校准维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机换了飞行地点就必须校准指南针吗？\n\n答案：\n是否需要校准取决于设备设计、手册和状态提示，不能把换场地必校准当作所有系统的规则。先检查环境磁干扰和航向是否合理，需要校准时选择符合要求的场地。金属附近或干扰源未消除时反复校准可能无助于问题，校准后仍须核对告警和方向。",
+    "source": "工程整理（故障排查）；参考：https://ardupilot.org/copter/docs/common-prearm-safety-checks.html",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "指南针校准维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机视觉系统什么时候需要校准？\n\n答案：\n应根据设备提示、维修更换、碰撞情况及厂家维护要求决定，先排除窗口污物、遮挡和环境不适合等原因。校准可能需要专用软件、目标或规定距离，应严格执行对应流程。校准完成不能修复划伤、松动或内部损坏，故障持续时需停用并检修，不能忽略告警直接飞行。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "视觉校准维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n维护无人机前为什么要备份日志和设置？\n\n答案：\n维修、更新或重置可能改变配置并影响历史记录，应在允许的条件下保存原始日志、告警和必要设置。备份有助于追踪问题及核对维护前后差异，但恢复时必须确认版本与设备兼容。不要盲目导入其他飞机配置，也不要把含有私人位置或凭据的资料公开分享。",
+    "source": "工程整理（诊断方法）；参考：https://ardupilot.org/copter/docs/common-diagnosing-problems-using-logs.html",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "日志备份",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机维修时如何选择螺旋桨和其他备件？\n\n答案：\n核对具体设备、部件版本和厂家认可的兼容范围，优先使用来源可靠且可追踪的适配备件。外观相似、接口能插入或卖家宣称通用，都不足以证明动力和结构兼容。安装及更换范围应遵守手册，涉及关键受力或电子部件时由合格人员处理，并记录所用部件。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "备件选用",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机整机长期收纳和运输有哪些要点？\n\n答案：\n按手册折叠和固定机体，保护云台、天线、桨叶与接口，电池储存另按其安全要求处理。使用合适箱体避免挤压、震动、潮湿及重物压迫，不将松散金属物品放在电池端子附近。运输结束后重新检查结构和锁定状态，长期收纳再启用时不能直接沿用停用前判断。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "运输收纳",
+      "level": "beginner"
+    }
+  },
+  {
+    "content": "问题：\n无人机在潮湿或盐雾环境使用后如何维护？\n\n答案：\n先确认设备本身允许该环境，作业后按厂家流程检查外壳、接口、金属部件和传感器，有无潮气、沉积物及腐蚀迹象。不能用普通清洁方式替代专用维护，也不要随意冲洗或喷涂防腐剂。腐蚀可能持续发展，出现可疑状态应停用并检修，记录环境以便调整检查频率。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "腐蚀环境维护",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n无人机维修后怎样确认可以恢复飞行？\n\n答案：\n核对维修记录、部件适配、固定、版本和必要校准，完成厂家认可的地面检查及安全验证流程。验证范围应对应具体维修内容，不能只凭开机正常或一次悬停判断全部系统可靠。未解决告警和异常要继续保持停用，复杂或关键维修由合格人员确认后再恢复任务。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "维修后验证",
+      "level": "intermediate"
+    }
+  },
+  {
+    "content": "问题：\n发现无人机维护问题后怎样防止误用？\n\n答案：\n将设备或电池明确标记停用，记录问题、日期和恢复使用所需条件，并告知相关使用人员。安全隔离应避免他人误装、误充或临时借用，不能只依靠个人记忆。处理完成后由具备能力的人员核对记录和验证结果，再解除标记；未确认修复时不得因任务紧急直接复飞。",
+    "source": "工程整理（维护原则）；参考：https://dl.djicdn.com/downloads/m200_v2/20200828/M200_Series_V2_Maintenance_Manual_EN_1009.pdf",
+    "metadata": {
+      "type": "maintenance",
+      "topic": "停用标识",
+      "level": "beginner"
+    }
+  }
+]

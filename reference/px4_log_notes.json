@@ -1,0 +1,16 @@
+[
+    {
+    "chunk_id": "px4-001",
+    "source_title": "PX4 飞行日志分析",
+    "section": "结构化分析",
+    "text": "分析飞行日志前，先确认日志是否覆盖故障过程、控制器是否跟踪设定值，以及传感器数据是否有效。",
+    "source_url": "https://github.com/PX4/PX4-user_guide/blob/main/zh/log/flight_log_analysis.md"
+    },
+    {
+        "chunk_id": "px4-002",
+        "source_title": "PX4 飞行日志分析",
+        "section": "排除电力故障",
+        "text": "If a log file ends mid-air, two main causes are possible: a power failure or a hard fault of the operating system. On autopilots based on the STM32 series, hard faults are logged to the SD card. These are located on the top level of the SD card and named fault_date.log, e.g. fault_2017_04_03_00_26_05.log. You should check for the presence of this file if a flight log ends abruptly.",
+        "source_url": "https://github.com/PX4/PX4-user_guide/blob/main/zh/log/flight_log_analysis.md"
+    }
+]

@@ -25,12 +25,15 @@ def detect_anomalies_dataframe(df):
 def calculate_summary(df):
     row_count = df.shape[0]
     return {
-        "average_height" : float(df["height"].mean()),
-        "average_speed" : float(df["speed"].mean()),
-        "average_temperature" : float(df["temperature"].mean()),
-        "max_height" : float(df["height"].max()),
-        "max_speed" : float(df["speed"].max()),
-        "max_temperature" : float(df["temperature"].max()),
-        "minimum_battery" : float(df["battery"].min()),
-        "row_count" : row_count
+        "average_height": round(float(df["height"].mean()), 2),
+        "average_speed": round(float(df["speed"].mean()), 2),
+        "average_temperature": round(float(df["temperature"].mean()), 2),
+
+        "max_height": round(float(df["height"].max()), 2),
+        "max_speed": round(float(df["speed"].max()), 2),
+        "max_temperature": round(float(df["temperature"].max()), 2),
+
+        "minimum_battery": round(float(df["battery"].min()), 2),
+
+        "row_count": row_count
     }

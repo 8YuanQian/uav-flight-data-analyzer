@@ -24,3 +24,6 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+*.pem
+*.key
+data/*.before_topic.*.json
