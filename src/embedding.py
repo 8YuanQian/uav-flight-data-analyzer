@@ -1,6 +1,2 @@
-from sentence_transformers import SentenceTransformer
-
-model = SentenceTransformer("intfloat/multilingual-e5-base")
-
-def create_embedding(argument):
-    return model.encode(argument)
+def create_embedding(argument, embedding_model):
+    return embedding_model.encode(argument)

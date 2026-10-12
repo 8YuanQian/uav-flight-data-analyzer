@@ -1,6 +1,5 @@
 from pydantic import BaseModel,Field
 
-
 class FlightReport(BaseModel):
     report:str
     observations:list[str]
@@ -15,5 +14,13 @@ class FlightRecord(BaseModel):
 
 class UserQuestion(BaseModel):
     question:str
+
+class Source(BaseModel):
+    title:str
+    url:str    
+
+class AssistantResponse(BaseModel):
+    answer:str
+    sources:list[Source]
 
 

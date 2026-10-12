@@ -1,12 +1,16 @@
-# Runtime dependencies matching the locally verified environment.
-fastapi==0.136.3
-pydantic==2.13.4
+# API 和数据模型
+fastapi==0.141.1
 uvicorn==0.48.0
 python-multipart==0.0.29
-pandas==3.0.3
-numpy==2.3.0
-matplotlib==3.10.3
+pydantic==2.13.5
+
+# 数据处理和绘图
+numpy==2.4.6
+pandas==3.0.6
+matplotlib==3.11.2
+
+# 资料检索和模型调用
+scikit-learn==1.9.1
+sentence-transformers==3.0.1
 psycopg[binary]==3.3.6
 openai==3.19.2
-sentence-transformers==3.0.1
-scikit-learn==1.9.1

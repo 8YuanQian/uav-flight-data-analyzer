@@ -1,136 +1,139 @@
-# UAV Flight Data Analyzer
+# 无人机飞行数据分析项目
 
-使用 **Python、FastAPI、Pandas 和 Matplotlib** 开发的飞行日志分析练习项目。上传 CSV 后，服务会读取并清洗数据，返回高度、速度、温度、电量等统计摘要。
+这个项目包含三个部分：
 
-项目包含 1,000 条模拟飞行记录，用于演示数据处理和接口开发，不代表真实飞行运行数据。
+- 读取飞行 CSV，清洗数据、计算统计信息，并调用模型生成分析报告。
+- 将分析记录保存在 PostgreSQL 中，通过接口或自然语言问题查询记录。
+- 从无人机知识资料中检索相关内容，重新排序后回答问题，并比较检索效果。
 
-## 已实现功能
+## 文件放在哪里
 
-- CSV 文件上传与基础格式、必需列校验。
-- 使用均值填充高度缺失值，使用插值处理电量和温度缺失值。
-- 返回均值、最大值、最低电量和记录数，共 8 项统计指标。
-- 使用 Pydantic 校验单条 JSON 飞行记录的字段与数值范围。
-- 提供 NumPy 异常筛选和 Matplotlib 绘图函数，展示飞行曲线、异常点和阈值线。
-- 使用 pytest 和 TestClient 测试健康检查及正常 CSV 上传。
+```text
+UAV_project/
+├── api.py                     # FastAPI 接口入口
+├── main.py                    # 检索效果评估入口
+├── src/                       # 可复用的业务代码
+│   ├── load_data.py            # 读取 CSV 和 JSON
+│   ├── clean_data.py           # 清洗飞行数据
+│   ├── analyze_data.py         # 计算统计信息
+│   ├── database.py             # 连接数据库，保存和查询分析记录
+│   ├── model.py                # 请求和报告的数据模型
+│   ├── flight_qa.py            # 飞行记录问答和工具调用
+│   ├── document_save_to_database.py  # 资料分块、生成向量并入库
+│   ├── retrieve.py             # 从数据库检索知识资料
+│   ├── reranker.py             # 对检索结果重新排序
+│   ├── rag.py                  # 组合检索、提示词和模型回答
+│   └── evaluation.py           # 检索评估和共同的指标计算
+├── tools/                     # 模型可以调用的飞行记录查询工具
+├── examples/                  # 独立演示，见 examples/README.md
+├── tests/                     # 接口和工具测试
+├── data/                      # 飞行数据、知识资料和评估用例
+├── reference/                 # 参考资料
+├── backups/                   # 整理代码前的备份
+├── PostgreSQL.sql             # 飞行记录建表语句和 SQL 练习
+├── requirements.txt           # 运行依赖
+└── requirements-dev.txt       # 运行依赖及测试依赖
+```
 
-## 快速开始
+`flight_qa` 中的 `flight` 指飞行，`qa` 是 Question Answering（问答）的缩写。这份文件负责根据问题选择查询工具，再用查询结果生成回答。
 
-当前版本在 Windows、Python 3.13.4 下验证。以下命令在项目根目录执行，使用项目独立环境安装依赖。
+## 准备 Python 环境
+
+使用 Python 3.11，在项目根目录打开 PowerShell。已有 `.venv` 时保留它；没有时再创建：
 
 ```powershell
-uv venv --python 3.13
-uv pip install -r requirements-dev.txt
+if (-not (Test-Path .venv)) {
+    uv venv --python 3.11 .venv
+}
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt
+```
+
+依赖版本主要来自整理时项目环境中已安装的版本，并补上启动接口、接收上传文件所需的包。这是直接依赖清单；安装命令仍需要在你的环境中执行。下面的运行命令直接使用项目解释器，不需要先激活环境。
+
+## 设置环境变量
+
+代码通过 `os.getenv()` 读取配置。请在运行程序的同一个 PowerShell 窗口设置变量：
+
+```powershell
+$env:DEEPSEEK_API_KEY = "填入你的模型 API 密钥"
+$env:PASSWORD = "填入你的 PostgreSQL 密码"
+$env:UAV_DB_NAME = "uav_project"
+$env:PORT = "5432"
+```
+
+| 变量 | 用途 | 当前默认值 |
+| --- | --- | --- |
+| `DEEPSEEK_API_KEY` | 模型服务密钥；接口启动时也会检查它 | 无 |
+| `PASSWORD` | PostgreSQL 密码 | 无 |
+| `UAV_DB_NAME` | 数据库名称 | `uav_project` |
+| `PORT` | PostgreSQL 端口 | `5432` |
+
+数据库主机和用户目前在 `src/database.py` 中固定为 `localhost`、`postgres`。项目没有自动加载 `.env` 的代码，因此只创建 `.env` 文件不会使配置生效。密钥和密码不要写进代码或提交到仓库。
+
+## 准备数据库
+
+飞行记录功能需要 PostgreSQL 中的 `flight_analyses` 表。建表语句在 `PostgreSQL.sql` 中；这个文件也包含插入、更新和删除的练习语句，初始化时只选择需要的建表部分。
+
+知识检索还需要 pgvector 扩展，以及 `documents` 表中的 `content`、`source`、`metadata`、`embedding` 字段。`metadata` 保存 JSON 对象，`embedding` 保存向量，其维度需要与所用模型的输出一致。当前 `PostgreSQL.sql` 尚未提供这张表的建表语句，运行资料导入和检索前需要准备好这张表。
+
+## 启动接口
+
+```powershell
 .\.venv\Scripts\python.exe -m uvicorn api:app --reload
 ```
 
-启动后访问交互式接口文档：<http://127.0.0.1:8000/docs>。
+启动后打开 [接口文档](http://127.0.0.1:8000/docs)。主要接口如下：
 
-在 `POST /flights/analyze` 中选择 **Try it out**，上传 `data/data.csv` 并执行，即可查看统计摘要。
-
-如果只运行服务，不需要测试工具，可使用 `requirements.txt` 安装运行依赖。macOS/Linux 使用 `.venv/bin/python` 代替 `.\.venv\Scripts\python.exe`。
-
-## API
-
-| 方法 | 路径 | 功能 |
+| 方法 | 路径 | 用途 |
 | --- | --- | --- |
-| GET | `/health` | 返回服务健康状态 |
-| GET | `/analysis/summary` | 分析项目自带的 `data/data.csv` |
-| POST | `/flights/validate` | 校验单条 JSON 飞行记录 |
-| POST | `/flights/analyze` | 接收 CSV 文件并返回分析摘要 |
+| GET | `/health` | 检查服务状态 |
+| GET | `/analysis/summary` | 统计 `data/data.csv` 中的示例数据 |
+| POST | `/flights/validate` | 校验一条飞行记录 |
+| POST | `/flights/analyze` | 上传 CSV，保存统计结果并生成模型报告 |
+| GET | `/flights/{analysis_id}` | 根据编号查询分析记录 |
+| GET | `/flights?limit=5` | 查询最近的记录，数量范围为 1～100 |
+| POST | `/flights/model` | 根据问题查询飞行分析记录并生成回答 |
 
-### CSV 输入
-
-必需字段：`time`、`height`、`speed`、`battery`、`temperature`。其他列可以存在，但不参与统计摘要计算；`phase` 不是必需列。
-
-```csv
-time,height,speed,battery,temperature
-0,100,15,90,35
-1,101,16,89,36
-```
-
-上传文件的表单字段名为 `file`。例如，在 Windows PowerShell 中：
-
-```powershell
-curl.exe -X POST http://127.0.0.1:8000/flights/analyze -F "file=@data/data.csv;type=text/csv"
-```
-
-正常响应包含 `filename`、`content_type` 和 `summary`。其中 `summary` 包含：
-
-```text
-average_height
-average_speed
-average_temperature
-max_height
-max_speed
-max_temperature
-minimum_battery
-row_count
-```
-
-输入为空或 CSV 无法解析时返回 `400`；缺少必需列时返回 `422`，并在 `detail` 中列出具体问题。
-
-### JSON 记录校验
-
-`POST /flights/validate` 接收：
+上传 CSV 至少需要 `time`、`speed`、`height`、`battery`、`temperature` 五列。问答接口的请求体示例：
 
 ```json
-{
-  "time": 0,
-  "height": 100,
-  "speed": 15,
-  "battery": 90,
-  "temperature": 35
-}
+{"question": "最近一次飞行的最高速度是多少？"}
 ```
 
-时间、高度、速度须不小于 0，电量须在 0 到 100 之间。该模型用于 JSON 接口；CSV 接口目前主要校验文件可解析性和必需列。
+## 运行知识问答和检索评估
 
-## 运行测试
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-目前有 2 项自动化测试：
-
-1. 健康检查返回 `200`，响应中的 `status` 为 `ok`。
-2. 正常 CSV 上传返回 `200`，文件信息正确，摘要包含 1,000 条记录。
-
-## 命令行分析
+先准备知识数据库，按需要运行以下命令：
 
 ```powershell
+# 导入 data/uav_knowledge.json，会向数据库写入资料
+.\.venv\Scripts\python.exe -m examples.import_documents
+
+# 运行知识问答演示
+.\.venv\Scripts\python.exe -m examples.rag_demo
+
+# 比较普通检索与重新排序后的检索结果
 .\.venv\Scripts\python.exe main.py
 ```
 
-该命令读取自带 CSV，执行清洗并打印统计摘要。绘图函数位于 `src/plot_flightdata.py`，可在 Python 中单独调用，当前未作为 API 输出。
+重复运行资料导入会重复插入资料。检索使用 `intfloat/multilingual-e5-base`，重新排序使用 `BAAI/bge-reranker-base`；首次使用时可能需要下载模型。其他独立演示的用途和运行方式见 [examples/README.md](examples/README.md)。
 
-## 项目结构
+评估用例来自 `data/rag_test_cases.json`。两种评估现在共用 `calculate_metrics()`，保留原来的计算含义：
 
-```text
-.
-├── api.py                       # FastAPI 服务与请求模型
-├── main.py                      # 命令行统计入口
-├── requirements.txt             # 运行依赖
-├── requirements-dev.txt         # 测试依赖
-├── data/
-│   ├── data.csv                 # 1,000 条模拟飞行记录
-│   └── data_broken.csv          # 手动调试时保留的 CSV 样例
-├── src/
-│   ├── load_data.py             # CSV 读取
-│   ├── clean_data.py            # 缺失值处理
-│   ├── analyze_data.py          # Pandas 分析与摘要
-│   ├── analyze_flightdata_numpy.py
-│   ├── explore_data.py          # 数据探索
-│   ├── plot_flightdata.py       # Matplotlib 绘图函数
-│   └── updata_data.py           # CSV 写入练习
-└── tests/
-    └── test_api.py
+- `mean_recall`：至少命中一次期望主题的问题占比。这里沿用原项目的名称，计算的是主题命中率。
+- `mean_precision`：每个问题中，期望主题的资料占检索结果的比例，再对全部问题取平均。
+- `mean_mrr`：第一条命中资料的排名倒数，再对全部问题取平均。
+
+没有检索结果时，该问题的三个指标均为 0。评估用例为空时显示提示，三个指标均显示为 0。检索距离筛选和重新排序规则保持原有设置。
+
+## 运行已有测试
+
+测试依赖单独安装在项目环境中：
+
+```powershell
+uv pip install --python .venv\Scripts\python.exe -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest tests -q
 ```
 
-## 后续计划
+现有 `tests/conftest.py` 会指定 `uav_project_test` 数据库，并在每个测试前后清空其中的 `flight_analyses` 表。请先准备独立的测试数据库和表，并设置 `PASSWORD`。
 
-- 为异常 CSV 输入补充自动化测试，并加强数值类型和全空列校验。
-- 保存与查询飞行记录和分析结果。
-- 在数据处理和后端基础上继续探索大模型辅助分析与资料问答。
-
-以上为待完成的学习计划，当前版本主要展示数据处理、API 开发与基础测试。
+当前测试中还有一个未完成的工具测试；测试组织也会让不查询数据库的用例依赖数据库。这次整理保留了这些测试文件，所以以上命令不代表全部测试已经通过。

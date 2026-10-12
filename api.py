@@ -1,22 +1,44 @@
-from src.load_data import load_data
+from src.load_data import load_csv_data
 from src.clean_data import clean_data
 from src.analyze_data import calculate_summary
 from src.database import save_flight_analysis,get_flight_analysis,get_flight_records
-from src.model import FlightRecord,FlightReport,UserQuestion
+from src.model import FlightRecord,FlightReport,UserQuestion,AssistantResponse
 from src.llm_report import generate_flight_report
-from tools_calling_demo import answer_flight_question
+from src.flight_qa import answer_flight_question
+from src.rag import UAVAssistant
 
 
 from fastapi import FastAPI,HTTPException,UploadFile,Query
+from sentence_transformers import SentenceTransformer,CrossEncoder
 from pydantic import BaseModel,Field
 from pathlib import Path
+from contextlib import asynccontextmanager
 import psycopg
+import asyncio
 import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR/"data"/"data.csv"
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app:FastAPI):
+    rerank_model = CrossEncoder("BAAI/bge-reranker-base")
+    embedding_model = SentenceTransformer("intfloat/multilingual-e5-base")
+    app.state.assistant = UAVAssistant(
+        rerank_model=rerank_model,
+        embedding_model=embedding_model
+    )
+    print("create UAVAssistant")
+    print(f"Assistant id: {id(app.state.assistant)}")
+    print(f"rerank_model_id:{id(rerank_model)}")
+    print(f"embedding_model_id:{id(embedding_model)}")
+
+    yield
+
+    print("free resource")
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/health")
@@ -30,7 +52,7 @@ def health():
 @app.get("/analysis/summary")
 def analysis_summary():
     try:
-        df = load_data(DATA_PATH)
+        df = load_csv_data(DATA_PATH)
     except FileNotFoundError:
         raise HTTPException(status_code=500,detail="Flight data file is unavailable")
     df = clean_data(df)
@@ -50,7 +72,7 @@ def flights_validate(record : FlightRecord):
 def analyze_flights_csv(file:UploadFile):
     file_object = file.file
     try:
-        file_data = load_data(file_object)
+        file_data = load_csv_data(file_object)
     except pd.errors.EmptyDataError:
         raise HTTPException(status_code=400,detail="Empty file")
     except pd.errors.ParserError:
@@ -110,9 +132,13 @@ def flight_records(limit:int = Query(default=5,ge=1,le=100)):
 
 @app.post("/flights/model")
 def answer_flight_question_to_user(question:UserQuestion):
-
     answer = answer_flight_question(question.question)
     return {"answer":answer}
 
 
+@app.post("/assistant/query",response_model=AssistantResponse)
+def use_flight_assistant_answer_query(question:UserQuestion):
+    assistant = app.state.assistant
+    print(f"Assistant id: {id(assistant)}")
+    return assistant.ask(question.question)
 

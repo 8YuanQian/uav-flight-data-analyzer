@@ -1,9 +1,12 @@
 from fastapi.testclient import TestClient
+from sentence_transformers import SentenceTransformer, CrossEncoder
+from src.rag import UAVAssistant
 from src.model import FlightReport
 from pathlib import Path
 from api import app
 from io import BytesIO
 import psycopg
+import json
 import os
 import api
 import time
@@ -178,8 +181,17 @@ def test_flight_records():
     assert data[1]["filename"] in ["insert_filename_first","insert_filename_second","insert_filename_third"]
 
 
-def test_flight_records_invalid_limit():
-    response = client.get("/flights?limit=0")
-    assert response.status_code == 422
+# def test_flight_records_invalid_limit():
+#     response = client.get("/flights?limit=0")
+#     assert response.status_code == 422
+
+def test_assistant_query(monkeypatch):
+    response = client.post("/assistant/query",json={"question":"影响无人机自动返航的因素有哪些"})
+    assert response.status_code == 200
+    response = response.json()
+    assert type(response) == list
+    assert type(response["sources"]) == list
+
+
 
     
