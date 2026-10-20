@@ -27,3 +27,6 @@ dist/
 *.pem
 *.key
 data/*.before_topic.*.json
+
+# Local project backups
+backups/

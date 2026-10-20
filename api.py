@@ -1,10 +1,11 @@
-from src.load_data import load_csv_data
+from src.load_data import load_csv_data,load_json_data
 from src.clean_data import clean_data
 from src.analyze_data import calculate_summary
 from src.database import save_flight_analysis,get_flight_analysis,get_flight_records
 from src.model import FlightRecord,FlightReport,UserQuestion,AssistantResponse
 from src.llm_report import generate_flight_report
 from src.flight_qa import answer_flight_question
+from src.document_save_to_database import save_document_to_database
 from src.rag import UAVAssistant
 
 
@@ -21,6 +22,7 @@ import pandas as pd
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR/"data"/"data.csv"
 
+
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     rerank_model = CrossEncoder("BAAI/bge-reranker-base")
@@ -29,10 +31,6 @@ async def lifespan(app:FastAPI):
         rerank_model=rerank_model,
         embedding_model=embedding_model
     )
-    print("create UAVAssistant")
-    print(f"Assistant id: {id(app.state.assistant)}")
-    print(f"rerank_model_id:{id(rerank_model)}")
-    print(f"embedding_model_id:{id(embedding_model)}")
 
     yield
 
@@ -47,6 +45,19 @@ def health():
         "status":"ok",
         "service":"uav-flight-analyzer"
     }
+
+@app.post("/save/document")
+def save_document(file:UploadFile):
+    assistant = app.state.assistant
+    file_object = file.file
+    try:
+        file_data = load_json_data(file_object)
+    except pd.errors.EmptyDataError:
+        raise HTTPException(status_code=400,detail="Empty file")
+    except pd.errors.ParserError:
+        raise HTTPException(status_code=400,detail="Invalid json format")
+    
+    save_document_to_database(file_data,assistant.embedding_model,"test_documents")
 
 
 @app.get("/analysis/summary")

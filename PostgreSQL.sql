@@ -30,3 +30,24 @@ SELECT * FROM flight_analyses ORDER BY created_at DESC LIMIT 2;
 
 UPDATE flight_analyses set filename = 'UPEATE_file_second' WHERE id = 5;
 DELETE FROM flight_analyses WHERE filename = 'DELETE_file_first'; 
+
+CREATE TABLE test_documents(
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    content TEXT NOT NULL,
+    source TEXT ,
+    metadata JSONB,
+    embedding VECTOR(768),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+----------------------------
+Set-Location 'E:\Python\aritificial_intelligence\Pandas\UAV_project'
+
+$env:UAV_DB_NAME = 'uav_project'
+
+# 弹窗中输入现有 PostgreSQL 密码
+$credential = Get-Credential -UserName 'postgres'
+$env:PASSWORD = $credential.GetNetworkCredential().Password
+
+# 创建 flight_records，并插入模拟记录
+.\.venv\Scripts\python.exe scripts\init_flight_records.py

@@ -5,11 +5,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-def load_csv_data(filename):
-    df = pd.read_csv(filename)
+def load_csv_data(file_object):
+    df = pd.read_csv(file_object)
     return df
 
-def load_json_data(filename):
-    with open(BASE_DIR/"data"/filename,"r",encoding="utf-8") as file:
-        data = json.load(file)
-        return data
+def load_json_data(file_object):
+    data = json.load(file_object)
+    return data

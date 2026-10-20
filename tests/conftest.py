@@ -1,5 +1,6 @@
 import os 
 os.environ["UAV_DB_NAME"] = "uav_project_test"
+os.environ["TABLE_NAME"] = "test_documents"
 import pytest
 import psycopg
 

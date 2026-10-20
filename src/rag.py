@@ -22,5 +22,5 @@ class UAVAssistant:
         if not documents:
             raise HTTPException(status_code=404,detail="Not relevant information found")
         context = build_context(documents)
-        prompt = build_prompt(context=context,question=query)
+        prompt = build_prompt(information=context,question=query)
         return json.loads(ask_llm(prompt=prompt))

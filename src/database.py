@@ -3,10 +3,12 @@ import psycopg
 
 PASSWORD = os.getenv("PASSWORD")
 DB_NAME = os.getenv("UAV_DB_NAME","uav_project")
-PORT = os.getenv("PORT",5432)
+PORT = os.getenv("PORT",5433)
 
 def get_connection():
-    return psycopg.connect(host="localhost",port=PORT,dbname=DB_NAME,user="postgres",password=PASSWORD)
+    conn = psycopg.connect(host="localhost",port=PORT,dbname=DB_NAME,user="postgres",password=PASSWORD)
+    return conn
+
 
 def get_flight_records(limit):
     with get_connection() as conn:

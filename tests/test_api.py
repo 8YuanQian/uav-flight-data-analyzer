@@ -16,6 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_PATH = BASE_DIR/"data"/"data.csv"
 PASSWORD = os.getenv("PASSWORD")
 DB_NAME = os.getenv("UAV_DB_NAME")
+TABLE_NAME = os.getenv("TABLE_NAME")
 client = TestClient(app)
 
 def fake_generate_report(monkeypatch):
