@@ -1,7 +1,7 @@
 from src.agent.graph_state import UAVGraphState
 from src.agent.tools_registry import execute_tool
 from src.agent.result_processor import build_model_result,build_error_result_message,prepare_tool_result
-from src.agent.context_manager import cheak_tool_result_budget,handle_tool_result_overflow
+from src.agent.context_manager import check_tool_result_budget,handle_tool_result_overflow
 from src.json_conversion import serialize_tool_result
 from src.agent.context_manager import count_token
 

@@ -1,7 +1,7 @@
 from src.database import get_connection
 from src.retrieve import retrieve
 from src.reranker import rerank_documents
-from src.model import create_transformat_model 
+from src.model import create_retrieval_models 
 
 import psycopg
 import json
@@ -123,7 +123,7 @@ def analyze_flight_data(limit:int = 1,flight_id:str | None = None)->dict:
     
 
 def rag_search(query:str)->list[dict]:
-    model = create_transformat_model()
+    model = create_retrieval_models()
     retrieve_data = retrieve(query=query,embedding_model=model["embedding_model"])
     rerank_data = rerank_documents(query=query,documents=retrieve_data,rerank_model=model["rerank_model"])
     return rerank_data 

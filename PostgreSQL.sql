@@ -51,3 +51,7 @@ $env:PASSWORD = $credential.GetNetworkCredential().Password
 
 # 创建 flight_records，并插入模拟记录
 .\.venv\Scripts\python.exe scripts\init_flight_records.py
+
+# get_flight_data 源SQL语句
+SELECT * FROM flight_records WHERE created_at >= (SELECT MIN(created_at) FROM flight_records WHERE flight_id = %s) ORDER BY created_at DESC LIMIT %s
+SELECT created_at FROM flight_records WHERE created_at >= (SELECT MIN(created_at) FROM flight_records WHERE flight_id = 'SIM-FLIGHT-0001') ORDER BY created_at DESC LIMIT 5;

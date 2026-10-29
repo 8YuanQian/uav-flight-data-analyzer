@@ -5,7 +5,7 @@ from src.prompt import build_agent_prompt
 from src.agent.tools_registry import execute_tool
 from src.agent.memory import ConversationMessage
 from src.agent.state import UAVAgentState
-from src.agent.tool_difinitions import TOOLS_DEFINITIONS
+from src.agent.tool_definitions import TOOL_DEFINITIONS
 from src.agent.nodes.agent_node import agent_node
 from src.agent.nodes.tool_node import tool_node
 
@@ -13,7 +13,7 @@ import json
 
 class UAVAgent:
     def __init__(self):
-        self.TOOLS_DEFINITIONS = TOOLS_DEFINITIONS
+        self.tool_definitions = TOOL_DEFINITIONS
         self.state_message = {
             "state":UAVAgentState(query=""),
             "message":ConversationMessage()

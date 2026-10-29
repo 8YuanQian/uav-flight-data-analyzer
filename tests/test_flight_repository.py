@@ -9,7 +9,7 @@ from psycopg.rows import dict_row
 
 from scripts import init_flight_records
 from src import database
-from src.database import flight_repository
+from src.database import flight_record_repository as flight_repository
 
 
 @pytest.fixture(autouse=True)
@@ -143,7 +143,7 @@ def test_legacy_database_interface_is_preserved(monkeypatch):
     connection.__enter__.return_value = connection
     cursor = connection.cursor.return_value.__enter__.return_value
     cursor.fetchall.return_value = [{"id": 7}]
-    monkeypatch.setattr(database, "get_connection", lambda: connection)
+    monkeypatch.setattr(database.flight_analysis_repository, "get_connection", lambda: connection)
     # 包与原模块共享命名空间，已有分析记录函数仍使用同一个连接入口。
     assert database.get_flight_records(1) == [{"id": 7}]
     assert callable(database.save_flight_analysis)

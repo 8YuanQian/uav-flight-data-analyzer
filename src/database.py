@@ -46,10 +46,10 @@ def save_flight_analysis(filename,summary):
     return row[0]
 
 
-def get_flight_analysis(flight_id):
+def get_flight_analysis(analysis_id):
     with get_connection() as conn:
         with conn.cursor(row_factory=psycopg.rows.dict_row) as cursor:
-            cursor.execute("SELECT * FROM flight_analyses WHERE id = %s",(flight_id,))
+            cursor.execute("SELECT * FROM flight_analyses WHERE id = %s",(analysis_id,))
             row = cursor.fetchone()
             if row is None:
                 return None

@@ -1,8 +1,8 @@
-TOOLS_DEFINITIONS = [
+TOOL_DEFINITIONS = [
     {
         "type":"function",
         "name":"get_flight_data",
-        "description":"查询PostgreSQL数据库中的无人机飞行记录。当用户询问最近一次飞行数据、历史飞行记录、飞行状态且不需要进行数据分析时必须调用此工具。(这个工具只返回原始数据)",
+        "description":"查询新 flight_records 表。可按数据库生成的 record_id 精确查询，或按 uav_code 查询一架飞行器的最近记录；CSV 中用于分组的 flight_id 不入库，不能用它查询。",
         "parameters":{
             "type":"object",
             "properties":{
@@ -10,17 +10,22 @@ TOOLS_DEFINITIONS = [
                     "type":"integer",
                     "description":"这个参数决定了返回的数据条数,默认值为1"
                 },
-                "flight_id":{
+                "record_id":{
+                    "type":"integer",
+                    "description":"数据库自动生成的飞行记录 id"
+                },
+                "uav_code":{
                     "type":"string",
-                    "description":"这个参数决定了索引的第一条数据的flight_id，后续数据的创建时间都不会大于这个flight_id的创建时间，默认值为SIM-FLIGHT-0001"
+                    "description":"飞行器编号，用于查询该飞行器的记录"
                 },
                 "fields": {
                     "type": "array",
                     "items": {
                         "type": "string",
                         "enum": [
-                            "flight_id",
-                            "drone_id",
+                            "id",
+                            "uav_code",
+                            "duration_minutes",
                             "average_speed",
                             "max_speed",
                             "average_height",
@@ -62,10 +67,13 @@ TOOLS_DEFINITIONS = [
                     "description":
                         "需要分析的飞行记录数量，默认分析最近1条记录"
                 },
-                "flight_id": {
+                "record_id": {
+                    "type": "integer",
+                    "description": "数据库自动生成的飞行记录 id"
+                },
+                "uav_code": {
                     "type": "string",
-                    "description":
-                        "指定需要分析的飞行任务ID，例如 SIM-FLIGHT-0001。如果不指定，则分析最近的飞行记录"
+                    "description": "只分析这架飞行器的最近记录"
                 }
             },
             "required": [],

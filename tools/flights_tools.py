@@ -3,7 +3,7 @@ import os
 
 from src.database import get_flight_records,get_flight_analysis
 
-PASSWORD = os.getenv("PASSOWRD")
+PASSWORD = os.getenv("PASSWORD")
 DB_name = os.getenv("UAV_DB_NAME")
 
 def get_latest_flight_analysis() -> dict:

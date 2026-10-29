@@ -54,12 +54,12 @@ def print_report(statistics,anomalies):
     print(f"Dangerous Records: {len(anomalies['dangerous'])}")
 
 
-    def standardize_features(flight_data):
-        height = flight_data[:,1]
-        speed = flight_data[:,2]
-        temperature = flight_data[:,4]
-        features = np.column_stack((height,speed,temperature))
-        mean = np.mean(features,axis=0)
-        std = np.std(features,axis=0)
-        standardize = (features - mean) / std
-        return standardize
+def standardize_features(flight_data):
+    height = flight_data[:,1]
+    speed = flight_data[:,2]
+    temperature = flight_data[:,4]
+    features = np.column_stack((height,speed,temperature))
+    mean = np.mean(features,axis=0)
+    std = np.std(features,axis=0)
+    standardize = (features - mean) / std
+    return standardize

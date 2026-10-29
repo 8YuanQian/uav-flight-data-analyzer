@@ -1,13 +1,14 @@
-from src.evaluation import evaluation_retrieval_rerank,evaluation_retrieval_without_rerank
-from src.rag import UAVAssistant
-from src.agent.agent import UAVAgent
-from src.agent.state import UAVAgentState
-from src.agent.memory import ConversationMessage
-from src.agent.nodes.agent_node import agent_node
-from src.agent.nodes.tool_node import tool_node
-from src.agent.graph import build_graph
-from src.agent.context_manager import select_message,count_token,select_context_with_budget
+from src.rag.evaluation import evaluation_retrieval_rerank,evaluation_retrieval_without_rerank
+from src.rag.rag import UAVAssistant
+from src.agent.loop.agent import UAVAgent
+from src.agent.loop.state import UAVAgentState
+from src.agent.memory.short_term_memory import ConversationMessage
+from src.agent.loop.nodes.agent_node import agent_node
+from src.agent.loop.nodes.tool_node import tool_node
+from src.agent.graph.graph import build_graph
+from src.agent.memory.context_manager import select_message,count_token,select_context_with_budget
 from src.agent.result_processor import project_flight_records,build_model_result
+
 
 
 
@@ -46,7 +47,8 @@ def main():
     )
     snapshot1 = graph.get_state(config=config)
     state = snapshot1.values
-    #print(f"message:{state['message']}")
+    print(state["answer"]["answer"])
+    # print(f"message:{state['message']}")
 
     # print("当前问题:", state["query"])
     # print("任务完成:", state["finished"])

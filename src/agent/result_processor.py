@@ -1,18 +1,23 @@
-from src.json_conversion import serialize_tool_result
+from src.common.json_conversion import serialize_tool_result
 from typing import Any
 
-from src.agent.context_manager import (
-    cheak_tool_result_budget,
+from src.agent.memory.context_manager import (
+    check_tool_result_budget,
     handle_tool_result_overflow,
 )
 
 
 ALLOWED_FLIGHT_FIELDS = {
-    "flight_id",
-    "drone_id",
+    "id",
+    "uav_id",
+    "uav_code",
+    "uav_model",
+    "manufacturer",
     "start_time",
     "end_time",
-    "duration_seconds",
+    "duration_minutes",
+    "row_count",
+    "filename",
     "average_height",
     "max_height",
     "average_speed",
@@ -20,9 +25,12 @@ ALLOWED_FLIGHT_FIELDS = {
     "battery_start",
     "battery_end",
     "average_temperature",
+    "max_temperature",
+    "minimum_battery",
     "anomaly_status",
     "anomaly_reason",
-    "created_at"
+    "created_at",
+    "version",
 }
 
 
@@ -104,7 +112,7 @@ def prepare_tool_result(data: Any) -> dict[str, str]:
     serialized_result = serialize_tool_result(data)
 
     # 2. 检查实际序列化结果的 Token 数量
-    budget = cheak_tool_result_budget(
+    budget = check_tool_result_budget(
         tool_result=serialized_result
     )
 

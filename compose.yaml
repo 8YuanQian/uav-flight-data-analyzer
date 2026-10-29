@@ -1,0 +1,67 @@
+services:
+  api:
+    build: .
+    image: uav-project-refactored:local
+    command: ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+    env_file: .env
+    environment:
+      UAV_DB_HOST: uav-postgres
+      UAV_DB_PORT: "5432"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      # 业务查询缓存使用 /2，避免与 Celery 的 broker 和结果键混用。
+      REDIS_CACHE_URL: redis://redis:6379/2
+      CSV_UPLOAD_DIR: /app/upload_spool
+      HF_HOME: /models-cache
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache
+      - csv_uploads:/app/upload_spool
+    ports:
+      - "8002:8000"
+    networks:
+      - uav-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    image: uav-project-refactored:local
+    command: ["celery", "-A", "app.app:celery_app", "worker", "--loglevel=INFO", "--concurrency=1"]
+    env_file: .env
+    environment:
+      UAV_DB_HOST: uav-postgres
+      UAV_DB_PORT: "5432"
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      REDIS_CACHE_URL: redis://redis:6379/2
+      CSV_UPLOAD_DIR: /app/upload_spool
+    volumes:
+      - csv_uploads:/app/upload_spool
+    networks:
+      - uav-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - uav-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
+  csv_uploads:
+
+networks:
+  uav-net:
+    external: true

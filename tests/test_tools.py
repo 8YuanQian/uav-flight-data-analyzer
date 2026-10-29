@@ -1,4 +1,4 @@
-from tools.flights_tools import get_latest_flight_analysis
+from src.agent.tools.get_latest_flight_analysis import get_latest_flight_analysis
 
 
 def test_latest_analysis__not_found():

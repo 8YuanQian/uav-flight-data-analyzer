@@ -3,6 +3,7 @@ from langgraph.graph import START,END,StateGraph
 from src.agent.graph_state import UAVGraphState
 from src.agent.nodes.graph_agent_node import graph_agent_node
 from src.agent.nodes.graph_tool_node import graph_tool_node
+from src.agent.nodes.graph_summary_node import graph_summary_node
 from src.agent.edges.conditional_agent_edge import agent_edge
 
 
@@ -13,7 +14,9 @@ def graph_work():
     graph_builder = StateGraph(UAVGraphState)
     graph_builder.add_node("agent",graph_agent_node)
     graph_builder.add_node("tool",graph_tool_node)
-    graph_builder.add_edge(START,"agent")
+    graph_builder.add_node("summary",graph_summary_node)
+    graph_builder.add_edge(START,"summary")
+    graph_builder.add_edge("summary","agent")
     graph_builder.add_conditional_edges("agent",agent_edge,{
         "tool":"tool",
         "end":END
@@ -65,7 +68,9 @@ def build_graph():
     checkpointer = InMemorySaver()
     graph_builder.add_node("agent",graph_agent_node)
     graph_builder.add_node("tool",graph_tool_node)
-    graph_builder.add_edge(START,"agent")
+    graph_builder.add_node("summary",graph_summary_node)
+    graph_builder.add_edge(START,"summary")
+    graph_builder.add_edge("summary","agent")
     graph_builder.add_conditional_edges("agent",agent_edge,{
         "tool":"tool",
         "end":END

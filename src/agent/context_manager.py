@@ -40,10 +40,10 @@ def count_token(text:str):
     return len(encoding.encode(text))
 
 
-def select_context_with_budget(query,message,context,max_token=1000,keep_previous_turns=3):
+def select_context_with_budget(query,message,context,conversation_summary=None,max_token=1000,keep_previous_turns=3):
     for turns in range(keep_previous_turns,-1,-1):
         result = select_message(message=message,keep_previous_turns=turns)
-        prompt = build_agent_prompt(question=query,message=result,context=context)
+        prompt = build_agent_prompt(question=query,message=result,context=context,conversation_summary=conversation_summary)
         token = count_token(prompt)
         if token > max_token:
             continue
@@ -56,7 +56,7 @@ def select_context_with_budget(query,message,context,max_token=1000,keep_previou
     raise ValueError("当前任务的必要上下文已超过预算")
 
 
-def cheak_tool_result_budget(tool_result,max_token:int=1000)->dict:
+def check_tool_result_budget(tool_result,max_token:int=1000)->dict:
     if max_token <= 0:
         raise ValueError("max_token必须大于0")
     
@@ -69,7 +69,7 @@ def cheak_tool_result_budget(tool_result,max_token:int=1000)->dict:
     }
 
     
-def handle_tool_result_overflow(token_count:int,max_token:int)->str:
+def handle_tool_result_overflow(token_count:int,max_token:int)->dict:
     return {
         "status": "token_budget_exceeded",
         "required_tokens": token_count,
@@ -78,7 +78,7 @@ def handle_tool_result_overflow(token_count:int,max_token:int)->str:
     }
 
 
-def select_messages_for_summary(message:list[dict],summary_cursor:int,keep_previous_turns:int = 2) -> dict:
+def select_messages_for_summary(message:list[dict],summary_cursor:int,keep_previous_turns:int = 3) -> dict:
     if summary_cursor < 0 or keep_previous_turns < 0:
         raise ValueError("参数不能小于0")
 
@@ -113,3 +113,24 @@ def select_messages_for_summary(message:list[dict],summary_cursor:int,keep_previ
         "messages_to_summarize": messages_to_summarize,
         "new_cursor": max(summary_cursor, cutoff)
     }
+
+
+def summarized_message_turns(message:list[dict],summary_cursor:int,keep_previous_turns:int = 2) -> dict:
+    if summary_cursor < 0 or keep_previous_turns < 0:
+        raise ValueError("参数不能小于0")
+
+    message_turns = []
+
+    # 1. 按用户轮次分组
+    for item in message:
+        if item.get("role") == "user":
+            message_turns.append([item])
+        elif message_turns:
+            message_turns[-1].append(item)
+
+    if summary_cursor > len(message_turns):
+        raise ValueError("summary_cursor超出轮次范围")
+
+    # 2. 计算能够摘要的轮次数量
+    cutoff = max(0,len(message_turns) - keep_previous_turns - 1)
+    return cutoff

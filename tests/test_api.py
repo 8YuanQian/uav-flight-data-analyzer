@@ -1,14 +1,14 @@
 from fastapi.testclient import TestClient
 from sentence_transformers import SentenceTransformer, CrossEncoder
-from src.rag import UAVAssistant
-from src.model import FlightReport
+from src.rag.rag import UAVAssistant
+from src.schemas import FlightReport
 from pathlib import Path
 from api import app
 from io import BytesIO
 import psycopg
 import json
 import os
-import api
+import app.flight_data_router as flight_data_router
 import time
 
 
@@ -36,7 +36,7 @@ def test_health():
 
 def test_valid_csv(monkeypatch):
     monkeypatch.setattr(
-        api,"generate_flight_report",fake_generate_report
+        flight_data_router,"generate_flight_report",fake_generate_report
     )
     with open(DATA_PATH,"rb") as file:
         files = {"file":("data.csv",file,"text/csv")}
@@ -68,7 +68,7 @@ def test_empty_csv_return_400():
 
 def test_missing_column_return_422(monkeypatch):
     monkeypatch.setattr(
-        api,"generate_flight_report",fake_generate_report
+        flight_data_router,"generate_flight_report",fake_generate_report
     )
     file = BytesIO(
         b'time,speed,height,temperature\n'

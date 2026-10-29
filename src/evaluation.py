@@ -68,25 +68,25 @@ def print_evaluation_results(results):
     print(f"Mean MRR: {metrics['mean_mrr']}")
 
 
-def evaluation_retrieval_rerank(test_file):
+def evaluation_retrieval_rerank(test_file, embedding_model, rerank_model):
     test_cases = load_json_data(test_file)
     results = []
     for test_case in test_cases:
         question = test_case["question"]
-        documents = retrieve(question, threshold=0.15)
-        reranked_documents = rerank_documents(question, documents, top_k=10)
+        documents = retrieve(question, embedding_model, threshold=0.15)
+        reranked_documents = rerank_documents(question, documents, rerank_model, top_k=10)
         results.append((question, test_case["topic"], reranked_documents))
 
     print_evaluation_results(results)
     return results
 
 
-def evaluation_retrieval_without_rerank(test_file):
+def evaluation_retrieval_without_rerank(test_file, embedding_model):
     test_cases = load_json_data(test_file)
     results = []
     for test_case in test_cases:
         question = test_case["question"]
-        documents = retrieve(question, threshold=0.15)
+        documents = retrieve(question, embedding_model, threshold=0.15)
         results.append((question, test_case["topic"], documents))
 
     print_evaluation_results(results)
