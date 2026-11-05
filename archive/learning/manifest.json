@@ -1,0 +1,108 @@
+{
+  "archived_at": "2026-11-05T21:58:08.5756011+08:00",
+  "description": "Historical learning snapshots; not runtime dependencies",
+  "files": [
+    {
+      "original_path": "src/agent/loop/__init__.py",
+      "archive_path": "archive/learning/src/agent/loop/__init__.py",
+      "action": "moved",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "src/agent/loop/agent.py",
+      "archive_path": "archive/learning/src/agent/loop/agent.py",
+      "action": "moved",
+      "sha256": "6881c94b10b7d3e7b472bf8114b38d47924d3da8d4ffd556ae95e5b0a766f90b"
+    },
+    {
+      "original_path": "src/agent/loop/state.py",
+      "archive_path": "archive/learning/src/agent/loop/state.py",
+      "action": "moved",
+      "sha256": "16f78e46e8c9e166f978457d2728b6376933285853ef8796230665cf6e46fb9c"
+    },
+    {
+      "original_path": "src/agent/loop/nodes/__init__.py",
+      "archive_path": "archive/learning/src/agent/loop/nodes/__init__.py",
+      "action": "moved",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "src/agent/loop/nodes/agent_node.py",
+      "archive_path": "archive/learning/src/agent/loop/nodes/agent_node.py",
+      "action": "moved",
+      "sha256": "a25fbcd60e37ba3514bbef7b2bba628f57052fd68f1186bd77a6639428eed875"
+    },
+    {
+      "original_path": "src/agent/loop/nodes/tool_node.py",
+      "archive_path": "archive/learning/src/agent/loop/nodes/tool_node.py",
+      "action": "moved",
+      "sha256": "37a52e83d653652ba1bff0a4a4f83bc3907722eac1aa1ab62ae1d17a19b77b5d"
+    },
+    {
+      "original_path": "src/agent/flight_qa.py",
+      "archive_path": "archive/learning/src/agent/flight_qa.py",
+      "action": "moved",
+      "sha256": "a6572de535d269c5461bd89446f81c7dbe0a71acc181d223461cc71a171f5ed0"
+    },
+    {
+      "original_path": "src/agent/memory/short_term_memory.py",
+      "archive_path": "archive/learning/src/agent/memory/short_term_memory.py",
+      "action": "moved",
+      "sha256": "dedcd6655162bb222da4726684090d75ff23c77df7cb1e6255e6999f80bccdf2"
+    },
+    {
+      "original_path": "src/rag/rag.py",
+      "archive_path": "archive/learning/src/rag/rag.py",
+      "action": "moved",
+      "sha256": "2df332baa2c7fa99b935c261b17cd6cdd69f5849273c3c776e4f579eb5e04545"
+    },
+    {
+      "original_path": "src/database/flight_analysis_repository.py",
+      "archive_path": "archive/learning/src/database/flight_analysis_repository.py",
+      "action": "moved",
+      "sha256": "2330c1f1522250f2ed01e1abec32028116ef23bae51b365728bcfcf6c0577ad0"
+    },
+    {
+      "original_path": "src/cache/flight_analysis_cache.py",
+      "archive_path": "archive/learning/src/cache/flight_analysis_cache.py",
+      "action": "moved",
+      "sha256": "a3f46ab07357eb331e5bf06be7ec0cef74089723f0f3dce130904ba9e86b05d6"
+    },
+    {
+      "original_path": "src/agent/tools/get_latest_flight_analysis.py",
+      "archive_path": "archive/learning/src/agent/tools/get_latest_flight_analysis.py",
+      "action": "moved",
+      "sha256": "3a7bfd8e677b46ae04bb5c4a0593db312ea68d7a01d9b016c9a026f41059f947"
+    },
+    {
+      "original_path": "src/agent/tools/get_flight_analysis_by_id.py",
+      "archive_path": "archive/learning/src/agent/tools/get_flight_analysis_by_id.py",
+      "action": "moved",
+      "sha256": "0b2196ef9205a65342f873a3d6b0b33d74c4b5ff204148fb3f2dca93c5ccb522"
+    },
+    {
+      "original_path": "examples/postgres_demo.py",
+      "archive_path": "archive/learning/examples/postgres_demo.py",
+      "action": "moved",
+      "sha256": "523b472481b387ce42fab1cc55aa88cc65456d57e531bed1d34446d026c71feb"
+    },
+    {
+      "original_path": "main.py",
+      "archive_path": "archive/learning/main.py",
+      "action": "snapshot",
+      "sha256": "b4d23d8e3a9c2258e61717d4294a733ef6364018387448a1c1cf0929514a3a36"
+    },
+    {
+      "original_path": "src/agent/graph/graph.py",
+      "archive_path": "archive/learning/src/agent/graph/graph.py",
+      "action": "snapshot",
+      "sha256": "4a51d935cf7feb5b27e2c8e130a0cc3db8cf517bd84d71ae21f59c0526bde066"
+    },
+    {
+      "original_path": "tests/test_tools.py",
+      "archive_path": "archive/learning/tests/test_tools.py",
+      "action": "snapshot",
+      "sha256": "9b5d2b14cfd57c3d84e3d4ee5f0fd9a4ac9c6ecfdcd83c00795dfd266e27a814"
+    }
+  ]
+}

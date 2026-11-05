@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}我的对话 · 无人机助手{% endblock %}
+{% block page_class %}page--workspace{% endblock %}
+{% block content %}
+<div class="page-topbar">
+  <div class="account"><span class="avatar" aria-hidden="true">{{ user.user_name[:1]|upper }}</span><span><small>当前账号</small><strong>{{ user.user_name }}</strong></span></div>
+  <form method="post" action="/auth/logout"><button class="button button--ghost" type="submit">退出登录</button></form>
+</div>
+<div class="page-heading">
+  <div><h1>我的对话</h1><p>选择已有对话，或从一个新问题开始。</p></div>
+  <a class="button button--primary" href="/chat/new"><span aria-hidden="true">＋</span> 新建 AI 对话</a>
+</div>
+{# 新会话展示第一条提问；历史会话没有标题时沿用原有编号。 #}
+{% if conversations %}
+  <div class="section-heading"><h2>历史对话</h2><span>共 {{ conversations|length }} 个</span></div>
+  <div class="conversation-list">
+    {% for conversation in conversations|reverse %}
+      <div class="conversation-card">
+        <a class="conversation-link" href="/chat?thread_id={{ conversation.thread_id }}">
+          <span class="conversation-icon" aria-hidden="true">☰</span>
+          <span class="conversation-info">
+            {% if conversation.title %}
+              <strong title="{{ conversation.title }}">{{ conversation.title|truncate(80, True, '…') }}</strong>
+              <small>点击继续对话</small>
+            {% else %}
+              <strong>会话 {{ conversation.thread_id|string|truncate(12, True, '…') }}</strong>
+              <small>{{ conversation.thread_id }}</small>
+            {% endif %}
+          </span>
+          <span class="conversation-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="conversation-delete" href="/chats/{{ conversation.thread_id }}/delete" aria-label="删除这条对话">删除</a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state"><span class="empty-state-icon" aria-hidden="true">✦</span><h2>还没有对话</h2><p>点击上方“新建 AI 对话”，开始你的第一个问题。</p></div>
+{% endif %}
+{% endblock %}

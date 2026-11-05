@@ -1,7 +1,12 @@
 .venv/
 .env
+.env.test
 __pycache__/
 *.pyc
 .pytest_cache/
 backups/
+logs/
 .git/
+pytest_*/
+verification/portable_stack_*/
+archive/

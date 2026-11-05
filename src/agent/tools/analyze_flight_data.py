@@ -2,7 +2,7 @@ from src.database.flight_record_repository import get_flight_by_id, get_recent_f
 
 
 def analyze_flight_data(
-    limit: int = 1, record_id: int | None = None, uav_code: str | None = None
+    limit: int = 1, record_id: int | None = None, uav_code: str | None = None, uav_id: int | None = None
 ) -> dict:
     """
     分析无人机飞行数据，
@@ -13,7 +13,7 @@ def analyze_flight_data(
         flight = get_flight_by_id(record_id)
         flights = [flight] if flight is not None else []
     else:
-        flights = get_recent_flights(limit, uav_code)
+        flights = get_recent_flights(limit, uav_code, uav_id=uav_id) if uav_id is not None else get_recent_flights(limit, uav_code)
 
     if not flights:
         return {

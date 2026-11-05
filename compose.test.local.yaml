@@ -1,0 +1,8 @@
+# 与主配置、测试配置和 compose.local.yaml 一起使用。
+services:
+  api-test:
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache
+  worker-test:
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache

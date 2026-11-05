@@ -10,6 +10,7 @@ from redis import Redis
 from sentence_transformers import CrossEncoder, SentenceTransformer
 
 from src.agent.graph.graph import build_graph
+from src.auth.security import validate_token_config
 from src.database.connection import (
     API_POOL_MAX_SIZE,
     DatabaseConnectionTimeout,
@@ -19,11 +20,16 @@ from src.database.connection import (
 )
 
 from .ai_router import ai_flight_router
+from .auth_router import auth_router
+from .chat_router import chat_router
 from .flight_data_router import flight_router
+from .logging_config import register_worker_logging
 
 
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI):
+    # 启动时就校验 JWT 签名密钥，避免等到首个用户登录才发现配置错误。
+    validate_token_config()
     rerank_model = CrossEncoder("BAAI/bge-reranker-base")
     embedding_model = SentenceTransformer("intfloat/multilingual-e5-base")
     fastapi_app.state.embedding_model = embedding_model
@@ -79,13 +85,21 @@ def create_fastapi_app() -> FastAPI:
     fastapi_app.add_exception_handler(PoolClosed, database_pool_error_handler)
     fastapi_app.include_router(ai_flight_router)
     fastapi_app.include_router(flight_router)
+    # 登录与浏览器聊天页面复用上面的 Agent graph 和数据库连接池。
+    fastapi_app.include_router(auth_router)
+    fastapi_app.include_router(chat_router)
     return fastapi_app
 
 
 def create_celery_app() -> Celery:
     broker_url = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
     result_backend = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/1")
-    return Celery("uav_project", broker=broker_url, backend=result_backend, include=["app.tasks"])
+    register_worker_logging()
+    celery = Celery("uav_project", broker=broker_url, backend=result_backend, include=["app.tasks"])
+    # 执行完成后才确认消息；子进程意外退出时让 Celery 重新入队。
+    celery.conf.update(task_acks_late=True, task_reject_on_worker_lost=True,
+                       worker_prefetch_multiplier=1)
+    return celery
 
 
 app = create_fastapi_app()

@@ -1,6 +1,7 @@
 from src.agent.graph.graph_state import UAVGraphState
 from src.agent.tools.tools_registry import execute_tool
-from src.agent.result_processor import build_model_result,build_error_result_message,prepare_tool_result
+from src.agent.result_processor import build_model_result,build_error_result_message,prepare_tool_result,public_flight_records,public_flight_analysis
+from src.agent.answer_guard import user_requests_record_id
 from src.agent.memory.context_manager import check_tool_result_budget,handle_tool_result_overflow
 from src.common.json_conversion import serialize_tool_result
 from src.agent.memory.context_manager import count_token
@@ -84,7 +85,13 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
             )
 
         try:
-            result = prepare_tool_result(data=tool_result)
+            result = prepare_tool_result(
+                data=tool_result,
+                model_data=public_flight_analysis(
+                    tool_result,
+                    include_record_id=user_requests_record_id(state.get("query", "")),
+                ),
+            )
 
         except TypeError:
             logger.exception("无法JOSN序列化")
@@ -142,7 +149,13 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
                 tool_result,
                 fields=arguments.get("fields")
             )
-            result = prepare_tool_result(data=model_data)
+            result = prepare_tool_result(
+                data=model_data,
+                model_data=public_flight_records(
+                    model_data,
+                    include_record_id=user_requests_record_id(state.get("query", "")),
+                ),
+            )
 
         except (TypeError, ValueError):
             logger.exception("飞行数据结果处理失败")

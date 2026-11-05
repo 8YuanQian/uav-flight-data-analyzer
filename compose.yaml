@@ -1,67 +1,108 @@
-services:
-  api:
-    build: .
-    image: uav-project-refactored:local
-    command: ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
-    env_file: .env
-    environment:
-      UAV_DB_HOST: uav-postgres
-      UAV_DB_PORT: "5432"
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/1
-      # 业务查询缓存使用 /2，避免与 Celery 的 broker 和结果键混用。
-      REDIS_CACHE_URL: redis://redis:6379/2
-      CSV_UPLOAD_DIR: /app/upload_spool
-      HF_HOME: /models-cache
-      HF_HUB_OFFLINE: "1"
-    volumes:
-      - E:/CodexEnv/cache/huggingface-docker:/models-cache
-      - csv_uploads:/app/upload_spool
-    ports:
-      - "8002:8000"
-    networks:
-      - uav-net
-    depends_on:
-      redis:
-        condition: service_healthy
+# 新部署使用独立项目名，避免自动接入本机旧项目的 Redis 和 CSV 卷。
+name: uav-project
 
-  worker:
-    build: .
-    image: uav-project-refactored:local
-    command: ["celery", "-A", "app.app:celery_app", "worker", "--loglevel=INFO", "--concurrency=1"]
-    env_file: .env
+x-runtime: &runtime
+  build: .
+  image: ${UAV_APP_IMAGE:-uav-project-refactored:local}
+  env_file: .env
+  environment: &environment
+    UAV_DB_HOST: postgres
+    UAV_DB_PORT: "5432"
+    UAV_DB_NAME: uav_project
+    PASSWORD: ${PASSWORD:?请在 .env 中填写 PostgreSQL 密码}
+    CELERY_BROKER_URL: redis://redis:6379/0
+    CELERY_RESULT_BACKEND: redis://redis:6379/1
+    REDIS_CACHE_URL: redis://redis:6379/2
+    CSV_UPLOAD_DIR: /app/upload_spool
+    UAV_LOG_DIR: /app/logs
+    HF_HOME: /models-cache
+    HF_HUB_OFFLINE: "1"
+    TIKTOKEN_CACHE_DIR: /tokenizer-cache
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    db-init:
+      condition: service_completed_successfully
+    model-init:
+      condition: service_completed_successfully
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
     environment:
-      UAV_DB_HOST: uav-postgres
-      UAV_DB_PORT: "5432"
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/1
-      REDIS_CACHE_URL: redis://redis:6379/2
-      CSV_UPLOAD_DIR: /app/upload_spool
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${PASSWORD:?请在 .env 中填写 PostgreSQL 密码}
     volumes:
-      - csv_uploads:/app/upload_spool
-    networks:
-      - uav-net
-    depends_on:
-      redis:
-        condition: service_healthy
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql:/schema:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   redis:
     image: redis:7.4-alpine
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
-    networks:
-      - uav-net
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
-      retries: 5
+      retries: 10
+
+  # 初始化服务完成后退出；后续 API 启动还会执行 LangGraph 的 setup。
+  db-init:
+    image: pgvector/pgvector:pg17
+    environment:
+      PGPASSWORD: ${PASSWORD:?请在 .env 中填写 PostgreSQL 密码}
+    command: ["sh", "/init_databases.sh"]
+    volumes:
+      - ./sql:/schema:ro
+      - ./scripts/init_databases.sh:/init_databases.sh:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 首次准备模型和分词器缓存；失败时阻止 API 和 worker 带缺失缓存启动。
+  model-init:
+    build: .
+    image: ${UAV_APP_IMAGE:-uav-project-refactored:local}
+    command: ["python", "scripts/prepare_models.py"]
+    environment:
+      HF_HOME: /models-cache
+      TIKTOKEN_CACHE_DIR: /tokenizer-cache
+    volumes:
+      - model_cache:/models-cache
+      - tokenizer_cache:/tokenizer-cache
+
+  api:
+    <<: *runtime
+    command: ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--log-config", "app/api_logging.json"]
+    volumes:
+      - model_cache:/models-cache
+      - tokenizer_cache:/tokenizer-cache
+      - csv_uploads:/app/upload_spool
+      - ./logs:/app/logs
+    ports:
+      - "${UAV_API_PORT:-8002}:8000"
+
+  worker:
+    <<: *runtime
+    command: ["celery", "-A", "app.app:celery_app", "worker", "--loglevel=INFO", "--concurrency=1"]
+    volumes:
+      - model_cache:/models-cache
+      - tokenizer_cache:/tokenizer-cache
+      - csv_uploads:/app/upload_spool
+      - ./logs:/app/logs
 
 volumes:
+  postgres_data:
   redis_data:
+  model_cache:
+  tokenizer_cache:
   csv_uploads:
-
-networks:
-  uav-net:
-    external: true

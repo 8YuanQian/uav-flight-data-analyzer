@@ -1,13 +1,16 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class FlightReport(BaseModel):
-    report:str
-    observations:list[str]
-    limitations:list[str]
+    model_config = ConfigDict(extra="forbid")
+
+    conclusion: str = Field(min_length=1)
+    observations: list[str]
+    attention_items: list[str]
+    limitations: list[str]
 
 class FlightRecord(BaseModel):
     """Validate one CSV time interval before grouping it with a flight."""
@@ -77,8 +80,25 @@ class FlightRecordUpdate(BaseModel):
     anomaly_reason: str | None = None
 
 class UserQuestion(BaseModel):
+    model_config = ConfigDict(json_schema_extra={
+        "example": {
+            "question": "最近一次飞行情况怎么样？",
+            "thread_id": "",
+        },
+    })
+
     question:str
-    thread_id: UUID | None = None
+    thread_id: UUID | None = Field(
+        default=None,
+        description="首次提问留空；继续对话时填入上一轮响应中的 thread_id",
+    )
+
+    @field_validator("thread_id", mode="before")
+    @classmethod
+    def normalize_thread_id(cls, value):
+        if isinstance(value, str):
+            return value.strip() or None
+        return value
 
 class Source(BaseModel):
     title:str

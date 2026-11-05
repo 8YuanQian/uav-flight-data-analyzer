@@ -3,6 +3,7 @@
 from contextlib import contextmanager
 from importlib import import_module
 from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi import Depends, FastAPI
@@ -11,12 +12,6 @@ from psycopg_pool import PoolTimeout
 
 from app.database_dependency import database_pool_for_route
 import src.database.connection as database_connection
-
-
-@pytest.fixture(autouse=True)
-def clean():
-    """这些测试使用假连接，不访问父 conftest 指定的测试数据库。"""
-    yield
 
 
 class FakeConnection:
@@ -118,16 +113,19 @@ def test_pool_timeout_returns_clear_http_error():
 
 
 def test_cache_hit_does_not_borrow_database_connection(monkeypatch):
+    from app.auth_dependencies import require_user
+    from src.auth.security import AuthIdentity
     flight_router_module = import_module("app.flight_data_router")
     pool = FakePool()
     app = FastAPI()
     app.state.db_pool = pool
     app.state.cache = object()
     app.include_router(flight_router_module.flight_router)
+    app.dependency_overrides[require_user] = lambda: AuthIdentity(1, "test-user")
     monkeypatch.setattr(
         flight_router_module,
-        "get_cached_flight_analysis",
-        lambda cache, analysis_id: {"id": analysis_id},
+        "get_cached_flight_record",
+        lambda cache, record_id: {"id": record_id},
     )
 
     with TestClient(app) as client:
@@ -147,22 +145,43 @@ def test_validation_route_does_not_borrow_database_connection():
     with TestClient(app) as client:
         response = client.post(
             "/flight/flights/validate",
-            json={"time": 1, "height": 2, "speed": 3, "battery": 90, "temperature": 20},
+            json={
+                "uav_code": "UAV-01", "uav_model": "Model", "manufacturer": "Maker",
+                "flight_id": "CSV-01", "start_time": "2026-01-01 10:00",
+                "end_time": "2026-01-01 10:30", "height": 2, "speed": 3,
+                "battery": 90, "temperature": 20,
+            },
         )
 
     assert response.status_code == 200
     assert pool.timeouts == []
 
 
-def test_celery_routes_do_not_borrow_api_connection():
+def test_report_job_submission_and_status_queries_use_api_pool():
     ai_router_module = import_module("app.ai_router")
+    from uuid import uuid4
+    from app.auth_dependencies import require_user
+    from src.auth.security import AuthIdentity
+
     pool = FakePool()
+    # 保留真实仓储函数，只替换连接和游标，验证借还连接的路径。
+    cursor = MagicMock()
+    pool.database_connection.cursor = MagicMock()
+    pool.database_connection.cursor.return_value.__enter__.return_value = cursor
+    cursor.fetchone.side_effect = [
+        (uuid4(),),  # 成功占用报表幂等键。
+        (1,),  # 查询任务所属用户。
+        {"status": "PENDING", "result": None},
+    ]
     app = FastAPI()
     app.state.db_pool = pool
 
     class FakeCelery:
-        def send_task(self, name, args, retry):
-            return SimpleNamespace(id="task-1")
+        def send_task(self, name, args, task_id, retry):
+            # 登记幂等键和任务状态各借一次连接，发布消息前已归还。
+            assert pool.timeouts == [60, 60]
+            assert pool.returned == [pool.database_connection] * 2
+            return SimpleNamespace(id=task_id)
 
         def AsyncResult(self, task_id):
             return SimpleNamespace(
@@ -171,23 +190,31 @@ def test_celery_routes_do_not_borrow_api_connection():
 
     app.state.celery_app = FakeCelery()
     app.include_router(ai_router_module.ai_flight_router)
+    app.dependency_overrides[require_user] = lambda: AuthIdentity(1, "test-user")
 
     with TestClient(app) as client:
-        submitted = client.post("/ai_flight/flights/999/report/jobs")
-        status = client.get("/ai_flight/report/jobs/task-1")
+        submitted = client.post(
+            "/ai_flight/flights/999/report/jobs",
+            headers={"Idempotency-Key": str(uuid4())},
+        )
+        status = client.get(f"/ai_flight/report/jobs/{submitted.json()['task_id']}")
 
     assert submitted.status_code == 202
-    assert submitted.json() == {"task_id": "task-1", "status": "PENDING"}
+    assert submitted.json()["status"] == "PENDING"
     assert status.status_code == 200
-    assert pool.timeouts == []
+    assert pool.timeouts == [60] * 4
+    assert pool.returned == [pool.database_connection] * 4
+    statements = [call.args[0] for call in cursor.execute.call_args_list]
+    assert "INSERT INTO flight_report_idempotency_keys" in statements[0]
+    assert "INSERT INTO celery_task_states" in statements[1]
 
 
-def test_worker_rejects_missing_analysis_id(monkeypatch):
+def test_worker_rejects_missing_record_id(monkeypatch):
     task_module = import_module("app.tasks")
-    monkeypatch.setattr(task_module, "get_flight_analysis", lambda analysis_id: None)
+    monkeypatch.setattr(task_module, "get_flight_by_id", lambda record_id: None)
 
     with pytest.raises(ValueError, match="does not exist"):
-        task_module.generate_flight_report_task.run(999)
+        task_module._generate_report(999, None)
 
 
 def test_api_and_worker_pool_limits(monkeypatch):
@@ -245,6 +272,7 @@ def test_worker_uses_its_own_pool(monkeypatch):
 
 def test_fastapi_lifespan_opens_and_closes_its_pool(monkeypatch):
     app_module = import_module("app.app")
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-only-secret-key-with-at-least-32-characters")
     events = []
 
     class LifecyclePool:

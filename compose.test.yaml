@@ -1,0 +1,38 @@
+# 与 compose.yaml 合并使用；共享基础服务，数据库和 Redis 逻辑库严格分开。
+services:
+  api-test:
+    extends:
+      file: compose.yaml
+      service: api
+    env_file: !override
+      - .env
+      - .env.test
+    environment:
+      UAV_DB_NAME: uav_project_test
+      CELERY_BROKER_URL: redis://redis:6379/3
+      CELERY_RESULT_BACKEND: redis://redis:6379/4
+      REDIS_CACHE_URL: redis://redis:6379/5
+    ports: !override
+      - "127.0.0.1:${UAV_TEST_API_PORT:-8003}:8000"
+    volumes:
+      - csv_test_uploads:/app/upload_spool
+      - ./logs/test-api:/app/logs
+
+  worker-test:
+    extends:
+      file: compose.yaml
+      service: worker
+    env_file: !override
+      - .env
+      - .env.test
+    environment:
+      UAV_DB_NAME: uav_project_test
+      CELERY_BROKER_URL: redis://redis:6379/3
+      CELERY_RESULT_BACKEND: redis://redis:6379/4
+      REDIS_CACHE_URL: redis://redis:6379/5
+    volumes:
+      - csv_test_uploads:/app/upload_spool
+      - ./logs/test-worker:/app/logs
+
+volumes:
+  csv_test_uploads:

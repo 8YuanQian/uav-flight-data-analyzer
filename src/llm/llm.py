@@ -14,13 +14,13 @@ def ask_llm(prompt:str)->str:
 
     return response.output_text
 
-def agent_ask_llm(prompt:str,tool_definitions,instructions=AGENT_SYSTEM_PROMPT)->str:
+def agent_ask_llm(prompt:str,tool_definitions,instructions=AGENT_SYSTEM_PROMPT,tool_choice="auto")->str:
     response = client.responses.create(
         model="deepseek-flash",
         instructions=instructions,
         input=prompt,
         tools=tool_definitions,
-        tool_choice="auto",
+        tool_choice=tool_choice,
         reasoning={"effort":"none"}
     )
     return response

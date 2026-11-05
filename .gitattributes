@@ -1,0 +1,4 @@
+# 保留学习归档的原始字节，确保清单中的 SHA-256 可以复核。
+archive/learning/** -text
+# 容器脚本固定使用 LF 换行。
+*.sh text eol=lf

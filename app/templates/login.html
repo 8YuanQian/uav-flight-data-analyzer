@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}登录 · 无人机助手{% endblock %}
+{% block page_class %}page--auth{% endblock %}
+{% block content %}
+<section class="auth-art">
+  <span class="eyebrow">UAV DATA ASSISTANT</span>
+  <h1>让每次飞行<br>都有迹可循</h1>
+  <p>查看飞行记录，继续你的对话，从数据中找到需要的答案。</p>
+  <div class="art-card"><span class="art-card-icon" aria-hidden="true">✦</span><span><strong>飞行数据助手</strong><small>随时继续上一次对话</small></span></div>
+</section>
+<section class="auth-panel">
+  <h2>欢迎回来</h2>
+  <p class="intro">登录后即可查看并继续你的对话。</p>
+  {% if registered %}<p class="alert alert--success" role="status">注册成功，请登录。</p>{% endif %}
+  {% if error %}<p class="alert alert--error" role="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/auth/login">
+    <div class="field"><label for="username">用户名</label><input id="username" name="username" value="{{ username or '' }}" placeholder="请输入用户名" required autocomplete="username"></div>
+    <div class="field"><label for="password">密码</label><input id="password" name="password" type="password" placeholder="请输入密码" required autocomplete="current-password"></div>
+    <button class="button button--primary button--wide" type="submit">登录 <span aria-hidden="true">→</span></button>
+  </form>
+  <p class="form-note">还没有账号？<a href="/register">立即注册</a></p>
+</section>
+{% endblock %}

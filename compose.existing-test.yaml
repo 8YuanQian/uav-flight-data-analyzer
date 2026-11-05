@@ -1,0 +1,57 @@
+# 仅兼容本机当前外部数据库和网络；新部署使用 compose.yaml。
+name: uav-project-test
+
+services:
+  api:
+    image: uav-project-refactored:local
+    command: ["python", "-m", "uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--log-config", "app/api_logging.json"]
+    env_file:
+      - .env
+      - .env.test
+    environment:
+      UAV_DB_HOST: uav-postgres
+      UAV_DB_PORT: "5432"
+      UAV_DB_NAME: uav_project_test
+      CELERY_BROKER_URL: redis://redis:6379/3
+      CELERY_RESULT_BACKEND: redis://redis:6379/4
+      REDIS_CACHE_URL: redis://redis:6379/5
+      CSV_UPLOAD_DIR: /app/upload_spool
+      UAV_LOG_DIR: /app/logs
+      HF_HOME: /models-cache
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache
+      - csv_test_uploads:/app/upload_spool
+      - ./logs/test-api:/app/logs
+    ports:
+      - "127.0.0.1:8003:8000"
+    networks:
+      - uav-net
+
+  worker:
+    image: uav-project-refactored:local
+    command: ["celery", "-A", "app.app:celery_app", "worker", "--loglevel=INFO", "--concurrency=1"]
+    env_file:
+      - .env
+      - .env.test
+    environment:
+      UAV_DB_HOST: uav-postgres
+      UAV_DB_PORT: "5432"
+      UAV_DB_NAME: uav_project_test
+      CELERY_BROKER_URL: redis://redis:6379/3
+      CELERY_RESULT_BACKEND: redis://redis:6379/4
+      REDIS_CACHE_URL: redis://redis:6379/5
+      CSV_UPLOAD_DIR: /app/upload_spool
+      UAV_LOG_DIR: /app/logs
+    volumes:
+      - csv_test_uploads:/app/upload_spool
+      - ./logs/test-worker:/app/logs
+    networks:
+      - uav-net
+
+volumes:
+  csv_test_uploads:
+
+networks:
+  uav-net:
+    external: true

@@ -11,6 +11,8 @@ from psycopg.rows import dict_row
 from psycopg_pool import PoolTimeout
 
 from app.ai_router import ai_flight_router
+from app.auth_dependencies import require_user
+from src.auth.security import AuthIdentity
 from src.agent.graph.graph import build_graph
 from src.agent.graph.graph_state import UAVGraphState
 from src.database import connection as database_connection
@@ -23,8 +25,18 @@ def test_build_graph_accepts_external_checkpointer_and_keeps_old_modes():
     assert build_graph(checkpointing=False).checkpointer is None
 
 
-def test_api_continues_same_thread_and_clears_previous_tool_data():
+def test_api_continues_same_thread_and_clears_previous_tool_data(monkeypatch):
     seen = []
+    owned_threads = set()
+    titles = []
+
+    def add_thread(user_id, thread_id, title):
+        owned_threads.add(thread_id)
+        titles.append(title)
+        return True
+
+    monkeypatch.setattr("app.ai_router.add_user_thread", add_thread)
+    monkeypatch.setattr("app.ai_router.user_owns_thread", lambda user_id, thread_id: thread_id in owned_threads)
 
     def answer(state: UAVGraphState):
         seen.append((
@@ -48,6 +60,7 @@ def test_api_continues_same_thread_and_clears_previous_tool_data():
     app.state.agent_graph = builder.compile(checkpointer=InMemorySaver())
     app.state.db_pool = object()
     app.include_router(ai_flight_router)
+    app.dependency_overrides[require_user] = lambda: AuthIdentity(1, "test")
 
     with TestClient(app) as client:
         first = client.post("/ai_flight/model", json={"question": "第一问"})
@@ -70,10 +83,36 @@ def test_api_continues_same_thread_and_clears_previous_tool_data():
         )
         assert missing.status_code == 404
 
+        blank = client.post(
+            "/ai_flight/model",
+            json={"question": "全新话题", "thread_id": "   "},
+        )
+        assert blank.status_code == 200
+        assert blank.json()["answer"] == "第 1 轮"
+        assert blank.json()["thread_id"] != thread_id
+
+        invalid = client.post(
+            "/ai_flight/model",
+            json={"question": "问题", "thread_id": "not-a-uuid"},
+        )
+        assert invalid.status_code == 422
+
     assert seen[0][0:2] == ([], [])
     assert seen[1][0:2] == ([], [])
     assert [item["role"] for item in seen[1][2]] == ["user", "assistant", "user"]
     assert seen[1][3:] == ("已经保存的摘要", 1)
+    assert titles == ["第一问", "全新话题"]
+
+
+def test_openapi_shows_optional_thread_id_in_request_example():
+    app = FastAPI()
+    app.include_router(ai_flight_router)
+    schema = app.openapi()["components"]["schemas"]["UserQuestion"]
+
+    assert schema["example"]["thread_id"] == ""
+    assert "question" in schema["example"]
+    assert "thread_id" in schema["properties"]
+    assert schema["required"] == ["question"]
 
 
 def test_checkpoint_pool_uses_required_connection_settings(monkeypatch):
@@ -96,6 +135,7 @@ def test_checkpoint_pool_uses_required_connection_settings(monkeypatch):
 
 def test_fastapi_lifespan_sets_up_and_closes_checkpoint_pool(monkeypatch):
     app_module = import_module("app.app")
+    monkeypatch.setenv("JWT_SECRET_KEY", "test-secret-" * 4)
     events = []
 
     class Pool:

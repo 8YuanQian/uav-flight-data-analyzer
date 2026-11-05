@@ -12,11 +12,13 @@ def execute_tool(tool_name,tool_arguments, *, embedding_model=None, rerank_model
             limit=arguments.get("limit") or 1,
             record_id=arguments.get("record_id"),
             uav_code=arguments.get("uav_code"),
+            uav_id=arguments.get("uav_id"),
         )
     elif tool_name == "analyze_flight_data":    
         return analyze_flight_data(
             record_id=arguments.get("record_id"),
             uav_code=arguments.get("uav_code"),
+            uav_id=arguments.get("uav_id"),
             limit=arguments.get("limit") or 1,
         )
     elif tool_name == "rag_search":

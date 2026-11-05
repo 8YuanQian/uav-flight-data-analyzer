@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% block title %}AI 对话 · 无人机助手{% endblock %}
+{% block page_class %}page--chat{% endblock %}
+{% block content %}
+<div class="page-topbar">
+  <a class="back-link" href="/chats"><span aria-hidden="true">←</span> 返回对话列表</a>
+  <form method="post" action="/auth/logout"><button class="button button--ghost" type="submit">退出登录</button></form>
+</div>
+<div class="chat-heading">
+  <div><h1>{% if thread_id %}AI 对话{% else %}新建 AI 对话{% endif %}</h1><p>输入你想了解的飞行问题。</p></div>
+  {% if thread_id %}<span class="thread-chip" title="{{ thread_id }}">会话 {{ thread_id|string|truncate(12, True, '…') }}</span>{% endif %}
+</div>
+<section class="chat-timeline" aria-label="对话内容">
+  {% if messages %}
+    {% for message in messages %}
+      <article class="message message--{{ message.role }}">
+        <span class="message-avatar" aria-hidden="true">{{ '我' if message.role == 'user' else '✦' }}</span>
+        <div class="message-bubble"><strong>{{ '你' if message.role == 'user' else '无人机助手' }}</strong><p>{{ message.content }}</p></div>
+      </article>
+    {% endfor %}
+  {% else %}
+    <div class="chat-welcome"><span class="chat-welcome-icon" aria-hidden="true">✦</span><h2>从一个问题开始</h2><p>例如：最近一次飞行的情况怎么样？</p></div>
+  {% endif %}
+</section>
+{% if error %}<p class="alert alert--error" role="alert">{{ error }}</p>{% endif %}
+{# 续聊时 thread_id 固定在 URL；用户只需要填写 question。 #}
+<form class="composer" method="post" action="{% if thread_id %}/chat/messages?thread_id={{ thread_id }}{% else %}/chat/new/messages{% endif %}">
+  <div class="field"><label for="question">你的问题</label><textarea id="question" name="question" placeholder="描述你想了解的飞行信息…" required></textarea></div>
+  <div class="composer-bottom"><small>回答会保存在当前对话中，方便下次继续。</small><button class="button button--primary" type="submit">发送问题 <span aria-hidden="true">→</span></button></div>
+</form>
+<section class="upload-panel" id="csv-upload-panel" aria-labelledby="csv-upload-title" data-storage-key="csv-report:{{ user.user_id }}:{{ thread_id or 'new' }}">
+  <div><h2 id="csv-upload-title">上传飞行 CSV</h2><p>上传后自动分析并展示报告，每条飞行记录单独生成一份。</p></div>
+  <form id="csv-upload-form" enctype="multipart/form-data">
+    <label for="csv-file">CSV 文件</label>
+    <input id="csv-file" name="file" type="file" accept=".csv,text/csv" required>
+    <button class="button button--primary" type="submit">上传并生成报告</button>
+  </form>
+  <div class="csv-progress" id="csv-progress" hidden>
+    <span class="csv-status-icon" aria-hidden="true"></span>
+    <div><p id="csv-upload-status" role="status" aria-live="polite"></p><p id="csv-upload-detail"></p></div>
+  </div>
+  <div class="csv-task-actions">
+    <button class="button button--ghost" id="csv-retry-query" type="button" hidden>继续查询</button>
+    <a id="csv-login-link" href="/login" hidden>重新登录</a>
+    <small id="csv-task-reference" hidden></small>
+  </div>
+  <div class="csv-reports" id="csv-report-result" aria-label="飞行分析报告" hidden></div>
+</section>
+<script>
+(() => {
+  const uploadPanel = document.getElementById("csv-upload-panel");
+  const uploadForm = document.getElementById("csv-upload-form");
+  const uploadFile = document.getElementById("csv-file");
+  const uploadButton = uploadForm.querySelector('button[type="submit"]');
+  const uploadStatus = document.getElementById("csv-upload-status");
+  const uploadDetail = document.getElementById("csv-upload-detail");
+  const progress = document.getElementById("csv-progress");
+  const retryQuery = document.getElementById("csv-retry-query");
+  const loginLink = document.getElementById("csv-login-link");
+  const taskReference = document.getElementById("csv-task-reference");
+  const reportResult = document.getElementById("csv-report-result");
+  const storageKey = uploadPanel.dataset.storageKey;
+  const pendingMessages = {
+    PENDING: "任务已提交，正在等待处理…",
+    RECEIVED: "任务已接收，即将开始处理…",
+    STARTED: "正在分析飞行数据并生成报告…",
+    RUNNING: "正在分析飞行数据并生成报告…",
+    RETRY: "任务正在等待重新处理…",
+    COMMITTED: "飞行记录已保存，正在完成最后处理…",
+  };
+  let idempotencyKey = null;
+  let currentTask = null;
+  let timer = null;
+  let queryFailures = 0;
+
+  function showStatus(title, detail, state) {
+    progress.hidden = false;
+    uploadPanel.dataset.state = state;
+    uploadStatus.textContent = title;
+    uploadDetail.textContent = detail;
+  }
+
+  function setBusy(busy) {
+    uploadFile.disabled = busy;
+    uploadButton.disabled = busy;
+    uploadButton.textContent = busy ? "处理中…" : "上传并生成报告";
+    progress.setAttribute("aria-busy", String(busy));
+  }
+
+  function rememberTask() {
+    // 只保存任务编号，刷新页面后仍通过已登录的查询接口获取结果。
+    try { sessionStorage.setItem(storageKey, JSON.stringify(currentTask)); } catch (_) {}
+  }
+
+  async function requestJSON(url, options = {}) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(url, {
+        credentials: "same-origin", cache: "no-store", ...options, signal: controller.signal,
+      });
+      // 登录失效或任务不存在时，即使响应体不是 JSON 也应停止查询。
+      const data = await response.json().catch(() => ({}));
+      return {response, data};
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  function appendText(parent, tag, text, className = "") {
+    const element = document.createElement(tag);
+    element.textContent = String(text);
+    if (className) element.className = className;
+    parent.appendChild(element);
+    return element;
+  }
+
+  function appendReportList(parent, title, items) {
+    if (!Array.isArray(items) || !items.length) return;
+    appendText(parent, "h4", title);
+    const list = document.createElement("ul");
+    for (const item of items) appendText(list, "li", item);
+    parent.appendChild(list);
+  }
+
+  function renderReports(result) {
+    if (!Array.isArray(result?.flights) || !result.flights.length ||
+        result.flights.some(flight => !(flight.ai_report?.conclusion || flight.ai_report?.report))) {
+      throw new Error("报告数据不完整");
+    }
+    reportResult.replaceChildren();
+    appendText(reportResult, "h3", `${result.filename || currentTask.filename} · ${result.flights.length} 份飞行报告`);
+    const labels = {
+      row_count: "采样行数", average_height: "平均高度", max_height: "最大高度",
+      average_speed: "平均速度", max_speed: "最大速度", minimum_battery: "最低电量",
+      average_temperature: "平均温度", max_temperature: "最高温度",
+    };
+    for (const [index, flight] of result.flights.entries()) {
+      const card = document.createElement("article");
+      card.className = "csv-report-card";
+      appendText(card, "h3", `飞行报告 ${index + 1} · ${flight.uav_code || "未知飞行器"}`);
+      appendText(card, "p", `飞行记录 #${flight.id} · CSV 分组 ${flight.csv_flight_id || "—"}`, "csv-record-meta");
+      const metrics = document.createElement("dl");
+      metrics.className = "csv-metrics";
+      for (const [field, label] of Object.entries(labels)) {
+        const value = flight.summary?.[field];
+        if (value === undefined || value === null) continue;
+        const metric = document.createElement("div");
+        appendText(metric, "dt", label);
+        appendText(metric, "dd", typeof value === "number" ?
+          new Intl.NumberFormat("zh-CN", {maximumFractionDigits: 2}).format(value) : value);
+        metrics.appendChild(metric);
+      }
+      card.appendChild(metrics);
+      const report = flight.ai_report;
+      appendText(card, "h4", "分析结论");
+      // 文件名和模型文字一律使用 textContent，不执行其中的 HTML。
+      appendText(card, "p", report.conclusion || report.report, "csv-conclusion");
+      appendReportList(card, "飞行表现", report.observations);
+      appendReportList(card, "关注事项", report.attention_items);
+      appendReportList(card, "分析范围与限制", report.limitations);
+      reportResult.appendChild(card);
+    }
+    reportResult.hidden = false;
+  }
+
+  function failureMessage(data) {
+    const detail = data.detail;
+    if (data.error === "INVALID_CSV") return `CSV 校验失败：${typeof detail === "string" ? detail : "请检查文件内容和必填列"}`;
+    if (data.error === "CACHE_UPDATE_FAILED") {
+      const ids = Array.isArray(detail?.record_ids) ? detail.record_ids.join("、") : "";
+      return `飞行记录已保存，但缓存更新失败。${ids ? `记录编号：${ids}。` : ""}请勿重复上传，可稍后查询记录。`;
+    }
+    if (detail?.message) {
+      const group = detail.uav_code ? `（飞行器 ${detail.uav_code}，CSV 分组 ${detail.csv_flight_id || "—"}）` : "";
+      return detail.message + group;
+    }
+    return data.status === "REVOKED" ? "任务已取消，未能生成完整报告。" : "报告生成失败，请稍后重新选择文件上传。";
+  }
+
+  async function pollTask() {
+    clearTimeout(timer);
+    const task = currentTask;
+    if (!task) return;
+    try {
+      const {response, data} = await requestJSON(`/ai_flight/report/jobs/${encodeURIComponent(task.task_id)}`);
+      if (task !== currentTask) return;
+      if (response.status === 401 || response.status === 404) {
+        setBusy(false);
+        showStatus(response.status === 401 ? "登录已过期，请重新登录后查询" : "任务不存在或无权查看", "查询已停止，不会重复提交文件。", "error");
+        loginLink.hidden = response.status !== 401;
+        retryQuery.hidden = response.status !== 401;
+        return;
+      }
+      if (!response.ok || typeof data.status !== "string") throw new Error("查询失败");
+      queryFailures = 0;
+      const status = data.status.toUpperCase();
+      if (status === "SUCCESS") {
+        setBusy(false);
+        try {
+          renderReports(data.result);
+          showStatus("分析完成", `已生成 ${data.result.flights.length} 份报告，按飞行记录分别展示。`, "success");
+        } catch (_) {
+          showStatus("任务已完成，但报告数据暂时无法展示", "可继续查询结果，请勿重复上传。", "error");
+          retryQuery.hidden = false;
+        }
+        return;
+      }
+      if (["FAILED", "FAILURE", "REVOKED"].includes(status)) {
+        setBusy(false);
+        showStatus("本次分析未完成", failureMessage(data), "error");
+        return;
+      }
+      showStatus(pendingMessages[status] || "任务仍在处理中…", `${task.filename} · 完成后会自动显示报告，无需手动刷新。`, "processing");
+      timer = setTimeout(pollTask, 2000);
+    } catch (_) {
+      if (task !== currentTask) return;
+      queryFailures += 1;
+      if (queryFailures < 3) {
+        showStatus("查询连接暂时中断，正在重试…", "任务可能仍在后台执行，请勿重复上传。", "processing");
+        timer = setTimeout(pollTask, 3000);
+      } else {
+        setBusy(false);
+        showStatus("暂时无法获取任务进度", "任务可能仍在后台执行，点击“继续查询”获取结果。", "error");
+        retryQuery.hidden = false;
+      }
+    }
+  }
+
+  function followTask(task) {
+    currentTask = task;
+    rememberTask();
+    uploadFile.value = "";
+    taskReference.textContent = `任务编号：${task.task_id}`;
+    taskReference.hidden = false;
+    retryQuery.hidden = true;
+    loginLink.hidden = true;
+    queryFailures = 0;
+    setBusy(true);
+    showStatus("任务已提交，正在获取进度…", task.filename, "processing");
+    pollTask();
+  }
+
+  uploadFile.addEventListener("change", () => {
+    clearTimeout(timer);
+    currentTask = null;
+    idempotencyKey = null;
+    try { sessionStorage.removeItem(storageKey); } catch (_) {}
+    setBusy(false);
+    progress.hidden = reportResult.hidden = taskReference.hidden = true;
+    retryQuery.hidden = loginLink.hidden = true;
+    reportResult.replaceChildren();
+  });
+  uploadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (uploadButton.disabled || !uploadFile.files.length) return;
+    const filename = uploadFile.files[0].name;
+    idempotencyKey ||= crypto.randomUUID();
+    const body = new FormData(uploadForm);
+    body.set("idempotency_key", idempotencyKey);
+    setBusy(true);
+    showStatus("正在上传文件…", filename, "processing");
+    try {
+      const {response, data} = await requestJSON("/ai_flight/flights/report", {method: "POST", body});
+      // 重复请求接着查询原任务；投递结果不确定时也只查询，不重新提交。
+      const taskId = data.task_id || data.detail?.task_id;
+      if (taskId && (response.ok || response.status === 409 || response.status === 503)) {
+        followTask({task_id: taskId, filename});
+      } else {
+        setBusy(false);
+        const detail = data.detail;
+        showStatus("上传未完成", response.status === 401 ? "登录已过期，请重新登录。" :
+          (typeof detail === "string" ? detail : (detail?.message || "上传失败，请稍后重试")), "error");
+        loginLink.hidden = response.status !== 401;
+      }
+    } catch (_) {
+      setBusy(false);
+      showStatus("上传连接中断", "请直接点击上传重试，系统会使用原幂等键核对任务。重新选择文件会开始一次新上传。", "error");
+    }
+  });
+  retryQuery.addEventListener("click", () => { if (currentTask) followTask(currentTask); });
+  window.addEventListener("pagehide", () => { clearTimeout(timer); currentTask = null; });
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(storageKey));
+    if (saved?.task_id && typeof saved.filename === "string") followTask(saved);
+  } catch (_) {}
+})();
+</script>
+{% endblock %}

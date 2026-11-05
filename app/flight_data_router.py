@@ -3,17 +3,19 @@ import psycopg
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile,Request
 
 from .database_dependency import database_pool_for_route
+from .auth_dependencies import user_data_scope
 from src.cache.flight_record_cache import (
     CacheWriteError,
     get_cached_flight_record,
     get_cached_flight_records,
     invalidate_flight_record_after_update,
 )
+from src.common.uav_code import normalize_uav_code
 from src.database.flight_record_repository import (
     FlightRecordVersionConflict,
     update_flight_record,
 )
-from src.database.uav_repository import UavCodeConflict, register_uav
+from src.database.uav_repository import UavCodeConflict, register_uav, get_user_uavs, get_user_uav
 from src.flight_data.load_data import load_json_data
 from src.rag.document_save_to_database import save_document_to_database
 from src.schemas import FlightRecord, FlightRecordUpdate, UavCreate
@@ -22,11 +24,12 @@ from src.schemas import FlightRecord, FlightRecordUpdate, UavCreate
 flight_router = APIRouter(prefix="/flight")
 
 
-@flight_router.post("/uavs", status_code=201, dependencies=[Depends(database_pool_for_route)])
+@flight_router.post("/uavs", status_code=201, dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
 def create_uav(data: UavCreate):
     values = {name: getattr(data, name).strip() for name in ("uav_code", "uav_model", "manufacturer")}
     if not all(values.values()):
         raise HTTPException(status_code=422, detail="飞行器编号、型号和制造商不能为空")
+    values["uav_code"] = normalize_uav_code(values["uav_code"])
     try:
         uav_id = register_uav(**values)
     except UavCodeConflict:
@@ -45,7 +48,23 @@ def flights_validate(record: FlightRecord):
     }
 
 
-@flight_router.get("/flights/{record_id}", dependencies=[Depends(database_pool_for_route)])
+@flight_router.get("/uavs", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
+def my_uavs(limit: int = Query(default=100, ge=1, le=100)):
+    return get_user_uavs(limit)
+
+
+@flight_router.get("/uavs/{uav_id}/flights", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
+def uav_flights(uav_id: int, request: Request, limit: int = Query(default=5, ge=1, le=100)):
+    # 先验证飞行器归属；猜中别人的 ID 与不存在的 ID 都返回 404。
+    if get_user_uav(uav_id) is None:
+        raise HTTPException(status_code=404, detail="飞行器不存在")
+    try:
+        return get_cached_flight_records(request.app.state.cache, limit, uav_id=uav_id)
+    except CacheWriteError:
+        raise HTTPException(status_code=503, detail="缓存写入失败，请稍后重试")
+
+
+@flight_router.get("/flights/{record_id}", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
 def read_flight_record(record_id: int, request: Request):
     try:
         # 缓存命中直接返回；未命中或读取失败时由缓存层查询数据库。
@@ -61,7 +80,7 @@ def read_flight_record(record_id: int, request: Request):
         return data
 
 
-@flight_router.put("/flights/{record_id}", dependencies=[Depends(database_pool_for_route)])
+@flight_router.put("/flights/{record_id}", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
 def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: Request):
     """Replace a new-table record if the version has not changed."""
     values = changes.model_dump()
@@ -85,7 +104,7 @@ def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: 
 
     try:
         invalidate_flight_record_after_update(
-            request.app.state.cache, record_id, updated["uav_code"]
+            request.app.state.cache, record_id, updated["uav_code"], updated["uav_id"]
         )
     except CacheWriteError:
         # 数据库事务已提交；返回新版本，方便调用方确认写入结果。
@@ -100,7 +119,7 @@ def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: 
     return updated
 
 
-@flight_router.get("/flights", dependencies=[Depends(database_pool_for_route)])
+@flight_router.get("/flights", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
 def flight_records(
     request: Request,
     limit: int = Query(default=5, ge=1, le=100),
@@ -132,4 +151,4 @@ def save_document(file: UploadFile, request: Request):
     except pd.errors.ParserError:
         raise HTTPException(status_code=400, detail="Invalid json format")
 
-    save_document_to_database(file_data, request.app.state.embedding_model, "test_documents")
+    save_document_to_database(file_data, request.app.state.embedding_model, "documents")

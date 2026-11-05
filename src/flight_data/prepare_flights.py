@@ -43,6 +43,8 @@ def prepare_flights(data: pd.DataFrame) -> list[dict]:
         frame[column] = frame[column].astype("string").str.strip()
         if frame[column].isna().any() or frame[column].eq("").any():
             raise ValueError(f"{column} 不能为空")
+    # 在分组前统一编号，大小写不同的同一架飞行器会归到同一组。
+    frame["uav_code"] = frame["uav_code"].str.upper()
 
     frame["start_time"] = [
         _parse_time(value, "start_time", index + 2)

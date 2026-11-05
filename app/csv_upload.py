@@ -21,11 +21,12 @@ class CsvCacheError(RuntimeError):
 
 
 class CsvReportError(RuntimeError):
-    """Records were committed, but at least one AI report could not be generated."""
+    # 报告生成发生在入库前；失败时只标识对应的 CSV 飞行分组。
 
-    def __init__(self, record_ids: list[int]):
-        self.record_ids = record_ids
-        super().__init__(record_ids)
+    def __init__(self, uav_code: str, csv_flight_id: str):
+        self.uav_code = uav_code
+        self.csv_flight_id = csv_flight_id
+        super().__init__(uav_code, csv_flight_id)
 
 
 def staged_csv_path(upload_id: str) -> Path:

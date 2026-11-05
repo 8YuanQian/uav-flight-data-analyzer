@@ -1,0 +1,11 @@
+# 可选：复用本机已有的 E 盘模型缓存；新机器不需要此文件。
+services:
+  model-init:
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache
+  api:
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache
+  worker:
+    volumes:
+      - E:/CodexEnv/cache/huggingface-docker:/models-cache

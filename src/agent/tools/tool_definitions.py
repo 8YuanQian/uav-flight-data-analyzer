@@ -18,6 +18,7 @@ TOOL_DEFINITIONS = [
                     "type":"string",
                     "description":"飞行器编号，用于查询该飞行器的记录"
                 },
+                "uav_id":{"type":"integer","description":"当前用户的飞行器系统 ID，只能查询本人飞行器"},
                 "fields": {
                     "type": "array",
                     "items": {
@@ -35,7 +36,7 @@ TOOL_DEFINITIONS = [
                             "anomaly_status"
                         ]
                     },
-                    "description": "需要展示的飞行记录字段，根据用户问题选择"
+                    "description": "可选的飞行记录字段列表；不传或传空列表时保留全部检索数据，传非空列表时只保留指定字段"
                 }
             },
             "required":[],
@@ -74,7 +75,8 @@ TOOL_DEFINITIONS = [
                 "uav_code": {
                     "type": "string",
                     "description": "只分析这架飞行器的最近记录"
-                }
+                },
+                "uav_id": {"type": "integer", "description": "当前用户的飞行器系统 ID"}
             },
             "required": [],
             "additionalProperties": False

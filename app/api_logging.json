@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "standard": {
+      "()": "app.logging_config.BeijingFormatter",
+      "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "level": "INFO",
+      "formatter": "standard",
+      "stream": "ext://sys.stderr"
+    },
+    "file": {
+      "()": "app.logging_config.create_api_file_handler",
+      "level": "INFO",
+      "formatter": "standard"
+    }
+  },
+  "loggers": {
+    "uvicorn": {"handlers": ["console", "file"], "level": "INFO", "propagate": false},
+    "uvicorn.error": {"level": "INFO", "propagate": true},
+    "uvicorn.access": {"handlers": ["console", "file"], "level": "INFO", "propagate": false}
+  },
+  "root": {"handlers": ["console", "file"], "level": "INFO"}
+}

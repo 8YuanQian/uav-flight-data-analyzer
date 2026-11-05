@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}确认删除对话 · 无人机助手{% endblock %}
+{% block page_class %}page--workspace{% endblock %}
+{% block content %}
+<div class="page-topbar"><a class="back-link" href="/chats"><span aria-hidden="true">←</span> 返回对话列表</a></div>
+<section class="delete-confirmation">
+  <h1>删除这条对话？</h1>
+  <p>确认后，这条对话会从你的列表中移除，无法再通过此账号继续访问。</p>
+  <div class="delete-target">
+    {% if conversation.title %}
+      <strong>{{ conversation.title }}</strong>
+    {% else %}
+      <strong>会话 {{ conversation.thread_id|string|truncate(12, True, '…') }}</strong>
+      <small>{{ conversation.thread_id }}</small>
+    {% endif %}
+  </div>
+  <form class="delete-actions" method="post" action="/chats/{{ conversation.thread_id }}/delete">
+    <input type="hidden" name="confirmation_token" value="{{ confirmation_token }}">
+    <a class="button button--ghost" href="/chats">取消</a>
+    <button class="button button--danger" type="submit">确认删除</button>
+  </form>
+</section>
+{% endblock %}
