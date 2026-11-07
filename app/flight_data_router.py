@@ -3,7 +3,7 @@ import psycopg
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile,Request
 
 from .database_dependency import database_pool_for_route
-from .auth_dependencies import user_data_scope
+from .auth_dependencies import require_user, user_data_scope
 from src.cache.flight_record_cache import (
     CacheWriteError,
     get_cached_flight_record,
@@ -141,7 +141,7 @@ def flight_records(
     return data
 
 
-@flight_router.post("/save/document", dependencies=[Depends(database_pool_for_route)])
+@flight_router.post("/save/document", dependencies=[Depends(require_user), Depends(database_pool_for_route)])
 def save_document(file: UploadFile, request: Request):
     file_object = file.file
     try:

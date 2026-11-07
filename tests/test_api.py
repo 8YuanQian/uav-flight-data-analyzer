@@ -89,3 +89,60 @@ def test_save_document_targets_retrieval_table(monkeypatch):
     )))
     router.save_document(UploadFile(filename="doc.json", file=BytesIO(b"[]")), request)
     assert calls == [([{"text": "doc"}], model, "documents")]
+
+
+@pytest.mark.parametrize("authorization", [None, "Bearer invalid-token"])
+def test_save_document_rejects_missing_or_invalid_token(monkeypatch, authorization):
+    from unittest.mock import Mock
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setenv("JWT_SECRET_KEY", "document-upload-test-key-" * 2)
+    load = Mock()
+    save = Mock()
+    monkeypatch.setattr(router, "load_json_data", load)
+    monkeypatch.setattr(router, "save_document_to_database", save)
+    app = FastAPI()
+    app.include_router(router.flight_router)
+    headers = {"Authorization": authorization} if authorization else {}
+
+    response = TestClient(app).post(
+        "/flight/save/document", headers=headers,
+        files={"file": ("doc.json", b"[]", "application/json")},
+    )
+
+    assert response.status_code == 401
+    load.assert_not_called()
+    save.assert_not_called()
+
+
+@pytest.mark.parametrize("credential_kind", ["bearer", "cookie"])
+def test_save_document_accepts_valid_login(monkeypatch, credential_kind):
+    from unittest.mock import Mock
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    from src.auth.security import AuthIdentity, issue_access_token
+
+    monkeypatch.setenv("JWT_SECRET_KEY", "document-upload-test-key-" * 2)
+    documents = [{"text": "doc"}]
+    load = Mock(return_value=documents)
+    save = Mock()
+    monkeypatch.setattr(router, "load_json_data", load)
+    monkeypatch.setattr(router, "save_document_to_database", save)
+    app = FastAPI()
+    app.state.db_pool = object()
+    app.state.embedding_model = object()
+    app.include_router(router.flight_router)
+    token = issue_access_token(AuthIdentity(1, "test-user"))
+    headers = {"Authorization": f"Bearer {token}"} if credential_kind == "bearer" else {}
+    if credential_kind == "cookie":
+        headers["Cookie"] = f"uav_access_token={token}"
+
+    response = TestClient(app).post(
+        "/flight/save/document", headers=headers,
+        files={"file": ("doc.json", b"[]", "application/json")},
+    )
+
+    assert response.status_code == 200
+    load.assert_called_once()
+    save.assert_called_once_with(documents, app.state.embedding_model, "documents")

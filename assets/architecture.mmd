@@ -1,0 +1,17 @@
+flowchart LR
+    U[浏览器 / API 客户端] --> API[FastAPI]
+    API -->|认证 / 记录 / 状态| DB[(PostgreSQL + pgvector)]
+    API -->|缓存| CACHE[(Redis 缓存)]
+    API -->|提交任务| Q[(Redis Broker)]
+    API -->|暂存 CSV| V[(共享 CSV 卷)]
+    Q --> W[Celery Worker]
+    W -->|读取 CSV| V
+    W -->|记录 / 任务状态| DB
+    W -->|任务结果| RES[(Redis 结果库)]
+    W --> LLM[DeepSeek API]
+    API --> G[LangGraph Agent]
+    G -->|查询 / 检索| DB
+    G -->|模型与工具调用| LLM
+    G --> M[Embedding + Reranker]
+    INIT[db-init / model-init] -. 初始化 .-> API
+    INIT -. 初始化 .-> W

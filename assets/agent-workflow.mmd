@@ -1,0 +1,6 @@
+flowchart LR
+    S([开始]) --> SUM[Summary Node]
+    SUM --> A[Agent Node]
+    A -->|需要工具| T[Tool Node]
+    T --> A
+    A -->|形成回答| E([结束])
