@@ -1,4 +1,4 @@
-# 权限测试不默认绑定用户，确保没有身份时确实拒绝访问。
+# 权限测试不默认绑定用户；HTTP 校验 JWT，查询层使用显式用户编号。
 from io import BytesIO
 from types import SimpleNamespace
 from unittest.mock import MagicMock
@@ -55,17 +55,17 @@ def client(monkeypatch):
     records = {10: {"id": 10, "uav_id": 1, "uav_code": "UAV-A", "owner": 1},
                20: {"id": 20, "uav_id": 2, "uav_code": "UAV-B", "owner": 2}}
 
-    def get_record(record_id):
+    def get_record(record_id, *, user_id):
         row = records.get(record_id)
-        return row if row and row["owner"] == require_data_user_id() else None
+        return row if row and row["owner"] == user_id else None
     monkeypatch.setattr(flight_record_cache, "get_flight_by_id", get_record)
     monkeypatch.setattr(flight_data_router, "get_user_uavs",
                         lambda limit: [{"id": require_data_user_id()}])
     monkeypatch.setattr(flight_data_router, "get_user_uav",
                         lambda uav_id: {"id": uav_id} if uav_id == require_data_user_id() else None)
     monkeypatch.setattr(flight_record_cache, "get_recent_flights",
-                        lambda limit, code, **kw: [row for row in records.values()
-                            if row["owner"] == require_data_user_id()
+                        lambda limit, code, *, user_id, **kw: [row for row in records.values()
+                            if row["owner"] == user_id
                             and (kw.get("uav_id") is None or row["uav_id"] == kw["uav_id"])])
     return TestClient(app)
 
@@ -96,12 +96,12 @@ def test_cached_flight_lists_are_separated_by_user(client):
         assert [row["id"] for row in response.json()] == [record_id]
 
 
-def test_data_access_without_scope_fails_before_database(monkeypatch):
+def test_data_access_requires_explicit_user_before_database(monkeypatch):
     connect = MagicMock()
     monkeypatch.setattr(flight_record_repository, "get_connection", connect)
-    with pytest.raises(PermissionError):
+    with pytest.raises(TypeError, match="user_id"):
         flight_record_repository.get_latest_flight()
-    with pytest.raises(PermissionError):
+    with pytest.raises(TypeError, match="user_id"):
         flight_record_cache.get_cached_flight_record(FakeCache(), 10)
     connect.assert_not_called()
 
@@ -207,9 +207,10 @@ def test_agent_graph_uses_current_verified_user(monkeypatch):
     monkeypatch.setattr(ai_router, "_invoke_agent_graph",
                         lambda *args: {"answer": str(graph.invoke({})["user"]), "thread_id": str(uuid4())})
     monkeypatch.setattr(ai_router, "add_user_thread", lambda *args: True)
+    request = SimpleNamespace(headers={}, cookies={})
     with use_data_user(1):
         answer = ai_router.invoke_user_agent_graph(
-            UserQuestion(question="查询我的飞行记录"), object(), AuthIdentity(2, "B"))
+            UserQuestion(question="查询我的飞行记录"), request, AuthIdentity(2, "B"))
         assert answer["answer"] == "2"
         assert require_data_user_id() == 1
 
@@ -219,7 +220,7 @@ def test_historical_task_result_cannot_bypass_record_ownership(client, monkeypat
     monkeypatch.setattr(ai_router, "get_task_owner", lambda _: 1)
     monkeypatch.setattr(ai_router, "get_task_state", lambda _: {
         "status": "SUCCESS", "result": {"flights": [{"id": 20}]}})
-    monkeypatch.setattr(ai_router, "user_owns_flight_records", lambda ids: False)
+    monkeypatch.setattr(ai_router, "user_owns_flight_records", lambda ids, *, user_id: False)
     client.app.state.celery_app = SimpleNamespace(AsyncResult=lambda _: object())
     assert client.get(f"/ai_flight/report/jobs/{task_id}", headers=headers(1)).status_code == 404
 

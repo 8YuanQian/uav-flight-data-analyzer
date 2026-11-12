@@ -10,6 +10,7 @@ from fastapi import HTTPException
 from app import flight_data_router as router
 from src.database import flight_record_repository as repository
 from src.schemas import FlightRecordUpdate
+from src.auth.security import AuthIdentity
 
 
 @pytest.fixture
@@ -85,17 +86,17 @@ def test_update_route_calculates_minutes_and_invalidates_cache(monkeypatch, upda
     )
     monkeypatch.setattr(
         router, "invalidate_flight_record_after_update",
-        lambda *args: calls.append(args),
+        lambda *args, **kwargs: calls.append((*args, kwargs["user_id"])),
     )
     request = request_with_cache()
 
     result = router.replace_flight_record(
-        17, FlightRecordUpdate(**update_body), request
+        17, FlightRecordUpdate(**update_body), request, user=AuthIdentity(1, "test")
     )
 
     assert result["version"] == 4
     assert calls[0][3]["duration_minutes"] == 30
-    assert calls[1] == (request.app.state.cache, 17, "UAV-01", 3)
+    assert calls[1] == (request.app.state.cache, 17, "UAV-01", 3, 1)
 
 
 @pytest.mark.parametrize("outcome, status", [
@@ -110,7 +111,7 @@ def test_update_route_reports_conflict_or_missing(monkeypatch, update_body, outc
 
     with pytest.raises(HTTPException) as error:
         router.replace_flight_record(
-            17, FlightRecordUpdate(**update_body), request_with_cache()
+            17, FlightRecordUpdate(**update_body), request_with_cache(), user=AuthIdentity(1, "test")
         )
     assert error.value.status_code == status
 
@@ -120,13 +121,13 @@ def test_update_route_reports_committed_version_on_cache_failure(monkeypatch, up
         router, "update_flight_record",
         lambda *args: {"id": 17, "version": 4, "uav_code": "UAV-01", "uav_id": 3},
     )
-    def fail(*args):
+    def fail(*args, **kwargs):
         raise router.CacheWriteError()
     monkeypatch.setattr(router, "invalidate_flight_record_after_update", fail)
 
     with pytest.raises(HTTPException) as error:
         router.replace_flight_record(
-            17, FlightRecordUpdate(**update_body), request_with_cache()
+            17, FlightRecordUpdate(**update_body), request_with_cache(), user=AuthIdentity(1, "test")
         )
     assert error.value.status_code == 503
     assert error.value.detail["record_id"] == 17

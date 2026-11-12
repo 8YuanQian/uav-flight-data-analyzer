@@ -19,7 +19,7 @@ from src.database.flight_report_job_repository import (
     get_report_record_id,
 )
 from src.database.task_lease_repository import get_task_owner, get_task_state, register_task
-from .auth_dependencies import require_user, user_data_scope
+from .auth_dependencies import jwt_from_request, require_user, user_data_scope
 from .csv_upload import CsvCacheError, CsvReportError, CsvValidationError, stage_csv_upload, staged_csv_path
 from .database_dependency import database_pool_for_route
 
@@ -41,6 +41,8 @@ def _invoke_agent_graph(question: UserQuestion, request: Request) -> dict:
         "context": Overwrite([]),
         "message": [{"role": "user", "content": query}],
         "current_tool_call": None,
+        # 新会话和续聊都按本轮重新计数，覆盖检查点中上一轮的累计失败次数。
+        "security_failure_count": 0,
         "tool_results": Overwrite([]),
         "answer": "",
         "finished": False,
@@ -59,7 +61,7 @@ def invoke_user_agent_graph(question: UserQuestion, request: Request, user: Auth
         raise HTTPException(status_code=404, detail="对话不存在")
     if question.thread_id is None and not question.question.strip():
         raise HTTPException(status_code=422, detail="请输入问题")
-    with use_data_user(user.user_id):
+    with use_data_user(user.user_id, jwt_from_request(request)):
         answer = _invoke_agent_graph(question, request)
     # 首轮执行成功后，在同一事务中登记归属和标题；旧会话不补写标题。
     if question.thread_id is None and not add_user_thread(
@@ -122,7 +124,7 @@ def get_flight_report_job(
     task = request.app.state.celery_app.AsyncResult(task_id)
     response = {"task_id": task_id, "status": state["status"] if state else task.status}
     if state and state["status"] == "SUCCESS":
-        _authorize_report_result(task_uuid, state["result"])
+        _authorize_report_result(task_uuid, state["result"], user_id=user.user_id)
         response["result"] = state["result"]
         return response
     if state and state["status"] in {"PENDING", "RUNNING", "COMMITTED", "RETRY"}:
@@ -131,7 +133,7 @@ def get_flight_report_job(
         response["error"] = "REPORT_FAILED"
         return response
     if task.successful():
-        _authorize_report_result(task_uuid, task.result)
+        _authorize_report_result(task_uuid, task.result, user_id=user.user_id)
         response["result"] = task.result
     elif task.failed():
         if isinstance(task.result, (CsvValidationError, UavOwnershipConflict)):
@@ -155,14 +157,14 @@ def get_flight_report_job(
     return response
 
 
-def _authorize_report_result(task_id, result):
+def _authorize_report_result(task_id, result, *, user_id: int):
     # 历史任务结果也要按现行数据归属核验，不能用旧报表绕过飞行记录权限。
     if isinstance(result, dict) and isinstance(result.get("flights"), list):
-        if user_owns_flight_records([flight.get("id") for flight in result["flights"]]):
+        if user_owns_flight_records([flight.get("id") for flight in result["flights"]], user_id=user_id):
             return
     else:
         record_id = get_report_record_id(task_id)
-        if record_id is not None and get_flight_by_id(record_id) is not None:
+        if record_id is not None and get_flight_by_id(record_id, user_id=user_id) is not None:
             return
     raise HTTPException(status_code=404, detail="报告对应的飞行记录不存在")
 

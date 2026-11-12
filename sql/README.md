@@ -19,6 +19,7 @@
 5. `create_csv_upload_idempotency_keys.sql`、`create_celery_task_states.sql`：建立上传去重和任务状态表。
 6. `add_task_owner_and_report_idempotency.sql`：补齐任务用户归属和单条报表去重表。
 7. `add_flight_data_ownership.sql`：补齐飞行器、飞行记录的用户归属及约束。
+8. `add_flight_id.sql`：增加可空的 CSV 飞行编号，并按用户建立唯一索引；历史数据不回填。
 
 这些脚本不创建数据库、不插入示例用户或飞行数据，也不创建废弃的 `flight_analyses`、`test_documents`。LangGraph 的检查点表由 FastAPI 启动时的 `PostgresSaver.setup()` 创建或升级。执行出错会立即停止，排除错误后可重跑入口。
 

@@ -15,11 +15,17 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
     if state["current_tool_call"] is None:
         raise ValueError("没有正确的工具调用参数")
 
+    # 安全节点已经校验身份；这里仅拆出执行身份，不读取上下文或再次验证 JWT。
+    arguments = json.loads(state["current_tool_call"]["arguments"])
+    user_id = arguments.pop("user_id")
+    tool_arguments = json.dumps(arguments, ensure_ascii=False)
+
     if state["current_tool_call"]["name"] == "rag_search":
         try:
             tool_result = execute_tool(
                 tool_name=state["current_tool_call"]["name"],
-                tool_arguments=state["current_tool_call"]["arguments"],
+                tool_arguments=tool_arguments,
+                user_id=user_id,
                 embedding_model=embedding_model,
                 rerank_model=rerank_model,
             )
@@ -37,7 +43,6 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
 
         try:
             result = prepare_tool_result(data=tool_result)
-
         except TypeError:
             logger.exception("无法JOSN序列化")
             return build_error_result_message(
@@ -70,7 +75,8 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
         try:
             tool_result = execute_tool(
                 tool_name=state["current_tool_call"]["name"],
-                tool_arguments=state["current_tool_call"]["arguments"]
+                tool_arguments=tool_arguments,
+                user_id=user_id,
             )
         except Exception:
             logger.exception(
@@ -125,7 +131,8 @@ def graph_tool_node(state: UAVGraphState, *, embedding_model=None, rerank_model=
         try:
             tool_result = execute_tool(
                 tool_name=state["current_tool_call"]["name"],
-                tool_arguments=state["current_tool_call"]["arguments"]
+                tool_arguments=tool_arguments,
+                user_id=user_id,
             )
         except Exception:
             logger.exception(

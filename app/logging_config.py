@@ -53,13 +53,18 @@ class DailyFileHandler(logging.Handler):
             self.handleError(record)
 
 
-def _log_directory() -> Path:
-    # 容器内使用 /app/logs；在宿主机直接运行时使用项目自己的 logs 目录。
-    return Path(os.getenv("UAV_LOG_DIR", Path(__file__).resolve().parents[1] / "logs"))
+def _log_directory(service: str) -> Path:
+    # 显式配置的是最终目录；容器通过不同挂载将 /app/logs 分别映射到四个目录。
+    configured = os.getenv("UAV_LOG_DIR")
+    if configured:
+        return Path(configured)
+    # 宿主机运行时也区分服务，连接测试库的进程使用 test_ 前缀。
+    prefix = "test_" if os.getenv("UAV_DB_NAME") == "uav_project_test" else ""
+    return Path(__file__).resolve().parents[1] / "logs" / f"{prefix}{service}"
 
 
 def create_api_file_handler() -> DailyFileHandler:
-    return DailyFileHandler(_log_directory(), "fastapi")
+    return DailyFileHandler(_log_directory("fastapi"), "fastapi")
 
 
 def _attach_worker_file_handler(logger, **kwargs):
@@ -67,7 +72,7 @@ def _attach_worker_file_handler(logger, **kwargs):
     if any(isinstance(handler, DailyFileHandler) and handler.prefix == "worker"
            for handler in logger.handlers):
         return
-    handler = DailyFileHandler(_log_directory(), "worker")
+    handler = DailyFileHandler(_log_directory("worker"), "worker")
     handler.setFormatter(BeijingFormatter(LOG_FORMAT))
     logger.addHandler(handler)
 

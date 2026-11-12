@@ -14,6 +14,9 @@ class UAVGraphState(TypedDict):
     # 当前待执行的工具
     current_tool_call: dict[str, str] | None
 
+    # 本轮工具参数校验失败的累计次数；下一轮提问时重置。
+    security_failure_count: int
+
     # 工具结果，独立于history
     tool_results: Annotated[list[Any],operator.add]
 
@@ -24,7 +27,7 @@ class UAVGraphState(TypedDict):
     summary_cursor: int 
 
     # 最终答案
-    answer: str
+    answer: dict
 
     # 任务状态
     finished: bool

@@ -13,7 +13,7 @@ PORT = os.getenv("UAV_DB_PORT", os.getenv("PORT", 5433))
 
 POOL_MIN_SIZE = 2
 API_POOL_MAX_SIZE = 5
-WORKER_POOL_MAX_SIZE = 15
+WORKER_POOL_MAX_SIZE = 4
 POOL_TIMEOUT_SECONDS = 60
 
 _request_pool: ContextVar[ConnectionPool | None] = ContextVar(

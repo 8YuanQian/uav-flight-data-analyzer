@@ -1,19 +1,28 @@
-from src.database.flight_record_repository import get_flight_by_id, get_recent_flights
+from src.database.flight_record_repository import get_flight_by_id, get_flights_from_flight_id, get_recent_flights
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def analyze_flight_data(
-    limit: int = 1, record_id: int | None = None, uav_code: str | None = None, uav_id: int | None = None
+    limit: int = 1, record_id: int | None = None, uav_code: str | None = None,
+    uav_id: int | None = None, flight_id: str | None = None, *, user_id: int,
 ) -> dict:
     """
     分析无人机飞行数据，
     检测高度、速度、电池、温度异常。
     """
 
-    if record_id is not None:
-        flight = get_flight_by_id(record_id)
+    if flight_id is not None:
+        if record_id is not None:
+            logger.error("LLM同时提供了flight_id和record_id")
+            raise ValueError("flight_id 和 record_id 不能同时指定")
+        flights = get_flights_from_flight_id(flight_id, limit, user_id=user_id)
+    elif record_id is not None:
+        flight = get_flight_by_id(record_id, user_id=user_id)
         flights = [flight] if flight is not None else []
     else:
-        flights = get_recent_flights(limit, uav_code, uav_id=uav_id) if uav_id is not None else get_recent_flights(limit, uav_code)
+        flights = get_recent_flights(limit, uav_code, uav_id=uav_id, user_id=user_id)
 
     if not flights:
         return {
@@ -67,6 +76,7 @@ def analyze_flight_data(
 
         results.append({
             "record_id":flight["id"],
+            **({"flight_id": flight["flight_id"]} if flight.get("flight_id") is not None else {}),
             "uav_code":flight["uav_code"],
             "risk_score":risk_score,
             "risk_level":level,

@@ -31,7 +31,7 @@ def _parse_time(value, column, row_number):
 
 
 def prepare_flights(data: pd.DataFrame) -> list[dict]:
-    """Keep CSV flight_id only in the returned group metadata; never persist it."""
+    """按飞行器和 CSV 飞行编号分组，计算每次飞行的统计数据。"""
     missing = REQUIRED_COLUMNS - set(data.columns)
     if missing:
         raise ValueError(f"Missing required columns {sorted(missing)}")
@@ -45,6 +45,11 @@ def prepare_flights(data: pd.DataFrame) -> list[dict]:
             raise ValueError(f"{column} 不能为空")
     # 在分组前统一编号，大小写不同的同一架飞行器会归到同一组。
     frame["uav_code"] = frame["uav_code"].str.upper()
+
+    # 同一次飞行允许多行，但同一个编号不能同时属于多架飞行器。
+    for flight_id, rows in frame.groupby("flight_id", sort=False, dropna=False):
+        if rows["uav_code"].nunique() > 1:
+            raise ValueError(f"飞行记录编号 {flight_id} 在文件中重复")
 
     frame["start_time"] = [
         _parse_time(value, "start_time", index + 2)
@@ -86,7 +91,7 @@ def prepare_flights(data: pd.DataFrame) -> list[dict]:
         started = cleaned["start_time"].iloc[0]
         ended = cleaned["end_time"].max()
         result.append({
-            "csv_flight_id": str(flight_id),  # Response mapping only, not a database column.
+            "csv_flight_id": str(flight_id),  # 保存时写入 flight_records.flight_id。
             "uav_code": str(uav_code),
             "uav_model": str(cleaned["uav_model"].iloc[0]),
             "manufacturer": str(cleaned["manufacturer"].iloc[0]),

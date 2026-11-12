@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile,Request
 
 from .database_dependency import database_pool_for_route
 from .auth_dependencies import require_user, user_data_scope
+from src.auth.security import AuthIdentity
 from src.cache.flight_record_cache import (
     CacheWriteError,
     get_cached_flight_record,
@@ -53,22 +54,23 @@ def my_uavs(limit: int = Query(default=100, ge=1, le=100)):
     return get_user_uavs(limit)
 
 
-@flight_router.get("/uavs/{uav_id}/flights", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
-def uav_flights(uav_id: int, request: Request, limit: int = Query(default=5, ge=1, le=100)):
+@flight_router.get("/uavs/{uav_id}/flights", dependencies=[Depends(database_pool_for_route)])
+def uav_flights(uav_id: int, request: Request, limit: int = Query(default=5, ge=1, le=100),
+                user: AuthIdentity = Depends(user_data_scope)):
     # 先验证飞行器归属；猜中别人的 ID 与不存在的 ID 都返回 404。
     if get_user_uav(uav_id) is None:
         raise HTTPException(status_code=404, detail="飞行器不存在")
     try:
-        return get_cached_flight_records(request.app.state.cache, limit, uav_id=uav_id)
+        return get_cached_flight_records(request.app.state.cache, limit, uav_id=uav_id, user_id=user.user_id)
     except CacheWriteError:
         raise HTTPException(status_code=503, detail="缓存写入失败，请稍后重试")
 
 
-@flight_router.get("/flights/{record_id}", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
-def read_flight_record(record_id: int, request: Request):
+@flight_router.get("/flights/{record_id}", dependencies=[Depends(database_pool_for_route)])
+def read_flight_record(record_id: int, request: Request, user: AuthIdentity = Depends(user_data_scope)):
     try:
         # 缓存命中直接返回；未命中或读取失败时由缓存层查询数据库。
-        data = get_cached_flight_record(request.app.state.cache, record_id)
+        data = get_cached_flight_record(request.app.state.cache, record_id, user_id=user.user_id)
     except psycopg.Error:
         raise HTTPException(status_code=500, detail="Database Error")
     except CacheWriteError:
@@ -80,8 +82,9 @@ def read_flight_record(record_id: int, request: Request):
         return data
 
 
-@flight_router.put("/flights/{record_id}", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
-def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: Request):
+@flight_router.put("/flights/{record_id}", dependencies=[Depends(database_pool_for_route)])
+def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: Request,
+                          user: AuthIdentity = Depends(user_data_scope)):
     """Replace a new-table record if the version has not changed."""
     values = changes.model_dump()
     expected_version = values.pop("version")
@@ -104,7 +107,8 @@ def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: 
 
     try:
         invalidate_flight_record_after_update(
-            request.app.state.cache, record_id, updated["uav_code"], updated["uav_id"]
+            request.app.state.cache, record_id, updated["uav_code"], updated["uav_id"],
+            user_id=user.user_id,
         )
     except CacheWriteError:
         # 数据库事务已提交；返回新版本，方便调用方确认写入结果。
@@ -119,15 +123,16 @@ def replace_flight_record(record_id: int, changes: FlightRecordUpdate, request: 
     return updated
 
 
-@flight_router.get("/flights", dependencies=[Depends(user_data_scope), Depends(database_pool_for_route)])
+@flight_router.get("/flights", dependencies=[Depends(database_pool_for_route)])
 def flight_records(
     request: Request,
     limit: int = Query(default=5, ge=1, le=100),
     uav_code: str | None = Query(default=None, min_length=1),
+    user: AuthIdentity = Depends(user_data_scope),
 ):
     try:
         # 缓存键包含 limit，避免不同页长共用同一份列表。
-        data = get_cached_flight_records(request.app.state.cache, limit, uav_code)
+        data = get_cached_flight_records(request.app.state.cache, limit, uav_code, user_id=user.user_id)
     except psycopg.Error:
         raise HTTPException(status_code=500, detail="Database Error")
     except CacheWriteError:

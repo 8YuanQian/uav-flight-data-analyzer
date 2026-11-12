@@ -4,7 +4,7 @@ import pandas as pd
 from redis import Redis
 
 from src.cache.flight_record_cache import CacheWriteError, invalidate_flight_record_lists
-from src.database.flight_record_repository import get_flight_by_id
+from src.database.flight_record_repository import FlightIdConflict, get_flight_by_id, validate_import_flight_ids
 from src.database.flight_record_repository import save_flight_groups
 from src.database.flight_record_repository import user_owns_flight_records
 from src.database.uav_repository import validate_import_uavs, UavOwnershipConflict
@@ -38,10 +38,11 @@ def generate_flight_report_task(self, record_id: int) -> dict:
 
 
 def _generate_report(record_id, lease):
-    require_data_user_id()
+    # worker 入口从已绑定的任务归属取得身份，向查询层显式传递。
+    user_id = require_data_user_id()
     if lease is not None:
         lease.assert_owned()
-    record = get_flight_by_id(record_id)
+    record = get_flight_by_id(record_id, user_id=user_id)
     if record is None:
         raise ValueError(f"Flight record {record_id} does not exist")
 
@@ -66,7 +67,7 @@ def process_flights_csv_task(self, upload_id: str, filename: str | None, content
 
 
 def _process_flights_csv(path, filename, content_type, lease, previous_result):
-    require_data_user_id()
+    user_id = require_data_user_id()
     # 入库结果已与任务状态一同提交时，只需继续清理缓存，不重复调用模型或入库。
     if previous_result is None:
         try:
@@ -90,6 +91,11 @@ def _process_flights_csv(path, filename, content_type, lease, previous_result):
         try:
             validate_import_uavs(group["uav_code"] for group in groups)
         except UavOwnershipConflict as exc:
+            raise CsvValidationError(str(exc)) from exc
+
+        try:
+            validate_import_flight_ids(group["csv_flight_id"] for group in groups)
+        except FlightIdConflict as exc:
             raise CsvValidationError(str(exc)) from exc
 
         prepared_reports = []
@@ -118,27 +124,30 @@ def _process_flights_csv(path, filename, content_type, lease, previous_result):
             return {"filename": filename, "content_type": content_type,
                     "flight_count": len(flights), "flights": flights}
 
-        if lease is None:
-            saved = save_flight_groups(filename or "uploaded.csv", groups)
-            result = build_result(saved)
-        else:
-            # 行记录与任务结果在同一数据库事务提交；消息重投时不会重复入库。
-            committed = {}
-
-            def on_saved(cursor, saved):
+        try:
+            if lease is None:
+                saved = save_flight_groups(filename or "uploaded.csv", groups)
                 result = build_result(saved)
-                lease.mark_committed(cursor, result)
-                committed["result"] = result
+            else:
+                # 行记录与任务结果在同一数据库事务提交；消息重投时不会重复入库。
+                committed = {}
 
-            save_flight_groups(filename or "uploaded.csv", groups,
-                               task_id=lease.task_id, task_guard=lease.check_for_write,
-                               on_saved=on_saved)
-            result = committed["result"]
+                def on_saved(cursor, saved):
+                    result = build_result(saved)
+                    lease.mark_committed(cursor, result)
+                    committed["result"] = result
+
+                save_flight_groups(filename or "uploaded.csv", groups,
+                                   task_id=lease.task_id, task_guard=lease.check_for_write,
+                                   on_saved=on_saved)
+                result = committed["result"]
+        except FlightIdConflict as exc:
+            raise CsvValidationError(str(exc)) from exc
     else:
         result = previous_result
         if lease is not None:
             lease.assert_owned()
-        if not user_owns_flight_records([record["id"] for record in result["flights"]]):
+        if not user_owns_flight_records([record["id"] for record in result["flights"]], user_id=user_id):
             raise CsvValidationError("任务包含不属于当前账号的飞行记录")
 
     # 入库已提交后再清理缓存；清理失败仍报告已保存的记录编号。
@@ -154,7 +163,8 @@ def _process_flights_csv(path, filename, content_type, lease, previous_result):
         if lease is not None:
             lease.assert_owned()
         invalidate_flight_record_lists(cache, (record["uav_code"] for record in result["flights"]),
-                                      uav_ids=(record["uav_id"] for record in result["flights"]))
+                                      uav_ids=(record["uav_id"] for record in result["flights"]),
+                                      user_id=user_id)
     except CacheWriteError as exc:
         raise CsvCacheError([record["id"] for record in result["flights"]]) from exc
     finally:

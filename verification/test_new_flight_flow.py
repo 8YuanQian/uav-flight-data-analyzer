@@ -16,6 +16,7 @@ from app.csv_upload import CsvCacheError, CsvReportError, CsvValidationError, st
 from src.cache import flight_record_cache
 from src.database import flight_record_repository, uav_repository
 from src.flight_data.prepare_flights import prepare_flights
+from src.flight_data.load_data import load_csv_data
 from src.llm import llm_report
 from src.schemas import FlightReport
 
@@ -24,7 +25,8 @@ from src.schemas import FlightReport
 def isolated_uav_owner_check(monkeypatch):
     # 这些用例专测 CSV 和报表流程，真实归属校验另有权限测试覆盖。
     monkeypatch.setattr(tasks, "validate_import_uavs", lambda codes: None)
-    monkeypatch.setattr(tasks, "user_owns_flight_records", lambda ids: True)
+    monkeypatch.setattr(tasks, "validate_import_flight_ids", lambda ids: None)
+    monkeypatch.setattr(tasks, "user_owns_flight_records", lambda ids, **kwargs: True)
 
 
 def sample_rows():
@@ -59,6 +61,18 @@ def test_mixed_case_uav_codes_share_csv_flight_group():
     assert groups[0]["row_count"] == 2
 
 
+def test_csv_flight_id_preserves_leading_zeroes_and_literal_na():
+    frame = load_csv_data(BytesIO(b"flight_id,height\n001,1\nNA,2\n"))
+    assert frame["flight_id"].tolist() == ["001", "NA"]
+
+
+def test_same_flight_id_cannot_belong_to_two_uavs_in_one_csv():
+    rows = sample_rows()
+    rows[1]["uav_code"] = "UAV-2"
+    with pytest.raises(ValueError, match="飞行记录编号.*重复"):
+        prepare_flights(pd.DataFrame(rows))
+
+
 @pytest.mark.parametrize("replacement", ["2026/10/28 10:00", "2026-02-30 10:00"])
 def test_invalid_time_rejected(replacement):
     rows = sample_rows()
@@ -74,7 +88,7 @@ def test_overlap_rejected():
         prepare_flights(pd.DataFrame(rows))
 
 
-def test_save_uses_generated_id_and_does_not_insert_csv_group_id(monkeypatch):
+def test_save_uses_generated_id_and_inserts_csv_flight_id(monkeypatch):
     groups = prepare_flights(pd.DataFrame(sample_rows()))
     connection = MagicMock()
     connection.__enter__.return_value = connection
@@ -91,8 +105,8 @@ def test_save_uses_generated_id_and_does_not_insert_csv_group_id(monkeypatch):
     for call in cursor.execute.call_args_list:
         sql, values = call.args
         assert "csv_flight_id" not in sql
-        assert "flight_id" not in sql
-        assert "group-a" not in values and "group-b" not in values
+        assert "flight_id" in sql
+        assert ("group-a" in values) != ("group-b" in values)
 
 
 def test_explicit_uav_registration_rejects_duplicate(monkeypatch):
@@ -183,7 +197,7 @@ def test_filtered_flight_query_uses_uav_code_parameter(monkeypatch):
     cursor = connection.cursor.return_value.__enter__.return_value
     cursor.fetchall.return_value = []
     monkeypatch.setattr(flight_record_repository, "get_connection", lambda: connection)
-    assert flight_record_repository.get_recent_flights(5, "uav-1") == []
+    assert flight_record_repository.get_recent_flights(5, "uav-1", user_id=1) == []
     sql, values = cursor.execute.call_args.args
     assert "uav.uav_code = %s" in sql
     assert "flight.task_id" not in sql and "flight.*" not in sql
@@ -191,7 +205,7 @@ def test_filtered_flight_query_uses_uav_code_parameter(monkeypatch):
 
 
 def test_flight_list_cache_key_ignores_uav_code_case():
-    assert flight_record_cache._list_key(5, "uav-1") == flight_record_cache._list_key(5, "UAV-1")
+    assert flight_record_cache._list_key(5, "uav-1", user_id=1) == flight_record_cache._list_key(5, "UAV-1", user_id=1)
 
 
 def test_update_compares_version_and_returns_joined_new_record(monkeypatch):
@@ -213,7 +227,7 @@ def test_worker_report_reads_new_record_by_generated_id(monkeypatch):
     record = prepare_flights(pd.DataFrame(sample_rows()))[0]
     requested = []
     monkeypatch.setattr(
-        tasks, "get_flight_by_id", lambda record_id: requested.append(record_id) or record
+        tasks, "get_flight_by_id", lambda record_id, **kwargs: requested.append(record_id) or record
     )
     monkeypatch.setattr(
         tasks, "generate_flight_report",
@@ -398,6 +412,34 @@ def test_worker_rejects_invalid_csv_and_removes_staged_file(monkeypatch, tmp_pat
     with pytest.raises(CsvValidationError, match="Missing required columns"):
         tasks.process_flights_csv_task.run(upload_id, "bad.csv", "text/csv")
     assert not staged_csv_path(upload_id).exists()
+
+
+def test_existing_flight_id_rejected_before_model_and_database_write(monkeypatch, tmp_path):
+    monkeypatch.setenv("CSV_UPLOAD_DIR", str(tmp_path))
+    upload_id = stage_csv_upload(BytesIO(pd.DataFrame(sample_rows()).to_csv(index=False).encode()))
+    def duplicate(_):
+        raise flight_record_repository.FlightIdConflict("飞行记录编号已存在，请检查 CSV")
+    monkeypatch.setattr(tasks, "validate_import_flight_ids", duplicate)
+    report, save = MagicMock(), MagicMock()
+    monkeypatch.setattr(tasks, "generate_flight_report", report)
+    monkeypatch.setattr(tasks, "save_flight_groups", save)
+    with pytest.raises(CsvValidationError, match="编号已存在"):
+        tasks.process_flights_csv_task.run(upload_id, "sample.csv", "text/csv")
+    report.assert_not_called()
+    save.assert_not_called()
+
+
+def test_concurrent_flight_id_conflict_is_reported_as_csv_error(monkeypatch, tmp_path):
+    monkeypatch.setenv("CSV_UPLOAD_DIR", str(tmp_path))
+    upload_id = stage_csv_upload(BytesIO(pd.DataFrame(sample_rows()).to_csv(index=False).encode()))
+    monkeypatch.setattr(tasks, "generate_flight_report", lambda *a, **kw: FlightReport(
+        conclusion="测试报告", observations=[], attention_items=[], limitations=[]
+    ))
+    def duplicate(*args, **kwargs):
+        raise flight_record_repository.FlightIdConflict("飞行记录编号已存在，请检查 CSV")
+    monkeypatch.setattr(tasks, "save_flight_groups", duplicate)
+    with pytest.raises(CsvValidationError, match="编号已存在"):
+        tasks.process_flights_csv_task.run(upload_id, "sample.csv", "text/csv")
 
 
 def test_worker_reports_committed_ids_on_cache_failure(monkeypatch, tmp_path):

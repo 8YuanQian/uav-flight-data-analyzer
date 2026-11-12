@@ -44,11 +44,11 @@ def test_record_cache_miss_then_hit(monkeypatch):
     }
     monkeypatch.setattr(
         cache_module, "get_flight_by_id",
-        lambda record_id: calls.append(record_id) or row,
+        lambda record_id, **kwargs: calls.append(record_id) or row,
     )
 
-    assert cache_module.get_cached_flight_record(cache, 17) is row
-    second = cache_module.get_cached_flight_record(cache, 17)
+    assert cache_module.get_cached_flight_record(cache, 17, user_id=1) is row
+    second = cache_module.get_cached_flight_record(cache, 17, user_id=1)
 
     assert second["duration_minutes"] == 30
     assert second["created_at"] == "2026-01-01T00:00:00+00:00"
@@ -58,19 +58,19 @@ def test_record_cache_miss_then_hit(monkeypatch):
 def test_cache_read_failure_queries_database(monkeypatch):
     cache = FakeCache()
     cache.fail_get = True
-    monkeypatch.setattr(cache_module, "get_flight_by_id", lambda record_id: {"id": record_id})
+    monkeypatch.setattr(cache_module, "get_flight_by_id", lambda record_id, **kwargs: {"id": record_id})
 
-    assert cache_module.get_cached_flight_record(cache, 17) == {"id": 17}
+    assert cache_module.get_cached_flight_record(cache, 17, user_id=1) == {"id": 17}
     assert "uav:users:1:flight_records:by_id:v2:17" in cache.values
 
 
 def test_cache_write_failure_is_reported(monkeypatch):
     cache = FakeCache()
     cache.fail_set = True
-    monkeypatch.setattr(cache_module, "get_flight_by_id", lambda record_id: {"id": record_id})
+    monkeypatch.setattr(cache_module, "get_flight_by_id", lambda record_id, **kwargs: {"id": record_id})
 
     with pytest.raises(cache_module.CacheWriteError):
-        cache_module.get_cached_flight_record(cache, 17)
+        cache_module.get_cached_flight_record(cache, 17, user_id=1)
 
 
 def test_list_cache_separates_limit_and_uav_code(monkeypatch):
@@ -78,12 +78,12 @@ def test_list_cache_separates_limit_and_uav_code(monkeypatch):
     calls = []
     monkeypatch.setattr(
         cache_module, "get_recent_flights",
-        lambda limit, uav_code: calls.append((limit, uav_code)) or [{"id": limit}],
+        lambda limit, uav_code, **kwargs: calls.append((limit, uav_code)) or [{"id": limit}],
     )
 
-    cache_module.get_cached_flight_records(cache, 1, "uav-01")
-    cache_module.get_cached_flight_records(cache, 1, "UAV-01")
-    cache_module.get_cached_flight_records(cache, 2, "UAV-01")
+    cache_module.get_cached_flight_records(cache, 1, "uav-01", user_id=1)
+    cache_module.get_cached_flight_records(cache, 1, "UAV-01", user_id=1)
+    cache_module.get_cached_flight_records(cache, 2, "UAV-01", user_id=1)
 
     assert calls == [(1, "uav-01"), (2, "UAV-01")]
 
@@ -96,7 +96,7 @@ def test_update_invalidates_detail_and_lists():
         "uav:users:1:flight_records:list:v2:code:UAV-01:1": "old",
     }
 
-    cache_module.invalidate_flight_record_after_update(cache, 17, "uav-01", 3)
+    cache_module.invalidate_flight_record_after_update(cache, 17, "uav-01", 3, user_id=1)
 
     assert cache.values == {}
 
@@ -105,4 +105,4 @@ def test_cache_invalidation_failure_is_reported():
     cache = FakeCache()
     cache.fail_delete = True
     with pytest.raises(cache_module.CacheWriteError):
-        cache_module.invalidate_flight_record_lists(cache, ["UAV-01"])
+        cache_module.invalidate_flight_record_lists(cache, ["UAV-01"], user_id=1)

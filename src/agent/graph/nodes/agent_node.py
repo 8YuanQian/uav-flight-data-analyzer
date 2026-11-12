@@ -34,6 +34,7 @@ def _read_public_answer(response):
         markers.update(find_internal_markers(source["url"]))
     return answer, markers
 
+
 def graph_agent_node(state:UAVGraphState):
     selection = select_context_with_budget(query=state['query'],context=state['context'],message=state['message'],keep_previous_turns=3)
     selected_message = selection["message"]

@@ -87,7 +87,7 @@ services:
       - model_cache:/models-cache
       - tokenizer_cache:/tokenizer-cache
       - csv_uploads:/app/upload_spool
-      - ./logs:/app/logs
+      - ./logs/fastapi:/app/logs
     ports:
       - "${UAV_API_PORT:-8002}:8000"
 
@@ -98,7 +98,7 @@ services:
       - model_cache:/models-cache
       - tokenizer_cache:/tokenizer-cache
       - csv_uploads:/app/upload_spool
-      - ./logs:/app/logs
+      - ./logs/worker:/app/logs
 
 volumes:
   postgres_data:

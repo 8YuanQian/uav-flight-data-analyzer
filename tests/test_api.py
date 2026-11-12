@@ -7,6 +7,7 @@ from fastapi import HTTPException
 
 from app import flight_data_router as router
 from src.schemas import FlightRecord, UavCreate
+from src.auth.security import AuthIdentity
 
 
 def request_with_cache():
@@ -55,10 +56,10 @@ def test_validate_csv_interval_uses_current_fields():
 
 
 def test_read_flight_record_not_found(monkeypatch):
-    monkeypatch.setattr(router, "get_cached_flight_record", lambda cache, record_id: None)
+    monkeypatch.setattr(router, "get_cached_flight_record", lambda cache, record_id, **kwargs: None)
 
     with pytest.raises(HTTPException) as error:
-        router.read_flight_record(999, request_with_cache())
+        router.read_flight_record(999, request_with_cache(), user=AuthIdentity(1, "test"))
     assert error.value.status_code == 404
 
 
@@ -66,10 +67,10 @@ def test_read_flight_record_uses_database_record_id(monkeypatch):
     calls = []
     monkeypatch.setattr(
         router, "get_cached_flight_record",
-        lambda cache, record_id: calls.append(record_id) or {"id": record_id},
+        lambda cache, record_id, **kwargs: calls.append(record_id) or {"id": record_id},
     )
 
-    assert router.read_flight_record(17, request_with_cache()) == {"id": 17}
+    assert router.read_flight_record(17, request_with_cache(), user=AuthIdentity(1, "test")) == {"id": 17}
     assert calls == [17]
 
 

@@ -2,17 +2,21 @@ TOOL_DEFINITIONS = [
     {
         "type":"function",
         "name":"get_flight_data",
-        "description":"查询新 flight_records 表。可按数据库生成的 record_id 精确查询，或按 uav_code 查询一架飞行器的最近记录；CSV 中用于分组的 flight_id 不入库，不能用它查询。",
+        "description":"查询当前用户的飞行记录。可使用用户提供的 flight_id 或系统 record_id 作为起点，二者互斥，不能同时指定；limit 大于 1 时从该记录开始按开始时间和 ID 倒序查询多条，此时不按飞行器筛选。未提供起点时可按飞行器查询最近记录。如果用户提供了id却不能明确判断是record_id还是flight_id就不应该调用这个函数而是要询问用户这个id的具体类型",
         "parameters":{
             "type":"object",
             "properties":{
                 "limit":{
                     "type":"integer",
-                    "description":"这个参数决定了返回的数据条数,默认值为1"
+                    "description":"返回记录数量，范围 1 至 100，默认 1；与 record_id 或 flight_id 同时提供且大于 1 时，从该记录开始倒序查询"
                 },
                 "record_id":{
                     "type":"integer",
-                    "description":"数据库自动生成的飞行记录 id"
+                    "description":"数据库自动生成的飞行记录 id；limit 大于 1 时是范围查询的起点。根据用户的查询要求选择，如果用户没有指定 record_id 则不用填写此参数；与 flight_id 互斥，不能同时指定"
+                },
+                "flight_id":{
+                    "type":"string",
+                    "description":"用户在 CSV 中提供的飞行编号，在当前用户下唯一且区分大小写；可作为查询或范围查询的起点，与 record_id 互斥，不能同时指定"
                 },
                 "uav_code":{
                     "type":"string",
@@ -25,6 +29,7 @@ TOOL_DEFINITIONS = [
                         "type": "string",
                         "enum": [
                             "id",
+                            "flight_id",
                             "uav_code",
                             "duration_minutes",
                             "average_speed",
@@ -52,6 +57,9 @@ TOOL_DEFINITIONS = [
             工具会自动从数据库获取飞行记录，
             并计算电池消耗、高度、速度、温度等指标，
             判断飞行任务是否存在异常风险。
+            用户提供的 flight_id 与系统 record_id 互斥，不能同时指定。
+            使用 flight_id 时，limit 大于 1 会从该记录开始按时间和系统 ID 倒序分析；
+            使用 record_id 时仅分析该条记录。指定任一编号时不按飞行器筛选。
 
             当用户需要：
             - 分析最近一次飞行
@@ -66,11 +74,15 @@ TOOL_DEFINITIONS = [
                 "limit": {
                     "type": "integer",
                     "description":
-                        "需要分析的飞行记录数量，默认分析最近1条记录"
+                        "需要分析的飞行记录数量，范围 1 至 100，默认 1；与 flight_id 同时提供时，从该记录开始倒序分析；record_id 仅分析一条"
                 },
                 "record_id": {
                     "type": "integer",
-                    "description": "数据库自动生成的飞行记录 id"
+                    "description": "数据库自动生成的飞行记录 id，与 flight_id 互斥，不能同时指定"
+                },
+                "flight_id": {
+                    "type": "string",
+                    "description": "用户在 CSV 中提供的飞行编号，在当前用户下唯一且区分大小写；与 record_id 互斥，不能同时指定"
                 },
                 "uav_code": {
                     "type": "string",

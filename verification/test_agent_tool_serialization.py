@@ -21,7 +21,7 @@ def test_flight_tool_passes_numeric_duration_to_agent(monkeypatch):
     state = {
         "current_tool_call": {
             "name": "get_flight_data",
-            "arguments": '{"record_id":7,"fields":["id","duration_minutes"]}',
+            "arguments": '{"record_id":7,"fields":["id","duration_minutes"],"user_id":1}',
             "call_id": "call-7",
         }
     }
@@ -51,7 +51,7 @@ def test_omitted_fields_keep_all_retrieved_flight_data(monkeypatch, selection):
     state = {
         "current_tool_call": {
             "name": "get_flight_data",
-            "arguments": json.dumps({"limit": 2, **selection}),
+            "arguments": json.dumps({"limit": 2, **selection, "user_id": 1}),
             "call_id": "call-all",
         }
     }

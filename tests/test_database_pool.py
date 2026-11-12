@@ -125,7 +125,7 @@ def test_cache_hit_does_not_borrow_database_connection(monkeypatch):
     monkeypatch.setattr(
         flight_router_module,
         "get_cached_flight_record",
-        lambda cache, record_id: {"id": record_id},
+        lambda cache, record_id, **kwargs: {"id": record_id},
     )
 
     with TestClient(app) as client:
@@ -211,7 +211,7 @@ def test_report_job_submission_and_status_queries_use_api_pool():
 
 def test_worker_rejects_missing_record_id(monkeypatch):
     task_module = import_module("app.tasks")
-    monkeypatch.setattr(task_module, "get_flight_by_id", lambda record_id: None)
+    monkeypatch.setattr(task_module, "get_flight_by_id", lambda record_id, **kwargs: None)
 
     with pytest.raises(ValueError, match="does not exist"):
         task_module._generate_report(999, None)
@@ -234,7 +234,7 @@ def test_api_and_worker_pool_limits(monkeypatch):
 
     assert [(pool["min_size"], pool["max_size"], pool["timeout"]) for pool in options] == [
         (2, 5, 60),
-        (2, 15, 60),
+        (2, 4, 60),
     ]
     assert all(pool["open"] is False for pool in options)
 

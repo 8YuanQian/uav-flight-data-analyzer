@@ -21,7 +21,7 @@ services:
       - E:/CodexEnv/cache/huggingface-docker:/models-cache
       - csv_uploads:/app/upload_spool
       - type: bind
-        source: ./logs
+        source: ./logs/fastapi
         target: /app/logs
     ports:
       - "8002:8000"
@@ -47,7 +47,7 @@ services:
     volumes:
       - csv_uploads:/app/upload_spool
       - type: bind
-        source: ./logs
+        source: ./logs/worker
         target: /app/logs
     networks:
       - uav-net

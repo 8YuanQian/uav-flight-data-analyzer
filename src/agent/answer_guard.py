@@ -7,7 +7,7 @@ _INTERNAL_NAMES = (
     "get_flight_data", "analyze_flight_data", "rag_search",
     "flight_records", "flight_analyses", "selected_fields", "preview_records",
     "total_records", "function_call_output", "tool_results", "record_id",
-    "uav_id", "uav_code", "uav_model", "csv_flight_id", "duration_minutes",
+    "uav_id", "uav_code", "uav_model", "csv_flight_id", "flight_id", "duration_minutes",
     "row_count", "start_time", "end_time", "average_height", "max_height",
     "average_speed", "max_speed", "battery_start", "battery_end",
     "minimum_battery", "average_temperature", "max_temperature",

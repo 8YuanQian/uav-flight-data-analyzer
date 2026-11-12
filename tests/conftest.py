@@ -13,7 +13,7 @@ def data_user():
 
 @pytest.fixture
 def flight_group():
-    # CSV 的 flight_id 只用于分组；数据库会另行生成记录 ID。
+    # CSV 的 flight_id 与数据库生成的记录 ID 分别保存。
     return {
         "uav_code": "UAV-01",
         "uav_model": "Test Model",

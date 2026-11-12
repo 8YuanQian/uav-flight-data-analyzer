@@ -9,6 +9,7 @@ from src.agent.memory.context_manager import (
 
 ALLOWED_FLIGHT_FIELDS = {
     "id",
+    "flight_id",
     "uav_id",
     "uav_code",
     "uav_model",
@@ -34,6 +35,7 @@ ALLOWED_FLIGHT_FIELDS = {
 }
 
 PUBLIC_FLIGHT_FIELDS = {
+    "flight_id": "飞行编号",
     "uav_code": "飞行器编号",
     "uav_model": "飞行器型号",
     "manufacturer": "制造商",
@@ -154,6 +156,8 @@ def public_flight_analysis(data: dict, *, include_record_id: bool = False) -> di
         }
         if include_record_id:
             public_item["飞行记录编号"] = item["record_id"]
+        if item.get("flight_id") is not None:
+            public_item["飞行编号"] = item["flight_id"]
         results.append(public_item)
     return {"飞行分析": results}
 

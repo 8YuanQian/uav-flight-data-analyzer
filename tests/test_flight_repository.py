@@ -23,7 +23,7 @@ def test_get_latest_flight(mock_database):
     row = {"id": 17, "uav_code": "UAV-01"}
     cursor.fetchone.return_value = row
 
-    assert repository.get_latest_flight() == row
+    assert repository.get_latest_flight(user_id=1) == row
     sql, parameters = cursor.execute.call_args.args
     assert "FROM flight_records AS flight JOIN uavs AS uav" in sql
     assert parameters == (1, 1, 1)
@@ -34,7 +34,7 @@ def test_get_flight_by_system_id(mock_database):
     _, cursor = mock_database
     cursor.fetchone.return_value = {"id": 17}
 
-    assert repository.get_flight_by_id(17) == {"id": 17}
+    assert repository.get_flight_by_id(17, user_id=1) == {"id": 17}
     sql, parameters = cursor.execute.call_args.args
     assert "AND flight.id = %s" in sql
     assert parameters == (1, 1, 17)
@@ -45,10 +45,32 @@ def test_get_recent_flights_by_uav_code(mock_database):
     _, cursor = mock_database
     cursor.fetchall.return_value = [{"id": 17}]
 
-    assert repository.get_recent_flights(2, "uav-01") == [{"id": 17}]
+    assert repository.get_recent_flights(2, "uav-01", user_id=1) == [{"id": 17}]
     sql, parameters = cursor.execute.call_args.args
     assert "AND uav.uav_code = %s" in sql
     assert parameters == (1, 1, "UAV-01", 2)
+
+
+def test_get_flights_from_record_scopes_anchor_and_orders_range(mock_database):
+    _, cursor = mock_database
+    rows = [{"id": 17}, {"id": 16}]
+    cursor.fetchall.return_value = rows
+
+    assert repository.get_flights_from_record(17, 2, user_id=1) == rows
+    sql, parameters = cursor.execute.call_args.args
+    assert "(flight.start_time, flight.id) <= (" in sql
+    assert "anchor.id = %s AND anchor.user_id = %s AND anchor_uav.user_id = %s" in sql
+    assert "ORDER BY flight.start_time DESC, flight.id DESC LIMIT %s" in sql
+    assert parameters == (1, 1, 17, 1, 1, 2)
+
+
+@pytest.mark.parametrize("record_id,limit", [(0, 2), (True, 2), (17, 0), (17, 101), (17, True)])
+def test_invalid_flight_range_rejected_without_connection(monkeypatch, record_id, limit):
+    connect = MagicMock()
+    monkeypatch.setattr(repository, "get_connection", connect)
+    with pytest.raises(ValueError):
+        repository.get_flights_from_record(record_id, limit, user_id=1)
+    connect.assert_not_called()
 
 
 @pytest.mark.parametrize("record_id", [0, -1, True, "17", None])
@@ -56,7 +78,7 @@ def test_invalid_record_id_rejected_without_connection(monkeypatch, record_id):
     connect = MagicMock()
     monkeypatch.setattr(repository, "get_connection", connect)
     with pytest.raises(ValueError, match="id"):
-        repository.get_flight_by_id(record_id)
+        repository.get_flight_by_id(record_id, user_id=1)
     connect.assert_not_called()
 
 
@@ -65,11 +87,11 @@ def test_invalid_limit_rejected_without_connection(monkeypatch, limit):
     connect = MagicMock()
     monkeypatch.setattr(repository, "get_connection", connect)
     with pytest.raises(ValueError, match="limit"):
-        repository.get_recent_flights(limit)
+        repository.get_recent_flights(limit, user_id=1)
     connect.assert_not_called()
 
 
-def test_save_groups_keeps_csv_flight_id_out_of_insert(monkeypatch, mock_database, flight_group):
+def test_save_groups_inserts_csv_flight_id(monkeypatch, mock_database, flight_group):
     _, cursor = mock_database
     cursor.fetchone.return_value = (17,)
     monkeypatch.setattr(repository, "get_or_create_uav", lambda *args, **kwargs: 3)
@@ -82,8 +104,29 @@ def test_save_groups_keeps_csv_flight_id_out_of_insert(monkeypatch, mock_databas
     }]
     sql, parameters = cursor.execute.call_args.args
     assert "INSERT INTO flight_records" in sql
+    assert "flight_id" in sql
     assert "csv_flight_id" not in sql
-    assert "CSV-01" not in parameters
+    assert "CSV-01" in parameters
+
+
+def test_validate_import_flight_ids_scopes_existing_check_to_user(mock_database):
+    _, cursor = mock_database
+    cursor.fetchone.return_value = ("CSV-01",)
+    with pytest.raises(repository.FlightIdConflict, match="已存在"):
+        repository.validate_import_flight_ids(["CSV-01"])
+    sql, parameters = cursor.execute.call_args.args
+    assert "WHERE user_id = %s AND flight_id = ANY(%s)" in sql
+    assert parameters == (1, ["CSV-01"])
+
+
+def test_flight_id_range_is_scoped_and_keeps_user_identifier(mock_database):
+    _, cursor = mock_database
+    cursor.fetchall.return_value = [{"id": 17, "flight_id": "001"}]
+    assert repository.get_flights_from_flight_id(" 001 ", 2, user_id=1) == [{"id": 17, "flight_id": "001"}]
+    sql, parameters = cursor.execute.call_args.args
+    assert "anchor.flight_id = %s" in sql
+    assert "anchor.user_id = %s AND anchor_uav.user_id = %s" in sql
+    assert parameters == (1, 1, "001", 1, 1, 2)
 
 
 def test_task_id_requires_guard_and_final_state(mock_database, flight_group):

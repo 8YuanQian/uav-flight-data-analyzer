@@ -62,19 +62,19 @@ def test_two_users_are_isolated_and_database_rejects_mismatched_owner(monkeypatc
             with use_data_user(ids[0]):
                 first = flights.save_flight_groups("permissions.csv", [group])[0]
                 assert uavs.get_user_uav(first["uav_id"]) is not None
-                assert flights.get_flight_by_id(first["id"])["id"] == first["id"]
+                assert flights.get_flight_by_id(first["id"], user_id=ids[0])["id"] == first["id"]
             with use_data_user(ids[1]):
                 second = flights.save_flight_groups("permissions.csv", [
                     {**group, "uav_code": f"PERM-{suffix}-B"}
                 ])[0]
-                assert flights.get_flight_by_id(first["id"]) is None
+                assert flights.get_flight_by_id(first["id"], user_id=ids[1]) is None
                 assert uavs.get_user_uav(first["uav_id"]) is None
-                assert flights.get_recent_flights(10, uav_id=first["uav_id"]) == []
-                assert [r["id"] for r in flights.get_recent_flights(10)] == [second["id"]]
+                assert flights.get_recent_flights(10, uav_id=first["uav_id"], user_id=ids[1]) == []
+                assert [r["id"] for r in flights.get_recent_flights(10, user_id=ids[1])] == [second["id"]]
                 assert flights.update_flight_record(first["id"], 1, "forged.csv", group) is None
                 with pytest.raises(uavs.UavOwnershipConflict):
                     flights.save_flight_groups("forged.csv", [group])
-                assert not flights.user_owns_flight_records([first["id"]])
+                assert not flights.user_owns_flight_records([first["id"]], user_id=ids[1])
                 from app import tasks
                 from unittest.mock import MagicMock
                 report = MagicMock()
