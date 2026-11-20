@@ -1,31 +1,791 @@
 [
-    {
-        "question": "无人机什么时候自动返航？",
-        "topic": "自动返航"
-    },
-
-    {
-        "question": "无人机电池低于多少需要返航？",
-        "topic": "低电量告警"
-    },
-
-    {
-        "question": "GPS丢失怎么办？",
-        "topic": "卫星信号不足"
-    },
-
-    {
-        "question": "无人机在飞行中遇到强风怎么办？",
-        "topic": "强风天气"
-    },
-
-    {
-        "question": "飞控系统出现故障时应该如何处理？",
-        "topic": "飞控故障"
-    },
-
-    {
-        "question": "飞行过程中GPS信号丢失，应该如何应对？",
-        "topic": "卫星信号不足"
-    }
+  {
+    "id": "return-1",
+    "question": "无人机什么时候自动返航？",
+    "category": "normal",
+    "group_id": "return",
+    "split": "dev",
+    "answerable": true,
+    "topic": "自动返航",
+    "relevant_doc_ids": [
+      "sha256:0fd9f2e573892e38c8b705dd597947456c4025750bc09510203e7861ad7308cc",
+      "sha256:c4d91279e5d948a610b322de9e4df0b78aec3f82bd17d5430ccacec13bc1d1a8"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "return-2",
+    "question": "自动返回起飞点需要哪些条件？",
+    "category": "paraphrase",
+    "group_id": "return",
+    "split": "dev",
+    "answerable": true,
+    "topic": "自动返航",
+    "relevant_doc_ids": [
+      "sha256:0fd9f2e573892e38c8b705dd597947456c4025750bc09510203e7861ad7308cc",
+      "sha256:c4d91279e5d948a610b322de9e4df0b78aec3f82bd17d5430ccacec13bc1d1a8"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "return-3",
+    "question": "开了返航功能就一定能自己飞回来吗？",
+    "category": "paraphrase",
+    "group_id": "return",
+    "split": "dev",
+    "answerable": true,
+    "topic": "自动返航",
+    "relevant_doc_ids": [
+      "sha256:0fd9f2e573892e38c8b705dd597947456c4025750bc09510203e7861ad7308cc",
+      "sha256:c4d91279e5d948a610b322de9e4df0b78aec3f82bd17d5430ccacec13bc1d1a8"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_warning-1",
+    "question": "无人机电池低于多少需要返航？",
+    "category": "normal",
+    "group_id": "battery_warning",
+    "split": "test",
+    "answerable": true,
+    "topic": "低电量告警",
+    "relevant_doc_ids": [
+      "sha256:9a30ad00699304f80e34cb4b3ff4bbe95324f0ca03acbe8e33780f3f97b355ce"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_warning-2",
+    "question": "电量报警了还可以继续拍视频吗？",
+    "category": "paraphrase",
+    "group_id": "battery_warning",
+    "split": "test",
+    "answerable": true,
+    "topic": "低电量告警",
+    "relevant_doc_ids": [
+      "sha256:9a30ad00699304f80e34cb4b3ff4bbe95324f0ca03acbe8e33780f3f97b355ce"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_warning-3",
+    "question": "不同飞机都能按同一个低电量百分比决定返航吗？",
+    "category": "paraphrase",
+    "group_id": "battery_warning",
+    "split": "test",
+    "answerable": true,
+    "topic": "低电量告警",
+    "relevant_doc_ids": [
+      "sha256:9a30ad00699304f80e34cb4b3ff4bbe95324f0ca03acbe8e33780f3f97b355ce"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "gps_loss-1",
+    "question": "GPS丢失怎么办？",
+    "category": "normal",
+    "group_id": "gps_loss",
+    "split": "dev",
+    "answerable": true,
+    "topic": "卫星信号不足",
+    "relevant_doc_ids": [
+      "sha256:b657ab3a739d94ab68f90b7942f40d9a887bf2b0b6cad0abd89716538a22ba5f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "gps_loss-2",
+    "question": "飞行过程中GPS信号丢失，应该如何应对？",
+    "category": "paraphrase",
+    "group_id": "gps_loss",
+    "split": "dev",
+    "answerable": true,
+    "topic": "卫星信号不足",
+    "relevant_doc_ids": [
+      "sha256:b657ab3a739d94ab68f90b7942f40d9a887bf2b0b6cad0abd89716538a22ba5f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "gps_loss-3",
+    "question": "天上飞着突然没有卫星定位了该怎么处理？",
+    "category": "paraphrase",
+    "group_id": "gps_loss",
+    "split": "dev",
+    "answerable": true,
+    "topic": "卫星信号不足",
+    "relevant_doc_ids": [
+      "sha256:b657ab3a739d94ab68f90b7942f40d9a887bf2b0b6cad0abd89716538a22ba5f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "wind-1",
+    "question": "无人机在飞行中遇到强风怎么办？",
+    "category": "normal",
+    "group_id": "wind",
+    "split": "test",
+    "answerable": true,
+    "topic": "强风天气",
+    "relevant_doc_ids": [
+      "sha256:cc403bfc5c11ff7431d09f78623caa4d56c85e855a443e018e3475d556a97233",
+      "sha256:9bbac819d30c1d3d22542da9c67acd0f02dd7e6f9992faab0e9cee3502f9f9ae"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "wind-2",
+    "question": "风突然大起来，飞机还能悬停就可以继续任务吗？",
+    "category": "paraphrase",
+    "group_id": "wind",
+    "split": "test",
+    "answerable": true,
+    "topic": "强风天气",
+    "relevant_doc_ids": [
+      "sha256:cc403bfc5c11ff7431d09f78623caa4d56c85e855a443e018e3475d556a97233",
+      "sha256:9bbac819d30c1d3d22542da9c67acd0f02dd7e6f9992faab0e9cee3502f9f9ae"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "wind-3",
+    "question": "逆风飞不回来时应该怎么判断是否备降？",
+    "category": "paraphrase",
+    "group_id": "wind",
+    "split": "test",
+    "answerable": true,
+    "topic": "强风天气",
+    "relevant_doc_ids": [
+      "sha256:cc403bfc5c11ff7431d09f78623caa4d56c85e855a443e018e3475d556a97233",
+      "sha256:9bbac819d30c1d3d22542da9c67acd0f02dd7e6f9992faab0e9cee3502f9f9ae"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "controller_fault-1",
+    "question": "飞控系统出现故障时应该如何处理？",
+    "category": "normal",
+    "group_id": "controller_fault",
+    "split": "dev",
+    "answerable": true,
+    "topic": "异常复盘",
+    "relevant_doc_ids": [
+      "sha256:a331ba85ddc29b448960c0931549eac9f376fcf993082402550a0bd8493e271f",
+      "sha256:a8832f7b0a1007a3a505c282404cad430b578f7306a40d6f68a34773778b6477"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "controller_fault-2",
+    "question": "飞机报故障且原因不明，应该先保存哪些信息？",
+    "category": "paraphrase",
+    "group_id": "controller_fault",
+    "split": "dev",
+    "answerable": true,
+    "topic": "异常复盘",
+    "relevant_doc_ids": [
+      "sha256:a331ba85ddc29b448960c0931549eac9f376fcf993082402550a0bd8493e271f",
+      "sha256:a8832f7b0a1007a3a505c282404cad430b578f7306a40d6f68a34773778b6477"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "controller_fault-3",
+    "question": "故障报警还没查清，可以关掉检查继续飞吗？",
+    "category": "paraphrase",
+    "group_id": "controller_fault",
+    "split": "dev",
+    "answerable": true,
+    "topic": "异常复盘",
+    "relevant_doc_ids": [
+      "sha256:a331ba85ddc29b448960c0931549eac9f376fcf993082402550a0bd8493e271f",
+      "sha256:a8832f7b0a1007a3a505c282404cad430b578f7306a40d6f68a34773778b6477"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "rtk-1",
+    "question": "RTK定位是否意味着无人机永远不会漂移？",
+    "category": "normal",
+    "group_id": "rtk",
+    "split": "test",
+    "answerable": true,
+    "topic": "RTK概念",
+    "relevant_doc_ids": [
+      "sha256:d86ff28fd99dd837874638abca742172f6baaee34e3a2a3e0d23a3dd2451d2bc"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "rtk-2",
+    "question": "RTK已经固定解了，还可能出现位置误差吗？",
+    "category": "paraphrase",
+    "group_id": "rtk",
+    "split": "test",
+    "answerable": true,
+    "topic": "RTK概念",
+    "relevant_doc_ids": [
+      "sha256:d86ff28fd99dd837874638abca742172f6baaee34e3a2a3e0d23a3dd2451d2bc"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "rtk-3",
+    "question": "差分链路断开后，RTK精度还能保证吗？",
+    "category": "paraphrase",
+    "group_id": "rtk",
+    "split": "test",
+    "answerable": true,
+    "topic": "RTK概念",
+    "relevant_doc_ids": [
+      "sha256:d86ff28fd99dd837874638abca742172f6baaee34e3a2a3e0d23a3dd2451d2bc"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "height-1",
+    "question": "相对高度、离地高度和海拔有什么区别？",
+    "category": "normal",
+    "group_id": "height",
+    "split": "dev",
+    "answerable": true,
+    "topic": "高度概念",
+    "relevant_doc_ids": [
+      "sha256:ccfc0ed2ae0a06b3995b41d93f4d36dcbd85d887abcd2b0d37605709a13f7f3f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "height-2",
+    "question": "从楼顶起飞后显示高度能直接当离地距离吗？",
+    "category": "paraphrase",
+    "group_id": "height",
+    "split": "dev",
+    "answerable": true,
+    "topic": "高度概念",
+    "relevant_doc_ids": [
+      "sha256:ccfc0ed2ae0a06b3995b41d93f4d36dcbd85d887abcd2b0d37605709a13f7f3f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "height-3",
+    "question": "屏幕高度相对于起飞点还是下方地面，为什么要区分？",
+    "category": "paraphrase",
+    "group_id": "height",
+    "split": "dev",
+    "answerable": true,
+    "topic": "高度概念",
+    "relevant_doc_ids": [
+      "sha256:ccfc0ed2ae0a06b3995b41d93f4d36dcbd85d887abcd2b0d37605709a13f7f3f"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "vision-1",
+    "question": "无人机视觉定位在什么条件下有效？",
+    "category": "normal",
+    "group_id": "vision",
+    "split": "test",
+    "answerable": true,
+    "topic": "视觉定位",
+    "relevant_doc_ids": [
+      "sha256:8c12f3592ce47aa647467130ac464c608e61c363ecaf8132a73ba13308906f8d"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "vision-2",
+    "question": "昏暗又没纹理的地面还能靠视觉稳定悬停吗？",
+    "category": "paraphrase",
+    "group_id": "vision",
+    "split": "test",
+    "answerable": true,
+    "topic": "视觉定位",
+    "relevant_doc_ids": [
+      "sha256:8c12f3592ce47aa647467130ac464c608e61c363ecaf8132a73ba13308906f8d"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "vision-3",
+    "question": "在水面和反光地板上，视觉定位为什么可能变差？",
+    "category": "paraphrase",
+    "group_id": "vision",
+    "split": "test",
+    "answerable": true,
+    "topic": "视觉定位",
+    "relevant_doc_ids": [
+      "sha256:8c12f3592ce47aa647467130ac464c608e61c363ecaf8132a73ba13308906f8d"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_storage-1",
+    "question": "无人机电池长期存放应保持多少电量？",
+    "category": "normal",
+    "group_id": "battery_storage",
+    "split": "dev",
+    "answerable": true,
+    "topic": "电池储存电量",
+    "relevant_doc_ids": [
+      "sha256:b4ef7173c0ca27b3436b474c0d881820dd79e0f6a914ec55f7a47b78c7ac0fc2"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_storage-2",
+    "question": "所有无人机电池都必须按同一个百分比存放吗？",
+    "category": "paraphrase",
+    "group_id": "battery_storage",
+    "split": "dev",
+    "answerable": true,
+    "topic": "电池储存电量",
+    "relevant_doc_ids": [
+      "sha256:b4ef7173c0ca27b3436b474c0d881820dd79e0f6a914ec55f7a47b78c7ac0fc2"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "battery_storage-3",
+    "question": "电池长时间不用，满电或电量太低有什么影响？",
+    "category": "paraphrase",
+    "group_id": "battery_storage",
+    "split": "dev",
+    "answerable": true,
+    "topic": "电池储存电量",
+    "relevant_doc_ids": [
+      "sha256:b4ef7173c0ca27b3436b474c0d881820dd79e0f6a914ec55f7a47b78c7ac0fc2"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "compass_calibration-1",
+    "question": "无人机换了飞行地点就必须校准指南针吗？",
+    "category": "normal",
+    "group_id": "compass_calibration",
+    "split": "test",
+    "answerable": true,
+    "topic": "指南针校准维护",
+    "relevant_doc_ids": [
+      "sha256:9c80bcc3d339a0f5d5988d714ef5fe021e4b5511c8e85131d3a08707eae6a5eb"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "compass_calibration-2",
+    "question": "每换一个起飞场地都要重新校磁吗？",
+    "category": "paraphrase",
+    "group_id": "compass_calibration",
+    "split": "test",
+    "answerable": true,
+    "topic": "指南针校准维护",
+    "relevant_doc_ids": [
+      "sha256:9c80bcc3d339a0f5d5988d714ef5fe021e4b5511c8e85131d3a08707eae6a5eb"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "compass_calibration-3",
+    "question": "换场地后要不要校准指南针，应根据什么决定？",
+    "category": "paraphrase",
+    "group_id": "compass_calibration",
+    "split": "test",
+    "answerable": true,
+    "topic": "指南针校准维护",
+    "relevant_doc_ids": [
+      "sha256:9c80bcc3d339a0f5d5988d714ef5fe021e4b5511c8e85131d3a08707eae6a5eb"
+    ],
+    "annotation_note": "相关片段以显式列出的资料为准；同主题不自动视为相关。"
+  },
+  {
+    "id": "contrast-01",
+    "question": "失联后的动作一定是返航，还是可能悬停或降落？",
+    "category": "confusing",
+    "group_id": "return",
+    "split": "dev",
+    "answerable": true,
+    "topic": "失联保护",
+    "relevant_doc_ids": [
+      "sha256:c4d91279e5d948a610b322de9e4df0b78aec3f82bd17d5430ccacec13bc1d1a8"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:0fd9f2e573892e38c8b705dd597947456c4025750bc09510203e7861ad7308cc"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-02",
+    "question": "画面卡住但遥控还能用，应关掉遥控器还是先目视返回？",
+    "category": "confusing",
+    "group_id": "video_freeze",
+    "split": "test",
+    "answerable": true,
+    "topic": "图传冻结",
+    "relevant_doc_ids": [
+      "sha256:6707a99aac18c2f6d5d84a45a3f39052b0063fa1799bafaa3f39363911021327"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:705382d7f1666f753328972915bff357a7c2438b331255822b417a11bcf24503"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-03",
+    "question": "手机飞行应用闪退，但遥控器还有反馈，算完全失联吗？",
+    "category": "confusing",
+    "group_id": "app_crash",
+    "split": "dev",
+    "answerable": true,
+    "topic": "应用崩溃",
+    "relevant_doc_ids": [
+      "sha256:d7aad2e3e6719ca3324a24996d15dc1f54dd94196703b11816e22f753cc68416"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:705382d7f1666f753328972915bff357a7c2438b331255822b417a11bcf24503"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-04",
+    "question": "GPS与GNSS是同一个系统吗？卫星多就一定定位可靠吗？",
+    "category": "confusing",
+    "group_id": "gnss",
+    "split": "test",
+    "answerable": true,
+    "topic": "卫星导航",
+    "relevant_doc_ids": [
+      "sha256:bb2f2b431d593e238e615238a4ea012f3eca67ee3eb7f03e87992ff6575c70b3"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:d86ff28fd99dd837874638abca742172f6baaee34e3a2a3e0d23a3dd2451d2bc"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-05",
+    "question": "视觉定位是不是避障，能否保证不会撞到细电线？",
+    "category": "confusing",
+    "group_id": "vision_vs_avoidance",
+    "split": "dev",
+    "answerable": true,
+    "topic": "避障能力",
+    "relevant_doc_ids": [
+      "sha256:5e5ea2cb31d8afc1eab441b5b372f398960016dc5c65f25cbb938d2e211d4eef"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:2a8094f437b6995a16783f2059bb4cdd4206a23bb4c97165b869f3fc28db042c"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-06",
+    "question": "离地高度与相对起飞点高度是一回事吗？",
+    "category": "confusing",
+    "group_id": "height",
+    "split": "dev",
+    "answerable": true,
+    "topic": "高度概念",
+    "relevant_doc_ids": [
+      "sha256:ccfc0ed2ae0a06b3995b41d93f4d36dcbd85d887abcd2b0d37605709a13f7f3f"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:ec4f59f07fda241b4625740aee6ecc21aa1a9777cc902b4d7a5b34945312f5a2"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-07",
+    "question": "逆风时地速很低，能只看地速判断固定翼失速风险吗？",
+    "category": "confusing",
+    "group_id": "airspeed",
+    "split": "test",
+    "answerable": true,
+    "topic": "空速地速",
+    "relevant_doc_ids": [
+      "sha256:7d0874e176901c5fc593985f7ab265e6ae18808e1364c395ceea1af42f8d2900"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:9bbac819d30c1d3d22542da9c67acd0f02dd7e6f9992faab0e9cee3502f9f9ae"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-08",
+    "question": "装更大容量的电池一定续航更久吗，重量会影响吗？",
+    "category": "confusing",
+    "group_id": "capacity",
+    "split": "dev",
+    "answerable": true,
+    "topic": "电池容量",
+    "relevant_doc_ids": [
+      "sha256:8f22cfef58615eb573590d99a6475503e80dfe7b079b7db3512bfa2a25544e6c"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:56e22e42ecdebd1cb73c509a6ae8b40da918dd9c7bd96da5057e4420de528171"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-09",
+    "question": "手机应用更新成功，是不是飞机和电池固件也全更新了？",
+    "category": "confusing",
+    "group_id": "firmware",
+    "split": "test",
+    "answerable": true,
+    "topic": "固件软件",
+    "relevant_doc_ids": [
+      "sha256:4220fd8d2872552764f8384e8a415ce8e794496a3e2e7b01cb7d256b4194524b"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:e5373d0ed607496d7dd3c3e8431e4d4ee3d465d4df931d6ce1b8412dd9143da6"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-10",
+    "question": "实名登记做完了，是否表示人员资格和飞行审批都不用办？",
+    "category": "confusing",
+    "group_id": "registration",
+    "split": "dev",
+    "answerable": true,
+    "topic": "实名登记",
+    "relevant_doc_ids": [
+      "sha256:d0a5d7c194199d1eaa6c13a07a1e4cdfe6006ce1210b0d2901e741bdb834ec6d"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:d5ab54dfd21c22e1830dde00de9b28dd87b33fca5caabe3e29ad0ca8e7e2c898"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-11",
+    "question": "起飞前在汽车旁出现指南针干扰，应先离开还是当场反复校准？",
+    "category": "confusing",
+    "group_id": "compass_interference",
+    "split": "test",
+    "answerable": true,
+    "topic": "指南针干扰",
+    "relevant_doc_ids": [
+      "sha256:859be46d290ddd9208a3ca8660ca5eecd42ef806e14c66fc3d14c14c545e1b5d"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:9c80bcc3d339a0f5d5988d714ef5fe021e4b5511c8e85131d3a08707eae6a5eb"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-12",
+    "question": "视觉异常时，是先排除镜头遮挡还是直接把校准当成维修？",
+    "category": "confusing",
+    "group_id": "vision_calibration",
+    "split": "dev",
+    "answerable": true,
+    "topic": "视觉校准维护",
+    "relevant_doc_ids": [
+      "sha256:d90dcdf8124a11b226da198f32fd66ac1b6af34973d2ecf034d0e1bef8d06f41"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:8c12f3592ce47aa647467130ac464c608e61c363ecaf8132a73ba13308906f8d"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-13",
+    "question": "画面歪了就说明机身不稳或飞控坏了吗？云台和飞控有什么区别？",
+    "category": "confusing",
+    "group_id": "gimbal",
+    "split": "test",
+    "answerable": true,
+    "topic": "云台作用",
+    "relevant_doc_ids": [
+      "sha256:41d26f69f9708dd5e8db6eebdf0abf78d47b35395b3d4400194dbc55b46c251d"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:d77ce0a396df44cf297efc432f9e47c3016de7326c8834eaafdcbb91d2383506"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-14",
+    "question": "电量突然快速掉下去，能只当成普通低电量提醒继续飞吗？",
+    "category": "confusing",
+    "group_id": "battery_drop",
+    "split": "dev",
+    "answerable": true,
+    "topic": "电量骤降",
+    "relevant_doc_ids": [
+      "sha256:6da8344c29bd9ffc1909b4317400a2043922e717ce48442c159d6d09378764b8"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:9a30ad00699304f80e34cb4b3ff4bbe95324f0ca03acbe8e33780f3f97b355ce"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "contrast-15",
+    "question": "操作者走远了，返航点会自动跟着遥控器移动吗？",
+    "category": "confusing",
+    "group_id": "home_point",
+    "split": "test",
+    "answerable": true,
+    "topic": "返航点",
+    "relevant_doc_ids": [
+      "sha256:2eb2eaddfcfde0b7c7ed3b776c6c152dcc463e239d8aaf01ea1c17b42cc55c21"
+    ],
+    "hard_negative_doc_ids": [
+      "sha256:1191fd15aa691b474536f83e28bf68c8d7a8d16a57182b10b8918c60b503c0dd"
+    ],
+    "annotation_note": "干扰资料不能独立回答问题中的关键区别。"
+  },
+  {
+    "id": "unanswerable-01",
+    "question": "请给出星河 X900 无人机原厂推荐的返航高度精确数值。",
+    "category": "unanswerable",
+    "group_id": "model_return_height",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-02",
+    "question": "极光 T77 的电池型号 BAT-777 储存时必须精确到百分之几？",
+    "category": "unanswerable",
+    "group_id": "model_storage",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-03",
+    "question": "远航 Q88 的原厂最大抗风速度是多少米每秒？",
+    "category": "unanswerable",
+    "group_id": "model_wind",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-04",
+    "question": "序列号 SN-UNKNOWN-001 这架无人机上次维修的日期是什么？",
+    "category": "unanswerable",
+    "group_id": "private_maintenance",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-05",
+    "question": "请报出无人机 XQ-2026 今天在深圳门店的实时售价。",
+    "category": "unanswerable",
+    "group_id": "price",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-06",
+    "question": "明天下午三点深圳湾起飞点的阵风精确是多少米每秒？",
+    "category": "unanswerable",
+    "group_id": "forecast",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-07",
+    "question": "请给出我家屋顶起飞点今天的实时禁飞区边界坐标。",
+    "category": "unanswerable",
+    "group_id": "live_airspace",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-08",
+    "question": "编号 BAT-002 电池当前的实际循环次数和剩余容量各是多少？",
+    "category": "unanswerable",
+    "group_id": "private_battery",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-09",
+    "question": "我昨天那架无人机失联的根本原因是什么？没有日志也请直接确定。",
+    "category": "unanswerable",
+    "group_id": "private_cause",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-10",
+    "question": "星河 X900 对应固件 9.9.9 的官方升级文件校验值是什么？",
+    "category": "unanswerable",
+    "group_id": "firmware_checksum",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-11",
+    "question": "星河 X900 指南针校准时必须转几圈，每圈多少秒？",
+    "category": "unanswerable",
+    "group_id": "model_calibration",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-12",
+    "question": "请给出极光 T77 机臂紧固螺钉的原厂精确扭矩。",
+    "category": "unanswerable",
+    "group_id": "model_torque",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-13",
+    "question": "民航局今天刚发布的公告原文和公告编号是什么？",
+    "category": "unanswerable",
+    "group_id": "live_notice",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-14",
+    "question": "请计算 2027 年全球无人机市场实际销售总额。",
+    "category": "unanswerable",
+    "group_id": "market",
+    "split": "test",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  },
+  {
+    "id": "unanswerable-15",
+    "question": "请用这份无人机知识库给出红烧肉的完整食谱。",
+    "category": "unanswerable",
+    "group_id": "out_of_domain",
+    "split": "dev",
+    "answerable": false,
+    "relevant_doc_ids": [],
+    "annotation_note": "冻结语料只含通用知识，不含所问型号数值、私有记录或实时信息；泛泛建议不算回答。"
+  }
 ]

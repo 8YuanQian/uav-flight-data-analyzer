@@ -2,3 +2,6 @@
 archive/learning/** -text
 # 容器脚本固定使用 LF 换行。
 *.sh text eol=lf
+# Preserve the bytes used by the frozen RAG evaluation manifest.
+data/rag_test_cases.json -text
+data/uav_rag_knowledge_base_200.json -text

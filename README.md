@@ -210,13 +210,7 @@ docker compose exec -T api python -m examples.import_documents
 
 交互式多轮对话使用登录后的聊天页。在 Windows `.venv` 中运行实验脚本前，还需按上文配置宿主机可访问的数据库、Redis 和模型缓存。使用 `main.py --help` 查看参数不会加载模型或要求模型密钥。
 
-评估用例来自 `data/rag_test_cases.json`。评估函数位于 `src/rag/evaluation.py`；调用时需传入 `embedding_model`，重排评估还需传入 `rerank_model`。两种评估共用 `calculate_metrics()`，保留原来的计算含义：
-
-- `mean_recall`：至少命中一次期望主题的问题占比。这里沿用原项目的名称，计算的是主题命中率。
-- `mean_precision`：每个问题中，期望主题的资料占检索结果的比例，再对全部问题取平均。
-- `mean_mrr`：第一条命中资料的排名倒数，再对全部问题取平均。
-
-没有检索结果时，该问题的三个指标均为 0。评估用例为空时显示提示，三个指标均显示为 0。检索距离筛选和重新排序规则保持原有设置。
+检索评估使用 `scripts/evaluate_rag.py`，在固定的 200 个文档片段、60 道标注题上比较召回和重排。可回答题统计 Hit、Precision、Recall 和 MRR，无答案题单独统计误召回。脚本支持对比无前缀和 `query:` / `passage:` 两种编码，前缀组在测试库的会话临时表重建向量。当前结果支持继续使用无前缀默认配置。复测命令、指标口径和逐题结果见 [RAG 评估说明](docs/rag_evaluation.md)。
 
 ## 更新飞行记录（乐观锁）
 

@@ -1,0 +1,64 @@
+{
+  "status": "complete",
+  "run_id": "20261120T064952_168344Z",
+  "retrieval": {
+    "candidate_k": 10,
+    "max_cosine_distance": 0.5,
+    "final_k": 3,
+    "min_rerank_score": 0.77,
+    "encoding": "legacy-unprefixed"
+  },
+  "dataset_version": "rag-eval-v1",
+  "dataset_sha256": "517f5930394e8e9faa4632fa2035e9a893143f5ed786d09262ea9bdf2982dfde",
+  "corpus_sha256": "e624f0345f9feeab50442edb72e4e9a591bbf57082bf8dcd29287e97e4fd9c78",
+  "encoding": "legacy-unprefixed",
+  "chunk_size": 500,
+  "chunk_overlap": 50,
+  "split": "all",
+  "question_count": 60,
+  "repeats": 1,
+  "warmup": 1,
+  "corpus_mode": "temporary",
+  "environment": {
+    "python": "3.11.18",
+    "platform": "Linux-6.18.33.1-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "device": "cpu",
+    "torch_threads": 2,
+    "packages": {
+      "torch": "2.14.1+cpu",
+      "sentence-transformers": "3.0.1",
+      "psycopg": "3.3.6"
+    }
+  },
+  "git_commit": null,
+  "source_sha256": {
+    "src/rag/chunk.py": "0459cd5229798ea77490a50f18877b4fa971ecda855236e03b8e8d0669833cc1",
+    "src/rag/config.py": "348dd62351d2e70700d875336b61d6dffd50d714e0e911d2a549d87ab7c39e4b",
+    "src/rag/context.py": "2616d53a1a34a98944058b72ede1125b512d9ffaa9b0d857202df052eb98b110",
+    "src/rag/document_identity.py": "cc781c4d625fa332dee60ca70e1fcfbdc6dbe55746c4c42317dd99158d1ee24b",
+    "src/rag/document_save_to_database.py": "a9bfbbc68b835a62d743b00d45b6101e378da6f0683b7d54163b292cfc4341da",
+    "src/rag/embedding.py": "6306844bced41fd88ee80a66e0fe62d5577fb97acd48284caf52bb3ac6142fee",
+    "src/rag/evaluation.py": "699b9ca3e1e6e49a086b7b1a7e362d6a01bd82ede242124fea472a46405c54a6",
+    "src/rag/model_factory.py": "53eac29b075f4afd7f2b6d4ec77433abedd0467adfddb2f73675ad37f4858d7c",
+    "src/rag/pipeline.py": "7cafe0f910e6d5bf85bb4ccc6e9a41c145a8562846dcd424795e20f148b72aba",
+    "src/rag/reranker.py": "65ad5b7f07c3240ff7ee6d4c496ecf4750409e71396544453b88a1929a6b9fab",
+    "src/rag/retrieve.py": "c7a4d16d2a72b024036a6b715f712e0a21e8943ceacefb3fd4e8fa1d597b0979",
+    "src/rag/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scripts/evaluate_rag.py": "76c253b1b55e8abf95b904061d2619f5b4f75533d42431845a22569174b56325",
+    "src/agent/tools/rag_search.py": "b9d4d219e364e8e744b61371a1917cf6a992f1a72dd5d63d47531220c3ea87d3"
+  },
+  "label_caveat": "首版按阅读资料标注，尚未经独立人工复核；召回率仅针对已标注相关片段。",
+  "model_load_ms": 2693.258519000665,
+  "models": {
+    "embedding": {
+      "name": "intfloat/multilingual-e5-base",
+      "revision": "d128750597153bb5987e10b1c3493a34e5a4502a"
+    },
+    "reranker": {
+      "name": "BAAI/bge-reranker-base",
+      "revision": "2cfc18c9415c912f9d8155881c133215df768a70"
+    }
+  },
+  "database": "uav_project_test",
+  "corpus_prepare_ms": 19241.65680599981
+}

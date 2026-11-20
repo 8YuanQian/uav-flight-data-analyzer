@@ -1,5 +1,5 @@
-from src.rag.retrieve import retrieve
-from src.rag.reranker import rerank_documents
+from src.rag.config import DEFAULT_RETRIEVAL_CONFIG
+from src.rag.pipeline import run_retrieval
 from src.rag.model_factory import create_retrieval_models
 
 
@@ -10,6 +10,7 @@ def rag_search(query:str, *, embedding_model=None, rerank_model=None)->list[dict
         model = create_retrieval_models()
         embedding_model = model["embedding_model"]
         rerank_model = model["rerank_model"]
-    retrieve_data = retrieve(query=query,embedding_model=embedding_model)
-    rerank_data = rerank_documents(query=query,documents=retrieve_data,rerank_model=rerank_model)
-    return rerank_data
+    # 工具只返回资料；评估计时和标注不会进入 LLM 上下文。
+    return run_retrieval(
+        query, embedding_model, rerank_model, config=DEFAULT_RETRIEVAL_CONFIG,
+    ).documents

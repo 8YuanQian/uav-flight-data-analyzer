@@ -1,0 +1,1014 @@
+{
+  "version": "rag-eval-v1",
+  "label_status": "initial-source-reviewed",
+  "corpus_file": "uav_rag_knowledge_base_200.json",
+  "corpus_sha256": "e624f0345f9feeab50442edb72e4e9a591bbf57082bf8dcd29287e97e4fd9c78",
+  "dataset_sha256": "517f5930394e8e9faa4632fa2035e9a893143f5ed786d09262ea9bdf2982dfde",
+  "chunk_size": 500,
+  "chunk_overlap": 50,
+  "question_count": 60,
+  "encoding": "legacy-unprefixed",
+  "label_caveat": "首版按阅读资料标注，尚未经独立人工复核；召回率仅针对已标注相关片段。",
+  "documents": [
+    {
+      "doc_id": "sha256:e6cfdebbba29fc5339fe92a7be56423486698233564d2818098eff1c8932e04c",
+      "topic": "无人机定义",
+      "question": "问题：\n什么是无人机，无人机系统包含哪些部分？"
+    },
+    {
+      "doc_id": "sha256:44e45d562ffe32c342c702aefa4185ac614657017bdc3470ee42964f46d40678",
+      "topic": "多旋翼原理",
+      "question": "问题：\n多旋翼无人机如何产生升力并控制飞行？"
+    },
+    {
+      "doc_id": "sha256:3f72578f89cea7f23d0ff65fc9f6c253b415a0ae9cbe7af16a252a6c290927f4",
+      "topic": "固定翼特点",
+      "question": "问题：\n固定翼无人机与多旋翼有什么区别？"
+    },
+    {
+      "doc_id": "sha256:822d05993756b93fb15a431a820e970886c1f3708a76128ab718bef3f255ce89",
+      "topic": "复合翼特点",
+      "question": "问题：\n什么是垂直起降固定翼无人机？"
+    },
+    {
+      "doc_id": "sha256:d77ce0a396df44cf297efc432f9e47c3016de7326c8834eaafdcbb91d2383506",
+      "topic": "飞控功能",
+      "question": "问题：\n无人机飞行控制器主要负责什么？"
+    },
+    {
+      "doc_id": "sha256:9014e4e796169dc3015912b8cb9322611cde606a79590f50e611c1016550a683",
+      "topic": "惯性测量",
+      "question": "问题：\n无人机中的IMU是什么？"
+    },
+    {
+      "doc_id": "sha256:c4b6d27434be7ed845e8e32d4aaffa175ece36819466b6c6ffc71554ae7a9b7e",
+      "topic": "航向传感",
+      "question": "问题：\n无人机指南针有什么作用？"
+    },
+    {
+      "doc_id": "sha256:bb2f2b431d593e238e615238a4ea012f3eca67ee3eb7f03e87992ff6575c70b3",
+      "topic": "卫星导航",
+      "question": "问题：\nGNSS与GPS有什么关系？"
+    },
+    {
+      "doc_id": "sha256:ec4f59f07fda241b4625740aee6ecc21aa1a9777cc902b4d7a5b34945312f5a2",
+      "topic": "气压测高",
+      "question": "问题：\n无人机气压计如何辅助测量高度？"
+    },
+    {
+      "doc_id": "sha256:8c12f3592ce47aa647467130ac464c608e61c363ecaf8132a73ba13308906f8d",
+      "topic": "视觉定位",
+      "question": "问题：\n无人机视觉定位在什么条件下有效？"
+    },
+    {
+      "doc_id": "sha256:2a8094f437b6995a16783f2059bb4cdd4206a23bb4c97165b869f3fc28db042c",
+      "topic": "光流原理",
+      "question": "问题：\n什么是无人机光流定位？"
+    },
+    {
+      "doc_id": "sha256:5e5ea2cb31d8afc1eab441b5b372f398960016dc5c65f25cbb938d2e211d4eef",
+      "topic": "避障能力",
+      "question": "问题：\n无人机有避障功能就不会碰撞吗？"
+    },
+    {
+      "doc_id": "sha256:41d26f69f9708dd5e8db6eebdf0abf78d47b35395b3d4400194dbc55b46c251d",
+      "topic": "云台作用",
+      "question": "问题：\n无人机云台与飞控有什么区别？"
+    },
+    {
+      "doc_id": "sha256:9c887897262f1aabe2844a82c79dba89251c3d0d9680be90d7b77a555b428803",
+      "topic": "电子调速",
+      "question": "问题：\n无人机电调的作用是什么？"
+    },
+    {
+      "doc_id": "sha256:0696aa9142f7bcc7ba65454f17430857d8d023e757caab2e786dd191eee36334",
+      "topic": "无刷电机",
+      "question": "问题：\n无人机为什么常使用无刷电机？"
+    },
+    {
+      "doc_id": "sha256:b78677ae8ea718fcebcb868c2f56904b14d2d338218d1ab8585f038b006dc987",
+      "topic": "桨叶方向",
+      "question": "问题：\n无人机螺旋桨为什么有不同旋转方向？"
+    },
+    {
+      "doc_id": "sha256:ee124563e101e1cf2fcef3c08382ff1d6ef4f4098fa361b8eca69d6af51a2117",
+      "topic": "姿态轴",
+      "question": "问题：\n无人机的俯仰、横滚和偏航分别是什么？"
+    },
+    {
+      "doc_id": "sha256:719bb8c16734ead2bd9ff46e3b3bf570a774c1d3009ff294f535a9bd48cf3f7f",
+      "topic": "坐标参考",
+      "question": "问题：\n机体系和地理坐标系有什么区别？"
+    },
+    {
+      "doc_id": "sha256:ccfc0ed2ae0a06b3995b41d93f4d36dcbd85d887abcd2b0d37605709a13f7f3f",
+      "topic": "高度概念",
+      "question": "问题：\n相对高度、离地高度和海拔有什么区别？"
+    },
+    {
+      "doc_id": "sha256:7d0874e176901c5fc593985f7ab265e6ae18808e1364c395ceea1af42f8d2900",
+      "topic": "空速地速",
+      "question": "问题：\n无人机地速与空速为什么可能不同？"
+    },
+    {
+      "doc_id": "sha256:12b85f1803bffd7735aa19b3bb1af6d127cb4becf7f69bf86873d9e7a1c1b407",
+      "topic": "悬停能力",
+      "question": "问题：\n无人机为什么会在悬停时轻微移动？"
+    },
+    {
+      "doc_id": "sha256:f86e97131c360597a386ea84ee4e28e89d2ee24b4a2ba983deee4133f1a1e5bc",
+      "topic": "姿态模式",
+      "question": "问题：\n姿态模式与定位模式有哪些区别？"
+    },
+    {
+      "doc_id": "sha256:0fd9f2e573892e38c8b705dd597947456c4025750bc09510203e7861ad7308cc",
+      "topic": "自动返航",
+      "question": "问题：\n自动返航功能的基本条件是什么？"
+    },
+    {
+      "doc_id": "sha256:c4d91279e5d948a610b322de9e4df0b78aec3f82bd17d5430ccacec13bc1d1a8",
+      "topic": "失联保护",
+      "question": "问题：\n无人机失联保护一定会自动返航吗？"
+    },
+    {
+      "doc_id": "sha256:2eb2eaddfcfde0b7c7ed3b776c6c152dcc463e239d8aaf01ea1c17b42cc55c21",
+      "topic": "返航点",
+      "question": "问题：\n无人机返航点是否总是当前遥控器位置？"
+    },
+    {
+      "doc_id": "sha256:7d855a4908ecb45c505f10d5ca7fb122b07c71632b6e178d1cec72ae21863375",
+      "topic": "控制与图传",
+      "question": "问题：\n遥控链路、图传链路和遥测有什么区别？"
+    },
+    {
+      "doc_id": "sha256:4d7409d254ae85c408c8a7f1225f38aa7304f3b699e82d6643f1c35959af9f21",
+      "topic": "视距概念",
+      "question": "问题：\n无人机目视飞行为什么不能只看视频画面？"
+    },
+    {
+      "doc_id": "sha256:8f22cfef58615eb573590d99a6475503e80dfe7b079b7db3512bfa2a25544e6c",
+      "topic": "电池容量",
+      "question": "问题：\n电池容量大是否一定能让无人机飞得更久？"
+    },
+    {
+      "doc_id": "sha256:56e22e42ecdebd1cb73c509a6ae8b40da918dd9c7bd96da5057e4420de528171",
+      "topic": "电量估计",
+      "question": "问题：\n电池剩余百分比能准确代表剩余飞行时间吗？"
+    },
+    {
+      "doc_id": "sha256:293db9ab9fcf4eb3be4d6b0d91c9fa76213237a8c29023b68595080942e05548",
+      "topic": "电池串数",
+      "question": "问题：\n无人机电池的串数和放电倍率代表什么？"
+    },
+    {
+      "doc_id": "sha256:341e32d31bc9903e9c8943267f15ddc05c99a45f23d15b3c757f6a84d2c20f73",
+      "topic": "任务载荷",
+      "question": "问题：\n无人机任务载荷包括哪些设备？"
+    },
+    {
+      "doc_id": "sha256:ed76dc9ec2a80da4599499a3344fd71b48915ce82743b837459e83074f2e384c",
+      "topic": "重心影响",
+      "question": "问题：\n载荷安装位置为什么会影响无人机飞行？"
+    },
+    {
+      "doc_id": "sha256:d4427b385f0608f985d3526bc1442f4809c1bed6c5719aa02f67666bdda6f481",
+      "topic": "飞行时间",
+      "question": "问题：\n标称飞行时间为什么与实际任务时间不同？"
+    },
+    {
+      "doc_id": "sha256:d86ff28fd99dd837874638abca742172f6baaee34e3a2a3e0d23a3dd2451d2bc",
+      "topic": "RTK概念",
+      "question": "问题：\nRTK定位是否意味着无人机永远不会漂移？"
+    },
+    {
+      "doc_id": "sha256:0a66a7c404279e2d86902e837ea9975f7154ec6b39b1130ad13dd6dfef54ff5c",
+      "topic": "航点任务",
+      "question": "问题：\n无人机航点飞行是完全自主决策吗？"
+    },
+    {
+      "doc_id": "sha256:5294795ec6ff5823ac57ed56d2eed56ffb557fe8b1d8a824f4037b32f7d3c7d8",
+      "topic": "航测重叠",
+      "question": "问题：\n无人机航测为什么需要照片重叠？"
+    },
+    {
+      "doc_id": "sha256:4220fd8d2872552764f8384e8a415ce8e794496a3e2e7b01cb7d256b4194524b",
+      "topic": "固件软件",
+      "question": "问题：\n无人机固件与手机飞行应用有什么区别？"
+    },
+    {
+      "doc_id": "sha256:dc6cecfa4489090c5e962a83236be5c8e3a7435e11853e0055c6362114233ee0",
+      "topic": "地理围栏",
+      "question": "问题：\n电子围栏或厂商地图是否能代替空域审批？"
+    },
+    {
+      "doc_id": "sha256:b12b5977f01f48c3143bf829066e0683d6182f0b6719322672390f743a0b568f",
+      "topic": "日志价值",
+      "question": "问题：\n无人机飞行日志能帮助解决哪些问题？"
+    },
+    {
+      "doc_id": "sha256:9bbac819d30c1d3d22542da9c67acd0f02dd7e6f9992faab0e9cee3502f9f9ae",
+      "topic": "抗风概念",
+      "question": "问题：\n无人机抗风能力是不是保证任何风中都能返航？"
+    },
+    {
+      "doc_id": "sha256:812b744b7c90495087e91dd5c3c8d26822e5e41e739c96095dd1031e0238a755",
+      "topic": "任务准备",
+      "question": "问题：\n无人机任务开始前应先明确哪些信息？"
+    },
+    {
+      "doc_id": "sha256:58cadf454379986bd71535882c98f2c45b8f05660a7a22b2900d932468876ae1",
+      "topic": "场地勘察",
+      "question": "问题：\n如何选择适合无人机起降的场地？"
+    },
+    {
+      "doc_id": "sha256:7d4e8bf2be51c3792aa33d2f603d23542c0dbbc37793d0a90175476a0d4319d1",
+      "topic": "天气确认",
+      "question": "问题：\n无人机起飞前如何检查天气？"
+    },
+    {
+      "doc_id": "sha256:19b16fb3704e22363ecdbed14a77337a4b760292be975396de97fc3f42865a87",
+      "topic": "任务分工",
+      "question": "问题：\n多人执行无人机任务时怎样安排职责？"
+    },
+    {
+      "doc_id": "sha256:732f55859448bc7334545f52600f572478d9c8d9da7ac769c5223a31a1ddd482",
+      "topic": "开箱检查",
+      "question": "问题：\n无人机从运输箱取出后应检查什么？"
+    },
+    {
+      "doc_id": "sha256:402153d7ac2e892a6f2ac5231c29eba30ebc4f09321f2644d5ae9e05160edc6a",
+      "topic": "桨叶安装",
+      "question": "问题：\n起飞前如何确认无人机螺旋桨安装正确？"
+    },
+    {
+      "doc_id": "sha256:2dde62a2fa4da29fdf8bc07af6a9fe51baac4c3a7f071aca5033ac9967e67b19",
+      "topic": "电池安装",
+      "question": "问题：\n飞行电池安装后需要确认哪些事项？"
+    },
+    {
+      "doc_id": "sha256:e9820cd21ef6e81fb83ddbd9477f2936d4cb9deebba26fdde7fd605ebc7caa5d",
+      "topic": "载荷检查",
+      "question": "问题：\n起飞前怎样检查无人机载荷？"
+    },
+    {
+      "doc_id": "sha256:01b3f17322549a60252c7e410d9f8ecbda284ea22ab9777a25215f32d664c852",
+      "topic": "上电顺序",
+      "question": "问题：\n无人机和遥控器应该按什么顺序开机？"
+    },
+    {
+      "doc_id": "sha256:bca3a731b04be5cd6a3cbad45a461e8fe7f7ae48a306460d24b6d22b2349f9a8",
+      "topic": "连接确认",
+      "question": "问题：\n怎样确认无人机与遥控器连接正常？"
+    },
+    {
+      "doc_id": "sha256:6a0b16385ce7092c26e994b3a16946f815281fc6f01df949d3e9260ca62697fa",
+      "topic": "传感器自检",
+      "question": "问题：\n无人机传感器自检完成后还要看什么？"
+    },
+    {
+      "doc_id": "sha256:2e0636bda2c5ab197d6a162826c9e8b3b58ea806f9b1c01c147a5af69651a215",
+      "topic": "定位等待",
+      "question": "问题：\n起飞前等待卫星定位时如何判断是否可以飞？"
+    },
+    {
+      "doc_id": "sha256:1191fd15aa691b474536f83e28bf68c8d7a8d16a57182b10b8918c60b503c0dd",
+      "topic": "返航点确认",
+      "question": "问题：\n无人机起飞前怎样核实返航点？"
+    },
+    {
+      "doc_id": "sha256:94fc31925309851b6ce9c529a5382831712adaed9865c15cd11dc9544cd1b24d",
+      "topic": "返航高度设置",
+      "question": "问题：\n无人机返航高度应如何设置？"
+    },
+    {
+      "doc_id": "sha256:e539d0753086edaaf941eb55c80048cb44d4637d5b31a6bfb075f626b9b49911",
+      "topic": "失联动作设置",
+      "question": "问题：\n飞行前怎样选择失联后的动作？"
+    },
+    {
+      "doc_id": "sha256:62c05bbd5baff5fd384705f1190889372f987839177f0f5adf1c1e042d6d4bd7",
+      "topic": "飞行模式核对",
+      "question": "问题：\n无人机起飞前为什么要核对飞行模式？"
+    },
+    {
+      "doc_id": "sha256:9db73250fdcf3b14a8272e7f273be306d1dd4376fbd1f7bc4488ab9184b09ca5",
+      "topic": "录制准备",
+      "question": "问题：\n航拍起飞前应怎样检查相机和存储？"
+    },
+    {
+      "doc_id": "sha256:1ad2e253779e3e6ad394dceb775a23287ff5706f86a5938ac02411963241c27e",
+      "topic": "起飞清场",
+      "question": "问题：\n启动无人机电机前应如何清理周围环境？"
+    },
+    {
+      "doc_id": "sha256:9c5a27d54bb08003e6ca272e8f6d8af122a08f93ceb63950ebfa849862abfeaa",
+      "topic": "起飞动作",
+      "question": "问题：\n多旋翼无人机正常起飞时应注意什么？"
+    },
+    {
+      "doc_id": "sha256:7dd179fdd8fe00d1963ea112f05ff59b4d0128e2212887eafbc791ec94334265",
+      "topic": "短时悬停检查",
+      "question": "问题：\n多旋翼起飞后为什么要先做短时悬停检查？"
+    },
+    {
+      "doc_id": "sha256:5738f9118fc876e73126845ea49e8b29322abd6c40ee9f4d5b9e025e6c5394b2",
+      "topic": "朝向练习",
+      "question": "问题：\n新手如何练习无人机朝向变化后的操作？"
+    },
+    {
+      "doc_id": "sha256:bd7e3bf1b99282dbe174aac431d70c7c8c1ba88d8eefcb9ad8b910fe44823ab4",
+      "topic": "平稳转弯",
+      "question": "问题：\n无人机转弯时如何保持动作平稳？"
+    },
+    {
+      "doc_id": "sha256:ad5915c2a5885dc9699f73e5701381f916dc8098b21a100bf178b17c926a681a",
+      "topic": "高度调整",
+      "question": "问题：\n无人机升降高度时需要观察什么？"
+    },
+    {
+      "doc_id": "sha256:0e59a66f0b639a3c186882ef0da6c49a04965466d7201382a599e0a01908d77d",
+      "topic": "电量监控",
+      "question": "问题：\n飞行中怎样监控电量并决定返航？"
+    },
+    {
+      "doc_id": "sha256:1a31a78982efda2024ee6e0f83c9f8df78d005875fc4bb2f8dca5311d7eabacc",
+      "topic": "链路监控",
+      "question": "问题：\n飞行中怎样降低通信中断风险？"
+    },
+    {
+      "doc_id": "sha256:d77986985bef2506a66336b1b2e79f241d4bd6e4124b6157f117513b7e075818",
+      "topic": "航线预览",
+      "question": "问题：\n自动航线执行前应检查哪些内容？"
+    },
+    {
+      "doc_id": "sha256:75074ad6fa0da9e220bdc329ea6c6b908a874824094da40ac6b619b368f83e95",
+      "topic": "自动任务监督",
+      "question": "问题：\n无人机执行自动任务时操作者还需要做什么？"
+    },
+    {
+      "doc_id": "sha256:859862637e97afeda4a3f23634478eba18913fe2fdf48766db9831c8a712b15e",
+      "topic": "任务暂停",
+      "question": "问题：\n自动航线遇到风险时怎样暂停或接管？"
+    },
+    {
+      "doc_id": "sha256:8a20c32a077d3f29ce5cc2562eabb1d88ceee516786ca7d15e281118b6a3a2f8",
+      "topic": "拍摄观察分工",
+      "question": "问题：\n航拍时怎样兼顾构图与飞行安全？"
+    },
+    {
+      "doc_id": "sha256:14fe05c582f83b8351622fcd777ff34bf0ce1254ea0687cec226bcb523af2348",
+      "topic": "返航启动",
+      "question": "问题：\n手动启动自动返航前需要确认什么？"
+    },
+    {
+      "doc_id": "sha256:885f7a354384c1c137f92b3573a7b1fbff6856e8c644d108ee101d27f5f75598",
+      "topic": "返航监督",
+      "question": "问题：\n自动返航途中应该监控哪些事项？"
+    },
+    {
+      "doc_id": "sha256:3651784be855da3116c8a38e5c0c173528f7ffd9851dfc40b977cf4cb6bd0daa",
+      "topic": "人工返回",
+      "question": "问题：\n人工控制无人机返回时怎样降低风险？"
+    },
+    {
+      "doc_id": "sha256:9cec3399aa1db2c388a5bbde3a29786fc17076dbb683c553ab8122804c99cc51",
+      "topic": "备降决策",
+      "question": "问题：\n什么时候应该考虑无人机备降？"
+    },
+    {
+      "doc_id": "sha256:1e1b022157c1d684b09d6e7f90b9cb2e1216b5ca1591d1461d2c487088ce848b",
+      "topic": "降落准备",
+      "question": "问题：\n无人机开始降落前应完成哪些检查？"
+    },
+    {
+      "doc_id": "sha256:9c25f49c850c4f98d844a28c4ac932132b9d682794993840084130875f72437b",
+      "topic": "多旋翼降落",
+      "question": "问题：\n多旋翼无人机正常降落有哪些要点？"
+    },
+    {
+      "doc_id": "sha256:5778bd19b565e39444a19787805071af8b8b010c0655fe39a9204cff60f36edd",
+      "topic": "停转确认",
+      "question": "问题：\n无人机落地后如何确认可以靠近？"
+    },
+    {
+      "doc_id": "sha256:fa788b72d47c7f458a3be836e2a21ae35e2f20515f1e6ad6294ecb47bcd6fc97",
+      "topic": "关机拆电",
+      "question": "问题：\n无人机飞行结束后应怎样关机和拆电池？"
+    },
+    {
+      "doc_id": "sha256:a146f5de7ea81a0f891e794fc5113e3d6bd84e86c3daf9529faf2cab159567e8",
+      "topic": "飞后检查",
+      "question": "问题：\n无人机每次飞行后需要检查哪些部位？"
+    },
+    {
+      "doc_id": "sha256:2d4ff220014dd267987536add2d4e9ce83984474a0a52714b402665250b666af",
+      "topic": "换电复飞",
+      "question": "问题：\n换一块电池后能省略起飞前检查吗？"
+    },
+    {
+      "doc_id": "sha256:d987c1c46192a9787e773773b62c61da6975f3e7f064c5d8b51816906d8b3ff9",
+      "topic": "任务归档",
+      "question": "问题：\n无人机任务结束后应该保存哪些记录？"
+    },
+    {
+      "doc_id": "sha256:f766702713fa5775e50a47df2eb2bbcb83ae32c818528b89bf060cfc4285fc7f",
+      "topic": "无法开机",
+      "question": "问题：\n无人机无法开机时应该怎样排查？"
+    },
+    {
+      "doc_id": "sha256:a8832f7b0a1007a3a505c282404cad430b578f7306a40d6f68a34773778b6477",
+      "topic": "无法解锁",
+      "question": "问题：\n无人机无法解锁电机是否可以关闭检查？"
+    },
+    {
+      "doc_id": "sha256:20bb006e2800440adad4fc1926d798fad00de2806a111890bfad4e8e7adcde57",
+      "topic": "电池未识别",
+      "question": "问题：\n无人机提示电池无法识别应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:b657ab3a739d94ab68f90b7942f40d9a887bf2b0b6cad0abd89716538a22ba5f",
+      "topic": "卫星信号不足",
+      "question": "问题：\n无人机提示卫星信号弱时如何处理？"
+    },
+    {
+      "doc_id": "sha256:859be46d290ddd9208a3ca8660ca5eecd42ef806e14c66fc3d14c14c545e1b5d",
+      "topic": "指南针干扰",
+      "question": "问题：\n无人机出现指南针干扰告警时怎么办？"
+    },
+    {
+      "doc_id": "sha256:223016d98b87d4063ec461fd22f8289354c0c0f7767e6faab4a3de6ad934de21",
+      "topic": "IMU异常",
+      "question": "问题：\n无人机提示IMU异常时应如何处理？"
+    },
+    {
+      "doc_id": "sha256:5c3239b4b93d5728623615741910554c1da3d85ea830ea7a66ae11863b8f5c0d",
+      "topic": "视觉系统异常",
+      "question": "问题：\n无人机视觉定位或避障异常时应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:5865a6904b1cb24cb68f52fbeda2bec434535acd6a72b77a4951b0f34748c992",
+      "topic": "悬停漂移",
+      "question": "问题：\n多旋翼悬停时明显漂移怎样排查？"
+    },
+    {
+      "doc_id": "sha256:49daff48cd849c4972747e34a0b917726b624d06bea70231212d057c7d61cb81",
+      "topic": "异常绕圈",
+      "question": "问题：\n无人机定位悬停时持续绕圈可能是什么原因？"
+    },
+    {
+      "doc_id": "sha256:460f259678fc473d5b6c1a38050a8e546cdc33acb834511dac0cd00a798bfaec",
+      "topic": "起飞翻覆",
+      "question": "问题：\n多旋翼刚起飞就翻覆应如何处理？"
+    },
+    {
+      "doc_id": "sha256:eae2306d7807a678fb90568f83914c1886706460503532b70dae9e21dcaea477",
+      "topic": "异常振动",
+      "question": "问题：\n无人机飞行中明显振动应该怎样处置？"
+    },
+    {
+      "doc_id": "sha256:25a42216d0612167123d69a3c7693a9e03b25da30f05475aa19b9a56f5bbb6ac",
+      "topic": "电机不转",
+      "question": "问题：\n启动时有一个无人机电机不转怎么办？"
+    },
+    {
+      "doc_id": "sha256:5b187b51403843f4c20f9c80d5055dc0125f468e7f2a3b2151344fe0aab51e46",
+      "topic": "电机异响",
+      "question": "问题：\n无人机电机出现异响还能继续飞吗？"
+    },
+    {
+      "doc_id": "sha256:3a97b87802a5685a37057baf0770c5017a2b1f0cf54f3d6ba8eeb3fe7f9cd38b",
+      "topic": "电调告警",
+      "question": "问题：\n无人机出现电调或动力系统告警怎么处理？"
+    },
+    {
+      "doc_id": "sha256:78d1c415905c19b8303eaba4684f26bc38ae3598a20fbf6f046216c2acfa2754",
+      "topic": "动力不足",
+      "question": "问题：\n无人机提示动力不足或爬升乏力怎么办？"
+    },
+    {
+      "doc_id": "sha256:6707a99aac18c2f6d5d84a45a3f39052b0063fa1799bafaa3f39363911021327",
+      "topic": "图传冻结",
+      "question": "问题：\n无人机画面突然冻结时应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:967d2eeeb6db8764c6f41638385f38fff2e59adf0c6b9718814bbf2478b668e1",
+      "topic": "遥控信号弱",
+      "question": "问题：\n无人机提示遥控信号弱时怎么处理？"
+    },
+    {
+      "doc_id": "sha256:705382d7f1666f753328972915bff357a7c2438b331255822b417a11bcf24503",
+      "topic": "完全失联",
+      "question": "问题：\n无人机与遥控器完全失联后怎样处置？"
+    },
+    {
+      "doc_id": "sha256:d7aad2e3e6719ca3324a24996d15dc1f54dd94196703b11816e22f753cc68416",
+      "topic": "应用崩溃",
+      "question": "问题：\n飞行应用崩溃时是否意味着无人机失控？"
+    },
+    {
+      "doc_id": "sha256:941327a57c1db89a47347cf770aa304b9bbdc843b11cabfddb8266f987e805d6",
+      "topic": "位置跳变",
+      "question": "问题：\n地图上的无人机位置突然跳变怎么办？"
+    },
+    {
+      "doc_id": "sha256:a16b72c47288645c5df7a9c32198d6f64813022d556f39e71610f14b01dc8845",
+      "topic": "高度跳变",
+      "question": "问题：\n无人机高度读数突然异常变化怎么办？"
+    },
+    {
+      "doc_id": "sha256:cfe9ace59d6b9f7b31778ec9ace7b27c8018a6cd1a408451c7d8d0e5f90d3846",
+      "topic": "模式突然变化",
+      "question": "问题：\n无人机飞行模式突然改变应如何应对？"
+    },
+    {
+      "doc_id": "sha256:9a30ad00699304f80e34cb4b3ff4bbe95324f0ca03acbe8e33780f3f97b355ce",
+      "topic": "低电量告警",
+      "question": "问题：\n无人机出现低电量告警后还能继续拍摄吗？"
+    },
+    {
+      "doc_id": "sha256:6da8344c29bd9ffc1909b4317400a2043922e717ce48442c159d6d09378764b8",
+      "topic": "电量骤降",
+      "question": "问题：\n无人机电量突然快速下降应怎样处置？"
+    },
+    {
+      "doc_id": "sha256:5a754d6dba87de0729ee98d591cf2d0fe492ae0951f66b7a7debbede43379006",
+      "topic": "电芯异常",
+      "question": "问题：\n无人机提示电池电芯异常时怎么办？"
+    },
+    {
+      "doc_id": "sha256:19e015dccf0df836f340ddb041ec4a21192060ac5bf889724daf135ad8a2c92a",
+      "topic": "电池高温",
+      "question": "问题：\n无人机电池过热或温度告警时怎么办？"
+    },
+    {
+      "doc_id": "sha256:ab2e684688ae08bae90663aee6515c70cfeb15e2b94f38656977f2f0f3de4689",
+      "topic": "充电失败",
+      "question": "问题：\n无人机电池无法充电应该怎样排查？"
+    },
+    {
+      "doc_id": "sha256:5b168d13b3acd47e3ed492630afc2b88a9f663dc47f23de8ba1e3e17a5cb1826",
+      "topic": "云台抖动",
+      "question": "问题：\n无人机云台抖动或发出异常声音怎么办？"
+    },
+    {
+      "doc_id": "sha256:7036cbd5d6c4ae42d9f14a1886bb68bb070b37a2b7c484508e1b1a8fcdcd5c01",
+      "topic": "画面歪斜",
+      "question": "问题：\n无人机拍摄画面持续歪斜如何处理？"
+    },
+    {
+      "doc_id": "sha256:764879d907d9a83ca88d5d42f86ffdba74d16702e140fe3bfc765a3f2d4b75f9",
+      "topic": "存储异常",
+      "question": "问题：\n无人机提示存储卡错误时应如何处理？"
+    },
+    {
+      "doc_id": "sha256:107beae524c75f843d92bd97541c278e271ec3adcdf34d1c09b3f908a3c84906",
+      "topic": "返航点错误",
+      "question": "问题：\n发现无人机返航点位置错误时怎么办？"
+    },
+    {
+      "doc_id": "sha256:8bf7c75c3c0e0bf08ae275fc67f8336f0474f4320cdb6374b67bd484e40d3c4f",
+      "topic": "返航遇障",
+      "question": "问题：\n无人机自动返航路径上出现障碍怎么办？"
+    },
+    {
+      "doc_id": "sha256:c0c6a29acc3f6e1459741e0424adb8141c16b46711bf919624ce951125249c27",
+      "topic": "返航速度不足",
+      "question": "问题：\n无人机逆风返航很慢时应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:cb9f37dc2a16b29c8f3556c18721b94e643fe936a0ccef9a34cf552ab604f968",
+      "topic": "异常自动降落",
+      "question": "问题：\n无人机在非预期位置自动下降怎么办？"
+    },
+    {
+      "doc_id": "sha256:3847ce270168373d49c37b01568fbcf231cea4ae90d0177823a5ef3da4435819",
+      "topic": "碰撞后检查",
+      "question": "问题：\n无人机轻微碰撞后还能马上再飞吗？"
+    },
+    {
+      "doc_id": "sha256:1780ceccbd50f05241f1c21a9eb51eadcb8f435ecd3b35f25e6652e5780d6356",
+      "topic": "无人机进水",
+      "question": "问题：\n无人机进水或明显受潮后应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:2f73db4924fd671c4445cde6106ea5a6f8a2d2c5e895c705aae58c7435f0295f",
+      "topic": "沙尘进入",
+      "question": "问题：\n无人机进入沙尘环境后出现异常怎么办？"
+    },
+    {
+      "doc_id": "sha256:0ef890bdcea2e074d60b387e0cc4451812907c9fa9c31dc34e997ece40073e6b",
+      "topic": "固件更新失败",
+      "question": "问题：\n无人机固件更新失败后该怎样处理？"
+    },
+    {
+      "doc_id": "sha256:273122d2393f92a72ace259a4847bb62b7b78496a71b965e435ee26ea0fd1e43",
+      "topic": "失踪定位",
+      "question": "问题：\n无人机失联且无法看到时如何组织寻找？"
+    },
+    {
+      "doc_id": "sha256:a331ba85ddc29b448960c0931549eac9f376fcf993082402550a0bd8493e271f",
+      "topic": "异常复盘",
+      "question": "问题：\n无人机故障后如何避免未经验证就下结论？"
+    },
+    {
+      "doc_id": "sha256:8fdfc4f14f98992adb443f8681b5bab6e931c82ec5f99ca1ee4717226b101752",
+      "topic": "空域查询",
+      "question": "问题：\n中国大陆飞行前应怎样确认空域是否允许？"
+    },
+    {
+      "doc_id": "sha256:d0a5d7c194199d1eaa6c13a07a1e4cdfe6006ce1210b0d2901e741bdb834ec6d",
+      "topic": "实名登记",
+      "question": "问题：\n无人机是否需要实名登记和相关标识？"
+    },
+    {
+      "doc_id": "sha256:d5ab54dfd21c22e1830dde00de9b28dd87b33fca5caabe3e29ad0ca8e7e2c898",
+      "topic": "操控资格",
+      "question": "问题：\n哪些无人机飞行需要操控员资格？"
+    },
+    {
+      "doc_id": "sha256:0378d9a283fa799f4cc88b0da200f9a632505b676d5ce1394ec564fd55e501e4",
+      "topic": "审批边界",
+      "question": "问题：\n无人机登记完成后是否可以在任何地方飞行？"
+    },
+    {
+      "doc_id": "sha256:eeb8f359d756aaeee6dc320a99b467f43c06a6a727c6a675a4fbd0dd8b618bcf",
+      "topic": "临时限制",
+      "question": "问题：\n已经熟悉的无人机飞行场地还要查询限制吗？"
+    },
+    {
+      "doc_id": "sha256:6d5736d2efdf7a7c0941f02d3b9a21ce2d82a8eb0c5a33a40af4a858fb553a95",
+      "topic": "机场周边",
+      "question": "问题：\n无人机在机场附近飞行需要注意什么？"
+    },
+    {
+      "doc_id": "sha256:2f69c8ac95f3483601bb6dacc36b7e2ec4ad3c899a928aac4b898c1ad7e9af67",
+      "topic": "有人航空器避让",
+      "question": "问题：\n无人机发现有人航空器接近时应该怎么办？"
+    },
+    {
+      "doc_id": "sha256:4a25acf6fec333923d5f527d633a10ca01543992a799000f260c19c22725cf46",
+      "topic": "人群上空",
+      "question": "问题：\n能否为了拍摄让无人机飞过聚集的人群？"
+    },
+    {
+      "doc_id": "sha256:7f39e4fbd784e47d998279dde1547f50118821e5bb51c109ead93c618d93342f",
+      "topic": "道路车辆",
+      "question": "问题：\n在道路或行驶车辆附近使用无人机有哪些风险？"
+    },
+    {
+      "doc_id": "sha256:d301c087a28cde25fcb8d39b09f7f792cb84ba912b1ad0e8a6db10c8cc7dbbbd",
+      "topic": "隐私保护",
+      "question": "问题：\n无人机航拍如何注意隐私和影像使用？"
+    },
+    {
+      "doc_id": "sha256:eba455a6a062bde3976ad2583d3dd36a97bed4a20286aeba775f97b5e8fe1b7e",
+      "topic": "敏感场所",
+      "question": "问题：\n无人机能否在重要设施附近自由拍摄？"
+    },
+    {
+      "doc_id": "sha256:770c7a0d69095bc4bf9a21a0ed19f95e3e6e09ae8a52f1c9406776d37ca7749a",
+      "topic": "旋翼伤害",
+      "question": "问题：\n如何避免无人机旋翼伤人？"
+    },
+    {
+      "doc_id": "sha256:a5512c18f7d8e7a3d1827330ded97e800def4d86c384995e780c10ac352edf51",
+      "topic": "儿童动物",
+      "question": "问题：\n无人机附近有儿童或宠物时如何安排飞行？"
+    },
+    {
+      "doc_id": "sha256:a77723aaf6fb66ada699d42b301deb8b9ae1db9dd3ca9e5e5a6728e131a331a5",
+      "topic": "建筑乱流",
+      "question": "问题：\n在高楼和建筑边缘飞行有什么特殊风险？"
+    },
+    {
+      "doc_id": "sha256:96fb7b3cf3f06d325f94b5ad5e53c9503fbba86ed25fad86bb82bfc24ef3d41a",
+      "topic": "电线环境",
+      "question": "问题：\n无人机靠近电线和输电设施时有什么风险？"
+    },
+    {
+      "doc_id": "sha256:94e74dff62c13ae3590a642c7fac887b3abe7dfdf79682dcab8d4d06df5a9dca",
+      "topic": "水面飞行",
+      "question": "问题：\n无人机在水面附近飞行应注意什么？"
+    },
+    {
+      "doc_id": "sha256:6ef3e230349b1d5d48ba03ac7fc5f0e0a8d38bf1032a8d781cc2c3d23523c8d3",
+      "topic": "山地飞行",
+      "question": "问题：\n无人机在山地飞行时如何避免高度误判？"
+    },
+    {
+      "doc_id": "sha256:ff0c68718edef07af4982cbb21a04ea9883d22dded111363aec8e4e6dab5ce33",
+      "topic": "室内飞行",
+      "question": "问题：\n普通无人机是否可以直接在室内飞行？"
+    },
+    {
+      "doc_id": "sha256:79f0d53ec655576128d1231cc3167c94fa05ed68faa866a65eaa1ce9311fd431",
+      "topic": "夜间飞行",
+      "question": "问题：\n无人机夜间飞行有哪些额外要求和风险？"
+    },
+    {
+      "doc_id": "sha256:cc403bfc5c11ff7431d09f78623caa4d56c85e855a443e018e3475d556a97233",
+      "topic": "强风天气",
+      "question": "问题：\n遇到明显阵风或风势增强时应如何决策？"
+    },
+    {
+      "doc_id": "sha256:b6d391faa460131359509b70fc130cbb7c001f42b7f2348afcd5cad9a53f4fdf",
+      "topic": "降雨防护",
+      "question": "问题：\n无人机有防护等级就可以在雨中飞吗？"
+    },
+    {
+      "doc_id": "sha256:9003bed2bc361a016baf47893031ad006197fe37b14872c9af1f68094f4426f5",
+      "topic": "低温环境",
+      "question": "问题：\n低温对无人机安全有哪些影响？"
+    },
+    {
+      "doc_id": "sha256:efc4d39f06a3bc3bcdb3049b43a8448173e3667d29faa91328d60091bc5f7bf7",
+      "topic": "高温环境",
+      "question": "问题：\n高温天气使用无人机需要注意什么？"
+    },
+    {
+      "doc_id": "sha256:761b0fd7fcb158f7da9eb3b8de8f3886f1f19476826d2700523fbc9dd64863e6",
+      "topic": "雷暴风险",
+      "question": "问题：\n雷暴或雷电天气能使用无人机吗？"
+    },
+    {
+      "doc_id": "sha256:45d9ec9a44f8eeed4c041af83963af41d9124db93e5e945ea9a168d25534d8fd",
+      "topic": "雾尘能见度",
+      "question": "问题：\n大雾、烟尘或能见度差时应如何处理飞行计划？"
+    },
+    {
+      "doc_id": "sha256:94ba6e28d4b8cb45d7f754ef42e135e8f47b094cf73f75676ff810c0fda9f2da",
+      "topic": "结冰风险",
+      "question": "问题：\n无人机遇到结冰风险时为什么应停止普通任务？"
+    },
+    {
+      "doc_id": "sha256:84a67cb8b0438042bcf83bf18ff8c9a53756a8b5968608c098917eac0737f7e1",
+      "topic": "电磁干扰",
+      "question": "问题：\n怎样降低无人机受电磁或磁场干扰的风险？"
+    },
+    {
+      "doc_id": "sha256:a912817f53f7450272273d1d1f781ed507a564b77e3119ffb76be896fb0f58af",
+      "topic": "超载风险",
+      "question": "问题：\n为什么不能随意增加无人机挂载重量？"
+    },
+    {
+      "doc_id": "sha256:39188360cb26a1d2e24214a2e5d228d9f7adaf38662b4d8c841b74b14edab1f8",
+      "topic": "外挂物品",
+      "question": "问题：\n无人机可以随意挂绳或吊运物品吗？"
+    },
+    {
+      "doc_id": "sha256:274cf689666b58159d03037c78604f6043d3e46d2905e7af0c7b1370c29d036d",
+      "topic": "手接风险",
+      "question": "问题：\n用手接住无人机降落是否适合新手？"
+    },
+    {
+      "doc_id": "sha256:a9af06ea21dac50ffdbd0e004465e76f89a3cbecbd9f16f75ca15b8f55fc990c",
+      "topic": "空中停机",
+      "question": "问题：\n飞行中是否可以随意执行电机紧急停止？"
+    },
+    {
+      "doc_id": "sha256:fa79a56179d9fc5418e2ec9631fade5b96fbde167f820503ec1b0ea0a55a4501",
+      "topic": "应急预案",
+      "question": "问题：\n无人机飞行前应准备哪些应急方案？"
+    },
+    {
+      "doc_id": "sha256:509519a80f9c123030ddf1e0458279b38c62dc9db0aacc715382c19dc4fa52d7",
+      "topic": "事故处置",
+      "question": "问题：\n无人机事故发生后应先做什么？"
+    },
+    {
+      "doc_id": "sha256:25326e11e77376cb271156c782ce4c7b316073de4da1834099688a1d0ba70c8c",
+      "topic": "电池冒烟",
+      "question": "问题：\n无人机电池冒烟、漏液或起火时怎么办？"
+    },
+    {
+      "doc_id": "sha256:3e77ca7d07a649b27c6b6dd20147a0509a2b3ad8f6ab1bad0cf3a367f9e98273",
+      "topic": "充电安全",
+      "question": "问题：\n无人机电池充电时有哪些基本安全要求？"
+    },
+    {
+      "doc_id": "sha256:30435f2b94dac3638565ecf6a29ca910967a7be35b4b49d01d483671e1079225",
+      "topic": "电池运输",
+      "question": "问题：\n携带无人机电池出行时应注意哪些规则？"
+    },
+    {
+      "doc_id": "sha256:7e877e3702c35572261b7d372eb65f8af926e47afa3065e3164d11b7d0cbd870",
+      "topic": "疲劳酒精",
+      "question": "问题：\n操作者疲劳或受酒精药物影响时能飞无人机吗？"
+    },
+    {
+      "doc_id": "sha256:e9e3ff8983a4b9dd148190110264480f050527fe89331650b2ffa0927f3c8c54",
+      "topic": "多机协同",
+      "question": "问题：\n多架无人机在同一区域作业时如何避免冲突？"
+    },
+    {
+      "doc_id": "sha256:b3ba4500c49ae89018bdea574fffc94e0b3f5de991c9da1539c747a8586e8a45",
+      "topic": "设备账号安全",
+      "question": "问题：\n无人机账号和任务数据如何进行安全管理？"
+    },
+    {
+      "doc_id": "sha256:847e9b7678d86ed3d0e4ec7f6ef545c28dfdf166e71990995f46ce77ef39b55e",
+      "topic": "应急现场禁飞",
+      "question": "问题：\n能否自行用无人机靠近救援或火灾现场拍摄？"
+    },
+    {
+      "doc_id": "sha256:bf1e69809e9674a8b444cf5e347289e052b2e5cfebef8d44a6143dd9fae884bf",
+      "topic": "维护计划",
+      "question": "问题：\n怎样制定无人机维护保养计划？"
+    },
+    {
+      "doc_id": "sha256:e035a53b1bdf5d41b493b2d922cc01719d8640433d1c45b528826ceada2dc03c",
+      "topic": "维护记录",
+      "question": "问题：\n无人机维护记录应该包含什么？"
+    },
+    {
+      "doc_id": "sha256:725f75d063fa7745afe6f0a1f01daa22743dcdb1eb0ef41f352b53e28ef6ca9e",
+      "topic": "外壳清洁",
+      "question": "问题：\n如何安全清洁无人机机身外壳？"
+    },
+    {
+      "doc_id": "sha256:70511033bc5081f733a2173908b99ef4c5e96bcc5fa87e07eb0aa3e3096f45a4",
+      "topic": "桨叶检查",
+      "question": "问题：\n无人机螺旋桨日常保养应检查什么？"
+    },
+    {
+      "doc_id": "sha256:c33ed5de56d55349c3fa6871692aad0a33982ad94c2494ce0d34007443d3d46d",
+      "topic": "折叠桨维护",
+      "question": "问题：\n无人机折叠桨转轴和桨毂怎样保养？"
+    },
+    {
+      "doc_id": "sha256:17a97297c048a6819a23bff5f9b118b301464456dca6ea114060a8a13b8793f6",
+      "topic": "电机检查",
+      "question": "问题：\n无人机电机日常检查有哪些重点？"
+    },
+    {
+      "doc_id": "sha256:c16188af426224dfc95d0415fc8fa81d4db5b7a8c914634631a7c9d3390607a5",
+      "topic": "轴承异常",
+      "question": "问题：\n无人机电机轴承磨损应如何处理？"
+    },
+    {
+      "doc_id": "sha256:8bf35ec96b6dcd3ab46bbccea43c99270ff7869d29e3b2ecc76e48b973fc9036",
+      "topic": "机臂检查",
+      "question": "问题：\n无人机机臂和连接部位需要怎样检查？"
+    },
+    {
+      "doc_id": "sha256:080340b4d4a905d9b20a2eea30584fcfad777c2b156460b61f7f3ee71c64366e",
+      "topic": "折叠锁扣",
+      "question": "问题：\n折叠无人机的机臂锁扣如何检查？"
+    },
+    {
+      "doc_id": "sha256:1aada5da9881f8993211fe34ed01b63f8837c58fd81f280f9c683817048c88e1",
+      "topic": "螺钉紧固",
+      "question": "问题：\n无人机螺钉松动时可以直接大力拧紧吗？"
+    },
+    {
+      "doc_id": "sha256:a4accbbe944f7d3907357c2468d786bb1de5ff7142917dca6c3048c598704d85",
+      "topic": "起落架维护",
+      "question": "问题：\n无人机起落架怎样进行维护检查？"
+    },
+    {
+      "doc_id": "sha256:9911badcb57e2e5d697079ae908116f269bd9a8db29fed92d0496ea1c7311292",
+      "topic": "散热清洁",
+      "question": "问题：\n无人机散热口和风扇如何保养？"
+    },
+    {
+      "doc_id": "sha256:796b1c46edf991a3ee40411536c9fc2b76016eef0324b4a023c427ba9cb86ce4",
+      "topic": "传感器窗口",
+      "question": "问题：\n无人机视觉传感器窗口该怎样清洁？"
+    },
+    {
+      "doc_id": "sha256:cb9f773dbf5fdecd3b59180b8f2040b9bba3e3a7c3ad9fb74bcfc19b734aba8e",
+      "topic": "相机镜头",
+      "question": "问题：\n无人机相机镜头和滤镜如何维护？"
+    },
+    {
+      "doc_id": "sha256:7096990cff23f2e745198731bd10ceb49e78093f7fea35611d9876c6b6c2f8ed",
+      "topic": "云台减振件",
+      "question": "问题：\n无人机云台减振球和连接件怎样检查？"
+    },
+    {
+      "doc_id": "sha256:5b6df89e3ec4eb67ae951cde87c7576fcb6cca260fe44c7754e64da07319744c",
+      "topic": "云台保管",
+      "question": "问题：\n运输无人机时怎样保护云台和相机？"
+    },
+    {
+      "doc_id": "sha256:f86945fce8afc5735a4abb0f04ef1b9c0314d4a0437a055743f9eaf5275397e9",
+      "topic": "电池外观",
+      "question": "问题：\n维护无人机电池时首先应检查什么？"
+    },
+    {
+      "doc_id": "sha256:cf33f648ec3ce71cc0571ff937b781475d500e97b7ad14408961693820cd6191",
+      "topic": "电池健康",
+      "question": "问题：\n如何判断无人机电池健康状态是否下降？"
+    },
+    {
+      "doc_id": "sha256:b4ef7173c0ca27b3436b474c0d881820dd79e0f6a914ec55f7a47b78c7ac0fc2",
+      "topic": "电池储存电量",
+      "question": "问题：\n无人机电池长期存放应保持多少电量？"
+    },
+    {
+      "doc_id": "sha256:979f973f890e47afc5c5c730ce31c8db6a256683a1f011e9823682813b078777",
+      "topic": "储存环境",
+      "question": "问题：\n无人机电池适合存放在什么环境？"
+    },
+    {
+      "doc_id": "sha256:b21b7716e5f6ac6750dcf97d3ec3e4cac1f78b74d64620b5a840d59f21df58e8",
+      "topic": "长期停用",
+      "question": "问题：\n无人机长期不使用时电池需要定期检查吗？"
+    },
+    {
+      "doc_id": "sha256:e8435828a1eed31696eacb9f2bbdfe771351f93cbcc25b39c6d4b4398b1dffef",
+      "topic": "自动放电",
+      "question": "问题：\n智能无人机电池存放后电量下降正常吗？"
+    },
+    {
+      "doc_id": "sha256:6e502d3dc98d842abd89ca45b34bcb173506531c2925790116beb501d4d969ac",
+      "topic": "避免深度放电",
+      "question": "问题：\n无人机电池需要经常完全放空再充满吗？"
+    },
+    {
+      "doc_id": "sha256:7ffa6107d95ca394b1ee495140d32d6925b8131eae9b39793398ef5da266f7bd",
+      "topic": "电池端子",
+      "question": "问题：\n无人机电池接口和端子怎样维护？"
+    },
+    {
+      "doc_id": "sha256:cdcefc1b1ff45f91fbb761eafc9aa9a46975b2ac7f3216db1a787fe542444c3a",
+      "topic": "充电器检查",
+      "question": "问题：\n无人机充电器和充电线需要保养吗？"
+    },
+    {
+      "doc_id": "sha256:b3d7a69ae19b33e0aaa118ef4e68cea93262e1349a8bc84509ae2f5b04933ecf",
+      "topic": "电池轮换",
+      "question": "问题：\n多块无人机电池怎样轮换和记录？"
+    },
+    {
+      "doc_id": "sha256:428dbedfe2b2cc25316c3cc43e561b3199a12bc41f3eb50e003892aa23b8d4cd",
+      "topic": "电池退役",
+      "question": "问题：\n无人机电池什么时候应该退役？"
+    },
+    {
+      "doc_id": "sha256:1f2e88b88c6d90b06eed8460788de128e816e9e6e5a7d50290da8b9aa47857db",
+      "topic": "遥控器摇杆",
+      "question": "问题：\n无人机遥控器摇杆怎样检查和保养？"
+    },
+    {
+      "doc_id": "sha256:e26cff1898c20d37d740c17b1cd899224e85c00eb9a01884230865ec0905e3f4",
+      "topic": "天线维护",
+      "question": "问题：\n无人机及遥控器天线如何维护？"
+    },
+    {
+      "doc_id": "sha256:8c55bba41386dad950128ee4e0c65d3187178c12050aa9b43068efd3289afdf1",
+      "topic": "终端保养",
+      "question": "问题：\n无人机遥控屏幕或移动终端需要怎样维护？"
+    },
+    {
+      "doc_id": "sha256:e5373d0ed607496d7dd3c3e8431e4d4ee3d465d4df931d6ce1b8412dd9143da6",
+      "topic": "固件维护",
+      "question": "问题：\n无人机固件更新应该怎样安排？"
+    },
+    {
+      "doc_id": "sha256:e16c46b14c69847e1fee10f557e9f0a394d03fd7ddb7c60246ffec476a877b8c",
+      "topic": "IMU校准维护",
+      "question": "问题：\n无人机IMU是否应该每次飞行前校准？"
+    },
+    {
+      "doc_id": "sha256:9c80bcc3d339a0f5d5988d714ef5fe021e4b5511c8e85131d3a08707eae6a5eb",
+      "topic": "指南针校准维护",
+      "question": "问题：\n无人机换了飞行地点就必须校准指南针吗？"
+    },
+    {
+      "doc_id": "sha256:d90dcdf8124a11b226da198f32fd66ac1b6af34973d2ecf034d0e1bef8d06f41",
+      "topic": "视觉校准维护",
+      "question": "问题：\n无人机视觉系统什么时候需要校准？"
+    },
+    {
+      "doc_id": "sha256:ca877317d23c68e308eea1fdee427ad10d3fc698af413815a9ca3c24daa494a8",
+      "topic": "日志备份",
+      "question": "问题：\n维护无人机前为什么要备份日志和设置？"
+    },
+    {
+      "doc_id": "sha256:7600377cc5eb8641649c8e8c5f98c7d45f24b9f62bb6cbc6ed4c893677347ef5",
+      "topic": "备件选用",
+      "question": "问题：\n无人机维修时如何选择螺旋桨和其他备件？"
+    },
+    {
+      "doc_id": "sha256:bb4a5fd820e14326de9dcd88e9265e01bd7694fe66bd12d9d49a580c4fad64c7",
+      "topic": "运输收纳",
+      "question": "问题：\n无人机整机长期收纳和运输有哪些要点？"
+    },
+    {
+      "doc_id": "sha256:d0199c0eab2d82cc7ef6dca3197b6a5bfca98dc75cad1fbd1ac11a5afaa1cffa",
+      "topic": "腐蚀环境维护",
+      "question": "问题：\n无人机在潮湿或盐雾环境使用后如何维护？"
+    },
+    {
+      "doc_id": "sha256:1cad437546630a3072d91deeb20079741d747c5eb113b360e4aaa1830be7f849",
+      "topic": "维修后验证",
+      "question": "问题：\n无人机维修后怎样确认可以恢复飞行？"
+    },
+    {
+      "doc_id": "sha256:e156f5575198f0e6621ca365e187a585784471d6b95c9dacd4735e74692d032c",
+      "topic": "停用标识",
+      "question": "问题：\n发现无人机维护问题后怎样防止误用？"
+    }
+  ]
+}
